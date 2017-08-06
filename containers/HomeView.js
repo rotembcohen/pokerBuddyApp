@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button,
+  StyleSheet, Text, View, ScrollView, FlatList, Button, 
 } from 'react-native';
 
 export default class HomeView extends Component {
@@ -10,13 +10,12 @@ export default class HomeView extends Component {
 		this.state = {
 		};
 	}
-
 	
 	render() {
 		const { navigation } = this.props;
 	    return (
 	      <View style={styles.container}>
-	        <Button title='Create Game' onPress={()=>{navigation.navigate('CreateView')}} />
+	        <Button title='Create Game' onPress={()=>{navigation.navigate('CreateGameView')}} />
 	        <Button title='Join Game' onPress={()=>{navigation.navigate('GameView')}} />
 	      </View>
 	    );
