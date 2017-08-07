@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 
 import styles from '../Styles';
+import * as utils from '../UtilFunctions';
 
 export default class HomeView extends Component {
 
@@ -13,28 +14,24 @@ export default class HomeView extends Component {
 		};
 	}
 
-	loginWithCreds(navigation){
-		fetch('http://54.236.5.23/api-token-auth/', {
-			method: 'POST',
-		 	headers: {
-			    'Accept': 'application/json',
-			    'Content-Type': 'application/json',
-		  	},
-			body: JSON.stringify({
-			    username: 'rotembcohen',
-			    password: 'cl446074',
+	async loginWithCreds(navigation){
+		const response = await utils.fetchFromServer('api-token-auth/','POST',{
+			username: 'rotembcohen',
+		    password: 'cl446074',
+		},this.state.token);
+		
+		if (response) {
+			response.json()
+			.then((responseJson) => {
+				var token = responseJson.token;
+				console.log("Recieved token: " + token);
+				this.saveToken(token);
 			})
-		})
-		.then((response) => response.json())
-		.then((responseJson) => {
-			var token = responseJson.token;
-			console.log("Recieved token: " + token);
-			this.saveToken(token);
-		})
-		.then(()=>navigation.navigate('HomeView'))
-		.catch((error) => {
-			console.error(error);
-		});
+			.then(()=>navigation.navigate('HomeView'))
+			.catch((error) => {
+				console.error(error);
+			});
+		}
 		
 	}
 	

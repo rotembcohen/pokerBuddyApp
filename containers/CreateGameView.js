@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 
 import styles from '../Styles';
+import * as utils from '../UtilFunctions';
 
 export default class CreateGameView extends Component {
 
@@ -22,51 +23,36 @@ export default class CreateGameView extends Component {
 	async getToken(){
 		try {
 			const token = await AsyncStorage.getItem('@pokerBuddy:token');
-			if (token !== null){
-				this.setState({
-					token: token
-				});
-				console.log("token received: " + token);
-			}
+			if (token !== null) this.setState({token: token});
 		}
 		catch (error) {
 			console.error("getToken error: " + error);
 		}
 	}
 
-	createGame(min_bet,navigation){
-		fetch('http://54.236.5.23/games/', {
-			method: 'POST',
-		 	headers: {
-			    'Accept': 'application/json',
-			    'Content-Type': 'application/json',
-			    'Authorization': 'Token ' + this.state.token,
-		  	},
-			body: JSON.stringify({
-			    min_bet: min_bet
+	async createGame(navigation){
+		if (this.state.min_bet === '' || this.state.token === '' || this.state.token === 'no token'){
+			return;
+		}
+		const response = await utils.fetchFromServer('games/','POST',{
+			min_bet: this.state.min_bet
+		},this.state.token);
+
+		if (response) {
+			response.json()
+			.then((responseJson)=>{
+				var gameIdentifier = responseJson.identifier;
+				console.log("Recieved identifier: " + gameIdentifier);
+				AsyncStorage.setItem('@pokerBuddy:identifier', gameIdentifier);
 			})
-		})
-		.then((response) => response.json())
-		.then((responseJson) => {
-			var gameIdentifier = responseJson.identifier;
-			console.log("Recieved identifier: " + gameIdentifier);
-			this.saveIdentifier(gameIdentifier);
-		})
-		.then(()=>navigation.navigate('GameView'))
-		.catch((error) => {
-			console.error(error);
-		});
+			.then(()=> navigation.navigate('GameView'))	
+			.catch((error) => {
+				console.error(error);
+			});
+		}
+		
 	}
 	
-	async saveIdentifier(identifier){
-		try {
-			await AsyncStorage.setItem('@pokerBuddy:identifier', identifier);
-		}
-		catch (error) {
-			console.error("AsyncStorage error: " + error);
-		}
-	}
-
 	render() {
 		const { navigation } = this.props;
 	    return (
@@ -76,7 +62,7 @@ export default class CreateGameView extends Component {
 	      		onChangeText={(text)=>{this.setState({min_bet:text})}}
 	      		value={this.state.min_bet.toString()}
       		/>
-	        <Button title='Create!' onPress={()=>{this.createGame(this.state.min_bet,navigation)}} />
+	        <Button title='Create!' onPress={()=>{this.createGame(navigation)}} />
 	      </View>
 	    );
 	}
