@@ -3,6 +3,8 @@ import {
   StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage,
 } from 'react-native';
 
+import styles from '../Styles';
+
 export default class CreateGameView extends Component {
 
 	constructor(props){
@@ -80,18 +82,3 @@ export default class CreateGameView extends Component {
 	}
 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textinput: {
-  	height: 40,
-  	width: 100,
-  	textAlign: 'center',
-  },
-});
-

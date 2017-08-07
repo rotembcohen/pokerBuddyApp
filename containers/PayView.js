@@ -3,6 +3,8 @@ import {
   StyleSheet, Text, View, ScrollView, FlatList, Button,
 } from 'react-native';
 
+import styles from '../Styles';
+
 export default class PayView extends Component {
 
 	constructor(props){
@@ -10,7 +12,6 @@ export default class PayView extends Component {
 		this.state = {
 		};
 	}
-
 	
 	render() {
 		const { navigation } = this.props;
@@ -23,12 +24,4 @@ export default class PayView extends Component {
 
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
