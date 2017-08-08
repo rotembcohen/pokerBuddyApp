@@ -15,24 +15,20 @@ export default class HomeView extends Component {
 	}
 
 	async loginWithCreds(navigation){
+		
 		const response = await utils.fetchFromServer('api-token-auth/','POST',{
 			username: 'rotembcohen',
 		    password: 'cl446074',
 		},this.state.token);
 		
-		if (response) {
-			response.json()
-			.then((responseJson) => {
-				var token = responseJson.token;
-				console.log("Recieved token: " + token);
-				this.saveToken(token);
-			})
-			.then(()=>navigation.navigate('HomeView'))
-			.catch((error) => {
-				console.error(error);
-			});
-		}
+		const responseJson = await response.json();
 		
+		var token = responseJson.token;	
+		console.log("Recieved token: " + token);
+		await this.saveToken(token);
+		
+		navigation.navigate('HomeView');
+	
 	}
 	
 	async saveToken(token){

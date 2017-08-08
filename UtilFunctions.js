@@ -13,6 +13,7 @@ export function fetchFromServer(relative_url,method,body_dict,token=null){
 
 	console.log(body_dict);
 
+	// TODO: handle network errors
 	return fetch('http://54.236.5.23/' + relative_url, {
 		method: method,
 	 	headers: headers,
