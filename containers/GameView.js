@@ -15,6 +15,7 @@ export default class GameView extends Component {
 			playerList: [],
 			game_identifier: 'no identifier',
 			buy_in_amount: 0,
+			result_amount: 0,
 		};
 	}
 
@@ -41,12 +42,28 @@ export default class GameView extends Component {
 			gameString = gameObj._bodyText;
 
 			await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
-			
+
 			let game = JSON.parse(gameString);
 			this.setState({
 				playerList: game.bets,
 			});
 		}
+	}
+
+	async leave_game(){
+		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/leave_game/",'POST',{
+			result: parseInt(this.state.result_amount)
+		},this.state.token);
+		if (gameObj.status === 200){
+			gameString = gameObj._bodyText;
+
+			await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
+
+			let game = JSON.parse(gameString);
+			this.setState({
+				playerList: game.bets,
+			});
+		}	
 	}
 
 	render() {
@@ -65,6 +82,13 @@ export default class GameView extends Component {
 		      		value={this.state.buy_in_amount.toString()}
 	      		/>
 		        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
+		    </View>
+		    <View>
+		        <TextInput
+		      		style={styles.textinput}
+		      		onChangeText={(text)=>{this.setState({result_amount:text})}}
+		      		value={this.state.result_amount.toString()}
+	      		/>
 		        <Button title='Leave Game' onPress={()=>{navigation.navigate('PayView')}} />
 	        </View>
 	      </ScrollView>
