@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage
+  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage,
 } from 'react-native';
 
 import styles from '../Styles';
@@ -30,21 +30,6 @@ export default class HomeView extends Component {
 		}
 	}
 
-	async joinGame(navigation){
-		identifier = this.state.game_identifier.toUpperCase();
-		if (identifier.length !== 5){
-			return;
-		}
-		const response = await utils.fetchFromServer('games/' + identifier + '/join_game/','POST',{},this.state.token);
-
-		console.log(response.status);
-
-		if (response.status / 100 < 3){
-			navigation.navigate('GameView');
-		}
-		
-	}
-
 	render() {
 		const { navigation } = this.props;
 	    return (
@@ -58,7 +43,7 @@ export default class HomeView extends Component {
 	      		autoCapitalize={'characters'}
 	      		maxLength={5}
       		/>
-	        <Button title='Join Game' onPress={()=>{this.joinGame(navigation)}} />
+	        <Button title='Join Game' onPress={()=>{utils.joinGame(navigation,this.state.game_identifier,this.state.token)}} />
 	      </View>
 	    );
 	}

@@ -31,6 +31,7 @@ export default class CreateGameView extends Component {
 	}
 
 	async createGame(navigation){
+		//TODO: handle network error
 		if (this.state.min_bet === '' || this.state.token === '' || this.state.token === 'no token'){
 			return;
 		}
@@ -38,18 +39,19 @@ export default class CreateGameView extends Component {
 			min_bet: this.state.min_bet
 		},this.state.token);
 
-		if (response) {
-			response.json()
-			.then((responseJson)=>{
-				var gameIdentifier = responseJson.identifier;
-				console.log("Recieved identifier: " + gameIdentifier);
-				AsyncStorage.setItem('@pokerBuddy:identifier', gameIdentifier);
-			})
-			.then(()=> navigation.navigate('GameView'))	
-			.catch((error) => {
-				console.error(error);
-			});
+		console.log(response.status);
+		//game created succesfully
+		if (response.status===201){
+			//get new game identifier
+			let game_json = JSON.parse(response._bodyText);
+			let game_identifier = game_json.identifier;
+			
+			//TODO: add option for host not to immediately join game
+			//join game
+			utils.joinGame(navigation,game_identifier,this.state.token);
+			
 		}
+		//TODO:else
 		
 	}
 	
