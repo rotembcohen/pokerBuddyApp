@@ -33,7 +33,7 @@ export default class GameView extends Component {
 	}
 
 	//TODO: add way to push updates/ or check updates frequently
-
+	//TODO: duplicate code!
 	async buy_in(){
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/buy_in/",'POST',{
 			amount: parseInt(this.state.buy_in_amount)

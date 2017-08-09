@@ -16,30 +16,22 @@ export default class HomeView extends Component {
 
 	async loginWithCreds(navigation){
 		
-		const response = await utils.fetchFromServer('api-token-auth/','POST',{
+		const response = await utils.fetchFromServer('authenticate/','POST',{
 			username: 'rotembcohen',
 		    password: 'cl446074',
 		},this.state.token);
 		
 		const responseJson = await response.json();
 		
-		var token = responseJson.token;	
+		let token = responseJson.token;	
+		let user = JSON.stringify(responseJson.user);
 		console.log("Recieved token: " + token);
-		await this.saveToken(token);
-		
+		await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
+
 		navigation.navigate('HomeView');
 	
 	}
 	
-	async saveToken(token){
-		try {
-			await AsyncStorage.setItem('@pokerBuddy:token', token);
-		}
-		catch (error) {
-			console.error("AsyncStorage error: " + error);
-		}
-	}
-
 	render() {
 		const { navigation } = this.props;
 	    return (

@@ -11,14 +11,24 @@ export function fetchFromServer(relative_url,method,body_dict,token=null){
 		headers['Authorization'] = 'Token ' + token;
 	}
 
-	console.log("Request body: " + body_dict);
+	let content = {};
+	content['method'] = method;
+	content['headers'] = headers;
+	
+	console.log(
+		"API request type: " + method
+		+ "\n" + "Relative URL: " + relative_url
+		+ "\n" + "Headers: " + JSON.stringify(headers)
+	);
+
+	if (method!=='GET'){
+		let body = JSON.stringify(body_dict);
+		console.log("Request body: " + body);
+		content['body'] = body;
+	}
 
 	// TODO: handle network errors
-	return fetch('http://54.236.5.23/' + relative_url, {
-		method: method,
-	 	headers: headers,
-		body: JSON.stringify(body_dict)
-	});
+	return fetch('http://54.236.5.23/' + relative_url, content);
 	
 }
 
