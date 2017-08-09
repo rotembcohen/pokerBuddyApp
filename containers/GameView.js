@@ -34,9 +34,10 @@ export default class GameView extends Component {
 
 	//TODO: add way to push updates/ or check updates frequently
 	//TODO: duplicate code!
-	async buy_in(){
+	async buy_in(player_id=null){
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/buy_in/",'POST',{
-			amount: parseInt(this.state.buy_in_amount)
+			amount: parseInt(this.state.buy_in_amount),
+			player_id: player_id
 		},this.state.token);
 		if (gameObj.status === 200){
 			gameString = gameObj._bodyText;
@@ -50,9 +51,10 @@ export default class GameView extends Component {
 		}
 	}
 
-	async leave_game(){
+	async leave_game(player_id=null){
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/leave_game/",'POST',{
-			result: parseInt(this.state.result_amount)
+			result: parseInt(this.state.result_amount),
+			player_id: player_id
 		},this.state.token);
 		if (gameObj.status === 200){
 			gameString = gameObj._bodyText;
@@ -105,7 +107,17 @@ export default class GameView extends Component {
 	            		var renderItemResult = item.result.toString();
 	            		var renderItemStyle = styles.strikethroughText;
 	            	}
-	            	return (<Text style={styles.regularText}>BI LG <Text style={renderItemStyle}>{item.amount} {item.player}</Text> {renderItemResult}</Text>);
+	            	return (
+	            		<View style={{flexDirection:'row'}}>
+		            		<Button title='BI' onPress={()=>this.buy_in(item.player.id)}/>
+		            		<Button title='LG' onPress={()=>this.leave_game(item.player.id)}/>
+		            		<Text style={styles.regularText}>
+		            			
+		            			<Text style={renderItemStyle}>{item.amount} {item.player.username}</Text> 
+		            			{renderItemResult}
+	            			</Text>
+            			</View>
+            		);
 	            }}
 	        />
 
