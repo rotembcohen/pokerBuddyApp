@@ -44,7 +44,7 @@ export default class GameView extends Component {
 	//TODO: duplicate code!
 	async buy_in(player_id=null){
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/buy_in/",'POST',{
-			amount: parseInt(this.state.buy_in_amount),
+			amount: Number(this.state.buy_in_amount),
 			player_id: player_id
 		},this.state.token);
 		if (gameObj.status === 200){
@@ -61,7 +61,7 @@ export default class GameView extends Component {
 
 	async leave_game(player_id=null){
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/leave_game/",'POST',{
-			result: parseInt(this.state.result_amount),
+			result: Number(this.state.result_amount),
 			player_id: player_id
 		},this.state.token);
 		if (gameObj.status === 200){
@@ -76,6 +76,22 @@ export default class GameView extends Component {
 		}	
 	}
 
+	calcPotMoney(){
+		var potMoney = 0;
+		this.state.playerList.forEach(function(player) {
+		    potMoney = potMoney + Number(player.amount) - Number(player.result);
+		});
+		return potMoney;
+	}
+
+	finishGame(navigation){
+		if(this.calcPotMoney === 0){
+			navigation.navigate("PayView");
+		}else{
+			//this.setModalVisible(true);
+		}
+	}
+
 	render() {
 		const { navigation } = this.props;
 		var renderTopView = null;
@@ -85,7 +101,7 @@ export default class GameView extends Component {
 			renderTopView =
 			(
 				<View style={{flex:0.4}}>
-					<Button title='Finish Game' onPress={()=>{navigation.navigate('PayView')}} />
+					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
 				</View>
 			)
 			renderHostButtons = 
@@ -118,12 +134,8 @@ export default class GameView extends Component {
 		        </View>
 			);
 		}
-		var potMoney = 0;
-		this.state.playerList.forEach(function(player) {
-		    console.log(potMoney + "+" + player.amount + "-" + player.result);
-		    potMoney = potMoney + Number(player.amount) - Number(player.result);
-		});
-
+		var potMoney = this.calcPotMoney();
+		
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
 	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game_identifier}</Text>
@@ -155,7 +167,6 @@ export default class GameView extends Component {
             		);
 	            }}
 	        />
-
 	      </ScrollView>
 	    );
 	}
