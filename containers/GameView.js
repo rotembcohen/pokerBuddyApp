@@ -36,7 +36,7 @@ export default class GameView extends Component {
 			username: user.username,
 			playerList: game.bets,
 			game_identifier: game.identifier,
-			is_host: !is_host,
+			is_host: is_host,
 		});
 	}
 
@@ -78,18 +78,25 @@ export default class GameView extends Component {
 
 	render() {
 		const { navigation } = this.props;
-		var renderNonAdminView = null;
-		var renderAdminButtons = null;
+		var renderTopView = null;
+		var renderHostButtons = null;
 		if (this.state.is_host){
-			renderAdminButtons = 
+			//TODO: can you take the view our?
+			renderTopView =
+			(
+				<View style={{flex:0.4}}>
+					<Button title='Finish Game' onPress={()=>{navigation.navigate('PayView')}} />
+				</View>
+			)
+			renderHostButtons = 
 			(
 				<View style={{margin:5}}>
 					<Button title='BI' onPress={()=>this.buy_in(item.player.id)}/>
             		<Button title='LG' onPress={()=>this.leave_game(item.player.id)}/>
 				</View>
-			)
+			);
 		}else{
-			renderNonAdminView = 
+			renderTopView = 
 			(
 				<View style={{flex:0.4}}>
 			        <TextInput
@@ -111,12 +118,20 @@ export default class GameView extends Component {
 		        </View>
 			);
 		}
+		var potMoney = 0;
+		this.state.playerList.forEach(function(player) {
+		    console.log(potMoney + "+" + player.amount + "-" + player.result);
+		    potMoney = potMoney + Number(player.amount) - Number(player.result);
+		});
+
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
-	    	{renderNonAdminView}    
+	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game_identifier}</Text>
+	    	<Text style={{flex:0.1,fontSize:18}}>Money in the pot: {potMoney.toString()}</Text>
+	    	{renderTopView}    
 	        <Text style={{flex:0.1}}>Players List:</Text>
 	        <FlatList
-	        	style={{flex:0.5}}
+	        	style={{flex:0.4}}
 	            data={this.state.playerList}
 	            keyExtractor={item=>item.id}
 	            renderItem={({item}) => {
@@ -130,7 +145,7 @@ export default class GameView extends Component {
 	            	}
 	            	return (
 	            		<View style={{flexDirection:'row'}}>
-		            		{renderAdminButtons}
+		            		{renderHostButtons}
 		            		<Text style={styles.regularText}>
 		            			
 		            			<Text style={renderItemStyle}>{item.amount} {item.player.username}</Text> 
