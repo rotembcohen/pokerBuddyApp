@@ -68,28 +68,41 @@ export default class GameView extends Component {
 
 	render() {
 		const { navigation } = this.props;
+		
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
-	        <Text>Players List:</Text>
+	        <Text style={{flex:0.1}}>Players List:</Text>
 	        <FlatList
+	        	style={{flex:0.5}}
 	            data={this.state.playerList}
-	            renderItem={({item}) => <Text>BI LG {item.amount} {item.player}</Text>}
+	            keyExtractor={item=>item.id}
+	            renderItem={({item}) => {
+	            	if (item.result === null) {
+	            		//player is in the game
+	            		var renderItemResult = '';
+	            		var renderItemStyle = styles.regularText;
+	            	} else {
+	            		var renderItemResult = item.result.toString();
+	            		var renderItemStyle = styles.strikethroughText;
+	            	}
+	            	return (<Text style={styles.regularText}>BI LG <Text style={renderItemStyle}>{item.amount} {item.player}</Text> {renderItemResult}</Text>);
+	            }}
 	        />
-	        <View>
+	        <View style={{flex:0.4}}>
 		        <TextInput
 		      		style={styles.textinput}
 		      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
 		      		value={this.state.buy_in_amount.toString()}
+		      		keyboardType='numeric'
 	      		/>
 		        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
-		    </View>
-		    <View>
 		        <TextInput
 		      		style={styles.textinput}
 		      		onChangeText={(text)=>{this.setState({result_amount:text})}}
 		      		value={this.state.result_amount.toString()}
+		      		keyboardType='numeric'
 	      		/>
-		        <Button title='Leave Game' onPress={()=>{navigation.navigate('PayView')}} />
+		        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
 	        </View>
 	      </ScrollView>
 	    );
