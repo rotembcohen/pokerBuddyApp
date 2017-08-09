@@ -15,6 +15,13 @@ const styles = StyleSheet.create({
 		width: 100,
 		textAlign: 'center',
 	},
+	regularText: {
+		fontSize: 16,
+	},
+	strikethroughText: {
+		fontSize: 16,
+		textDecorationLine: 'line-through',
+	},
 });
 
 export default styles;
