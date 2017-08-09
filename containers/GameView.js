@@ -8,27 +8,35 @@ import * as utils from '../UtilFunctions';
 
 export default class GameView extends Component {
 
+	//TODO: change 'no token' to null
 	constructor(props){
 		super(props);
 		this.state = {
 			token: 'no token',
+			user_id: null,
+			username: null,
 			playerList: [],
 			game_identifier: 'no identifier',
 			buy_in_amount: 0,
 			result_amount: 0,
+			is_host: false,
 		};
 	}
 
 	async componentWillMount(){
-		const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:currentGame']);
+		const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
 		let token = data[0][1];
-		let gameString = data[1][1];
-		let game = JSON.parse(gameString);
-		
+		let user = JSON.parse(data[1][1]);
+		let game = JSON.parse(data[2][1]);
+		let is_host = (game.host === user.id);
+
 		this.setState({
 			token: token,
+			user_id: user.id,
+			username: user.username,
 			playerList: game.bets,
 			game_identifier: game.identifier,
+			is_host: !is_host,
 		});
 	}
 
@@ -70,29 +78,42 @@ export default class GameView extends Component {
 
 	render() {
 		const { navigation } = this.props;
-		
+		var renderNonAdminView = null;
+		var renderAdminButtons = null;
+		if (this.state.is_host){
+			renderAdminButtons = 
+			(
+				<View style={{margin:5}}>
+					<Button title='BI' onPress={()=>this.buy_in(item.player.id)}/>
+            		<Button title='LG' onPress={()=>this.leave_game(item.player.id)}/>
+				</View>
+			)
+		}else{
+			renderNonAdminView = 
+			(
+				<View style={{flex:0.4}}>
+			        <TextInput
+			      		style={styles.textinput}
+			      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
+			      		value={this.state.buy_in_amount.toString()}
+			      		keyboardType='numeric'
+			      		selectTextOnFocus={true}
+		      		/>
+			        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
+			        <TextInput
+			      		style={styles.textinput}
+			      		onChangeText={(text)=>{this.setState({result_amount:text})}}
+			      		value={this.state.result_amount.toString()}
+			      		keyboardType='numeric'
+			      		selectTextOnFocus={true}
+		      		/>
+			        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
+		        </View>
+			);
+		}
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
-
-	        <View style={{flex:0.4}}>
-		        <TextInput
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
-		      		value={this.state.buy_in_amount.toString()}
-		      		keyboardType='numeric'
-		      		selectTextOnFocus={true}
-	      		/>
-		        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
-		        <TextInput
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({result_amount:text})}}
-		      		value={this.state.result_amount.toString()}
-		      		keyboardType='numeric'
-		      		selectTextOnFocus={true}
-	      		/>
-		        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
-	        </View>
-
+	    	{renderNonAdminView}    
 	        <Text style={{flex:0.1}}>Players List:</Text>
 	        <FlatList
 	        	style={{flex:0.5}}
@@ -109,8 +130,7 @@ export default class GameView extends Component {
 	            	}
 	            	return (
 	            		<View style={{flexDirection:'row'}}>
-		            		<Button title='BI' onPress={()=>this.buy_in(item.player.id)}/>
-		            		<Button title='LG' onPress={()=>this.leave_game(item.player.id)}/>
+		            		{renderAdminButtons}
 		            		<Text style={styles.regularText}>
 		            			
 		            			<Text style={renderItemStyle}>{item.amount} {item.player.username}</Text> 

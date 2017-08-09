@@ -22,8 +22,8 @@ export default class HomeView extends Component {
 	async componentWillMount(){
 		const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user']);
 		let token = data[0][1];
-		let userObj = JSON.parse(data[1][1]);
-		this.setState({token: token, user_id: userObj.id, username: userObj.username, });
+		let user = JSON.parse(data[1][1]);
+		this.setState({token: token, user_id: user.id, username: user.username, });
 		await this.getActiveGames();
 	}
 
