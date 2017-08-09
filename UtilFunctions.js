@@ -1,7 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 
-export function fetchFromServer(relative_url,method,body_dict,token=null){
+export async function fetchFromServer(relative_url,method,body_dict,token=null){
 	var headers = {
 	    'Accept': 'application/json',
 	    'Content-Type': 'application/json',
@@ -16,7 +16,8 @@ export function fetchFromServer(relative_url,method,body_dict,token=null){
 	content['headers'] = headers;
 	
 	console.log(
-		"API request type: " + method
+		"====================="
+		+ "\n" +"API request type: " + method
 		+ "\n" + "Relative URL: " + relative_url
 		+ "\n" + "Headers: " + JSON.stringify(headers)
 	);
@@ -28,7 +29,14 @@ export function fetchFromServer(relative_url,method,body_dict,token=null){
 	}
 
 	// TODO: handle network errors
-	return fetch('http://54.236.5.23/' + relative_url, content);
+	const response = await fetch('http://54.236.5.23/' + relative_url, content);
+	if (response.status / 100 < 4){
+		console.log("\n"+ "API Response: " + response._bodyText);
+	}else{
+		console.log("\n"+ "API Error type: " +response.status);
+	}
+	console.log("\n" + "=====================");
+	return response;
 	
 }
 

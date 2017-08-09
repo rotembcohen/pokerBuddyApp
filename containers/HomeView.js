@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage,
+  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage, Picker
 } from 'react-native';
 
 import styles from '../Styles';
@@ -43,6 +43,8 @@ export default class HomeView extends Component {
 
 	render() {
 		const { navigation } = this.props;
+		let active_games = this.state.active_games;
+		console.log("active_games",active_games.length);
 	    return (
 	      <View style={styles.container}>
 	      	<Button title='Create Game' onPress={()=>{navigation.navigate('CreateGameView')}} />
@@ -56,6 +58,14 @@ export default class HomeView extends Component {
 	      		maxLength={5}
       		/>
 	        <Button title='Join Game' onPress={()=>{utils.joinGame(navigation,this.state.game_identifier,this.state.token)}} />
+
+	        <Picker
+	        	style={{width:125}}
+				selectedValue={this.state.game_identifier}
+				onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue});console.log("itemValue ",itemValue)}}>
+					<Picker.Item value="" label="" key="placeholder" />
+					{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
+			</Picker>
 	      </View>
 	    );
 	}
