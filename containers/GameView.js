@@ -71,6 +71,26 @@ export default class GameView extends Component {
 		
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
+
+	        <View style={{flex:0.4}}>
+		        <TextInput
+		      		style={styles.textinput}
+		      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
+		      		value={this.state.buy_in_amount.toString()}
+		      		keyboardType='numeric'
+		      		selectTextOnFocus={true}
+	      		/>
+		        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
+		        <TextInput
+		      		style={styles.textinput}
+		      		onChangeText={(text)=>{this.setState({result_amount:text})}}
+		      		value={this.state.result_amount.toString()}
+		      		keyboardType='numeric'
+		      		selectTextOnFocus={true}
+	      		/>
+		        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
+	        </View>
+
 	        <Text style={{flex:0.1}}>Players List:</Text>
 	        <FlatList
 	        	style={{flex:0.5}}
@@ -88,22 +108,7 @@ export default class GameView extends Component {
 	            	return (<Text style={styles.regularText}>BI LG <Text style={renderItemStyle}>{item.amount} {item.player}</Text> {renderItemResult}</Text>);
 	            }}
 	        />
-	        <View style={{flex:0.4}}>
-		        <TextInput
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
-		      		value={this.state.buy_in_amount.toString()}
-		      		keyboardType='numeric'
-	      		/>
-		        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
-		        <TextInput
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({result_amount:text})}}
-		      		value={this.state.result_amount.toString()}
-		      		keyboardType='numeric'
-	      		/>
-		        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
-	        </View>
+
 	      </ScrollView>
 	    );
 	}
