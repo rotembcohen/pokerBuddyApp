@@ -22,6 +22,10 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		textDecorationLine: 'line-through',
 	},
+	errorLabel: {
+		fontSize: 14,
+		color: 'red',
+	}
 });
 
 export default styles;

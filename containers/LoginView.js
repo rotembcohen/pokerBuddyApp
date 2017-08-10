@@ -11,24 +11,34 @@ export default class HomeView extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
+			errorLabel: '',
 		};
 	}
 
 	async loginWithCreds(navigation){
 		
-		const response = await utils.fetchFromServer('authenticate/','POST',{
-			username: 'rotembcohen',
-		    password: 'cl446074',
-		},this.state.token);
-		
-		const responseJson = await response.json();
-		
-		let token = responseJson.token;	
-		let user = JSON.stringify(responseJson.user);
-		console.log("Recieved token: " + token);
-		await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
+		var response = null;
+		try{
+			response = await utils.fetchFromServer('authenticate/','POST',{
+				username: 'rotembcohen',
+			    password: 'cl446074',
+			},this.state.token);
+		}
+		catch(error){
+			console.log(error);
+		}
+		if (response){
+			const responseJson = await response.json();
+			
+			let token = responseJson.token;	
+			let user = JSON.stringify(responseJson.user);
+			console.log("Recieved token: " + token);
+			await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
 
-		navigation.navigate('HomeView');
+			navigation.navigate('HomeView');
+		}else{
+			this.setState({errorLabel:'Server Unavailable'});
+		}
 	
 	}
 	
@@ -36,7 +46,11 @@ export default class HomeView extends Component {
 		const { navigation } = this.props;
 	    return (
 			<View style={styles.container}>
-				<Button title='Login' onPress={()=>{this.loginWithCreds(navigation)}} />
+				<Button title='Login' onPress={()=>{
+					this.setState({errorLabel:''});
+					this.loginWithCreds(navigation);
+				}} />
+				<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
 			</View>
 	    );
 	}
