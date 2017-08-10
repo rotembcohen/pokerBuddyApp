@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput,
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity
 } from 'react-native';
+import Modal from 'react-native-modal';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -20,6 +21,7 @@ export default class GameView extends Component {
 			buy_in_amount: 0,
 			result_amount: 0,
 			is_host: false,
+		    isModalVisible: false,
 		};
 	}
 
@@ -38,6 +40,30 @@ export default class GameView extends Component {
 			game_identifier: game.identifier,
 			is_host: is_host,
 		});
+	}
+
+	_showModal = () => this.setState({ isModalVisible: true });
+
+	_hideModal = () => this.setState({ isModalVisible: false });
+
+	_renderButton = (text, onPress) => (
+		<TouchableOpacity onPress={onPress}>
+			<View style={styles.modalButton}>
+				<Text>{text}</Text>
+			</View>
+		</TouchableOpacity>
+	);
+
+	_renderModalContent(){
+		return (
+			<View style={styles.modalContent}>
+				<Text>Are you sure? Pot money is not 0!</Text>
+				<View style={{flexDirection:'row'}}>
+					{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
+					{this._renderButton('No', () => this.setState({ isModalVisible:false }))}
+				</View>
+			</View>
+		)
 	}
 
 	//TODO: add way to push updates/ or check updates frequently
@@ -88,7 +114,7 @@ export default class GameView extends Component {
 		if(this.calcPotMoney === 0){
 			navigation.navigate("PayView");
 		}else{
-			//this.setModalVisible(true);
+			this._showModal();
 		}
 	}
 
@@ -103,7 +129,7 @@ export default class GameView extends Component {
 				<View style={{flex:0.4}}>
 					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
 				</View>
-			)
+			);
 			renderHostButtons = 
 			(
 				<View style={{margin:5}}>
@@ -138,6 +164,9 @@ export default class GameView extends Component {
 		
 	    return (
 	      <ScrollView contentContainerStyle={styles.container}>
+			<Modal isVisible={this.state.isModalVisible === true}>
+				{this._renderModalContent()}
+	        </Modal>
 	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game_identifier}</Text>
 	    	<Text style={{flex:0.1,fontSize:18}}>Money in the pot: {potMoney.toString()}</Text>
 	    	{renderTopView}    
