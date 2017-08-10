@@ -7,6 +7,7 @@ import HomeView from './containers/HomeView';
 import CreateGameView from './containers/CreateGameView';
 import GameView from './containers/GameView';
 import PayView from './containers/PayView';
+import ModalExample from './modal-example/app';
 
 //TODO: save token locally and then make init route to home if token exists
 
@@ -16,7 +17,7 @@ const App = StackNavigator({
         CreateGameView: {screen: CreateGameView},
         GameView: {screen: GameView},
         PayView: {screen: PayView},
-
+        ModalExample: {screen: ModalExample}
     },
     {
         initialRouteName: 'LoginView'

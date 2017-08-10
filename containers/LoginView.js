@@ -51,6 +51,9 @@ export default class HomeView extends Component {
 					this.loginWithCreds(navigation);
 				}} />
 				<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
+				<Button title='Modals' onPress={()=>{
+					navigation.navigate('ModalExample');
+				}} />
 			</View>
 	    );
 	}
