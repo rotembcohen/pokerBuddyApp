@@ -12,7 +12,12 @@ const styles = StyleSheet.create({
 	},
 	textinput: {
 		height: 40,
-		width: 100,
+		width: 150,
+		textAlign: 'center',
+	},
+	textinputwide: {
+		height: 40,
+		width: 300,
 		textAlign: 'center',
 	},
 	regularText: {

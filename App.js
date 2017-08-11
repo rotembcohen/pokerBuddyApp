@@ -8,6 +8,7 @@ import CreateGameView from './containers/CreateGameView';
 import GameView from './containers/GameView';
 import PayView from './containers/PayView';
 import ModalExample from './modal-example/app';
+import RegistrationView from './containers/RegistrationView';
 
 const App = StackNavigator({
     WelcomeView: {screen: WelcomeView},
@@ -17,6 +18,7 @@ const App = StackNavigator({
     GameView: {screen: GameView},
     PayView: {screen: PayView},
     ModalExample: {screen: ModalExample},
+    RegistrationView: {screen: RegistrationView}
 },
 {
     initialRouteName: 'WelcomeView'

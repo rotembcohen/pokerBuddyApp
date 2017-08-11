@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage,
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity
 } from 'react-native';
+
+import Modal from 'react-native-modal';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -18,47 +20,56 @@ export default class HomeView extends Component {
 		this.state = {
 			errorLabel: '',
 			navigation: navigation,
+			loginUsername: '',
+			loginPassword: '',
 		};
-	}
-
-	async loginWithCreds(navigation){
-		
-		var response = null;
-		try{
-			response = await utils.fetchFromServer('authenticate/','POST',{
-				username: 'rotembcohen',
-			    password: 'cl446074',
-			},this.state.token);
-		}
-		catch(error){
-			console.log(error);
-		}
-		if (response){
-			const responseJson = await response.json();
-			
-			let token = responseJson.token;	
-			let userObj = responseJson.user;
-			let user = JSON.stringify(userObj);
-			console.log("Recieved token: " + token);
-			//TODO: remove everything but saving token?
-			await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
-
-			navigation.navigate('HomeView',{user: userObj,token:token});
-		}else{
-			this.setState({errorLabel:'Server Unavailable'});
-		}
-	
 	}
 	
 	render() {
 		navigation = this.state.navigation;
+		onSubmit = async ()=>{
+			this.setState({errorLabel:''});
+			if (this.state.loginUsername === ''){
+				this.setState({errorLabel:'Username is required'});
+				return;
+			}
+			if (this.state.loginPassword === ''){
+				this.setState({errorLabel:'Password is required'});
+				return;
+			}
+			const response = await utils.loginWithCreds(this.state.loginUsername,this.state.loginPassword);
+			if (response.error === 'None'){
+				navigation.navigate('HomeView',{user:response.user,token:response.token});
+			}else{
+				this.setState({errorLabel:response.error});
+			}
+		}
 	    return (
 			<View style={styles.container}>
-				<Button title='Login' onPress={()=>{
-					this.setState({errorLabel:''});
-					this.loginWithCreds(navigation);
-				}} />
+				
+				<TextInput
+		      		style={styles.textinput}
+		      		onChangeText={(text)=>{this.setState({loginUsername:text})}}
+		      		value={this.state.loginUsername}
+		      		selectTextOnFocus={true}
+		      		onSubmitEditing={(event) => { 
+						this.refs.PasswordInput.focus(); 
+					}}
+	      		/>
+	      		<TextInput
+	      			ref='PasswordInput'
+		      		style={styles.textinput}
+		      		onChangeText={(text)=>{this.setState({loginPassword:text})}}
+		      		value={this.state.loginPassword}
+		      		secureTextEntry={true}
+		      		selectTextOnFocus={true}
+		      		onSubmitEditing={onSubmit}
+	      		/>
+				<Button title='Login' onPress={onSubmit} />
 				<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
+				<Button title='Sign Up' onPress={()=>{
+					navigation.navigate('RegistrationView');
+				}} />
 				<Button title='Modals' onPress={()=>{
 					navigation.navigate('ModalExample');
 				}} />
