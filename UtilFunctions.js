@@ -31,7 +31,7 @@ export async function fetchFromServer(relative_url,method,body_dict,token=null){
 	// TODO: handle network errors
 	const response = await fetch('http://54.236.5.23/' + relative_url, content);
 	if (response.status / 100 < 4){
-		console.log("\n"+ "API Response: " + response._bodyText);
+		console.log("\n"+ "API Response: Status " + response.status + "\nContent: \n"+ response._bodyText);
 	}else{
 		console.log("\n"+ "API Error type: " +response.status);
 	}

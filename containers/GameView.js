@@ -35,6 +35,7 @@ export default class GameView extends Component {
 
 	_hideModal = () => this.setState({ isModalVisible: false });
 
+	//TODO: put in utils
 	_renderButton = (text, onPress) => (
 		<TouchableOpacity onPress={onPress}>
 			<View style={styles.modalButton}>
