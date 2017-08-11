@@ -29,7 +29,7 @@ export default class PlayerList extends Component {
 	            		<View style={{flexDirection:'row'}}>
 		            		<Text style={styles.regularText}>
 		            			
-		            			<Text style={renderItemStyle}>{item.amount} {item.player.username}</Text> 
+		            			<Text style={renderItemStyle}>{item.amount} {item.player.first_name} {item.player.last_name}</Text> 
 		            			{renderItemResult}
 	            			</Text>
             			</View>
