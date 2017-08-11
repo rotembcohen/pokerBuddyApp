@@ -31,11 +31,13 @@ export default class HomeView extends Component {
 			const responseJson = await response.json();
 			
 			let token = responseJson.token;	
-			let user = JSON.stringify(responseJson.user);
+			let userObj = responseJson.user;
+			let user = JSON.stringify(userObj);
 			console.log("Recieved token: " + token);
+			//TODO: remove everything but saving token?
 			await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
 
-			navigation.navigate('HomeView');
+			navigation.navigate('HomeView',{user: userObj,token:token});
 		}else{
 			this.setState({errorLabel:'Server Unavailable'});
 		}

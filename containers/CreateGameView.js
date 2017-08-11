@@ -10,24 +10,12 @@ export default class CreateGameView extends Component {
 
 	constructor(props){
 		super(props);
+		const {navigation} = props;
 		this.state = {
-			token: 'no token',
+			token: navigation.state.params.token,
 			min_bet: 20,
+			user: navigation.state.params.user,
 		};
-	}
-
-	componentWillMount(){
-		this.getToken();
-	}
-
-	async getToken(){
-		try {
-			const token = await AsyncStorage.getItem('@pokerBuddy:token');
-			if (token !== null) this.setState({token: token});
-		}
-		catch (error) {
-			console.error("getToken error: " + error);
-		}
 	}
 
 	async createGame(navigation){
@@ -48,7 +36,7 @@ export default class CreateGameView extends Component {
 			
 			//TODO: add option for host not to immediately join game
 			//join game
-			utils.joinGame(navigation,game_identifier,this.state.token);
+			utils.joinGame(navigation,game_identifier,this.state.token,this.state.user);
 			
 		}
 		//TODO:else
@@ -56,7 +44,7 @@ export default class CreateGameView extends Component {
 	}
 	
 	render() {
-		const { navigation } = this.props;
+		navigation = this.state.navigation;
 	    return (
 	      <View style={styles.container}>
 	      	<TextInput

@@ -6,40 +6,26 @@ import Modal from 'react-native-modal';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
+import PlayerList from '../components/PlayerList';
 
 export default class GameView extends Component {
 
 	//TODO: change 'no token' to null
 	constructor(props){
 		super(props);
+		const {navigation} = props;
+		const {user,game,token} = navigation.state.params;
+		const is_host = (game.host === user.id);
 		this.state = {
-			token: 'no token',
-			user_id: null,
-			username: null,
-			playerList: [],
-			game_identifier: 'no identifier',
+			navigation: navigation,
+			token: token,
+			user: user,
+			game: game,
 			buy_in_amount: 0,
 			result_amount: 0,
-			is_host: false,
+			is_host: is_host,
 		    isModalVisible: false,
 		};
-	}
-
-	async componentWillMount(){
-		const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
-		let token = data[0][1];
-		let user = JSON.parse(data[1][1]);
-		let game = JSON.parse(data[2][1]);
-		let is_host = (game.host === user.id);
-
-		this.setState({
-			token: token,
-			user_id: user.id,
-			username: user.username,
-			playerList: game.bets,
-			game_identifier: game.identifier,
-			is_host: is_host,
-		});
 	}
 
 	_showModal = () => this.setState({ isModalVisible: true });
@@ -69,7 +55,7 @@ export default class GameView extends Component {
 	//TODO: add way to push updates/ or check updates frequently
 	//TODO: duplicate code!
 	async buy_in(player_id=null){
-		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/buy_in/",'POST',{
+		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/buy_in/",'POST',{
 			amount: Number(this.state.buy_in_amount),
 			player_id: player_id
 		},this.state.token);
@@ -86,7 +72,7 @@ export default class GameView extends Component {
 	}
 
 	async leave_game(player_id=null){
-		const gameObj = await utils.fetchFromServer('games/' + this.state.game_identifier + "/leave_game/",'POST',{
+		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/leave_game/",'POST',{
 			result: Number(this.state.result_amount),
 			player_id: player_id
 		},this.state.token);
@@ -104,7 +90,7 @@ export default class GameView extends Component {
 
 	calcPotMoney(){
 		var potMoney = 0;
-		this.state.playerList.forEach(function(player) {
+		this.state.game.bets.forEach(function(player) {
 		    potMoney = potMoney + Number(player.amount) - Number(player.result);
 		});
 		return potMoney;
@@ -167,35 +153,11 @@ export default class GameView extends Component {
 			<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game_identifier}</Text>
+	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game.identifier}</Text>
 	    	<Text style={{flex:0.1,fontSize:18}}>Money in the pot: {potMoney.toString()}</Text>
 	    	{renderTopView}    
 	        <Text style={{flex:0.1}}>Players List:</Text>
-	        <FlatList
-	        	style={{flex:0.4}}
-	            data={this.state.playerList}
-	            keyExtractor={item=>item.id}
-	            renderItem={({item}) => {
-	            	if (item.result === null) {
-	            		//player is in the game
-	            		var renderItemResult = '';
-	            		var renderItemStyle = styles.regularText;
-	            	} else {
-	            		var renderItemResult = item.result.toString();
-	            		var renderItemStyle = styles.strikethroughText;
-	            	}
-	            	return (
-	            		<View style={{flexDirection:'row'}}>
-		            		{renderHostButtons}
-		            		<Text style={styles.regularText}>
-		            			
-		            			<Text style={renderItemStyle}>{item.amount} {item.player.username}</Text> 
-		            			{renderItemResult}
-	            			</Text>
-            			</View>
-            		);
-	            }}
-	        />
+	        <PlayerList data={this.state.game.bets} is_host={this.state.is_host} user_id={this.state.user.id} username={this.state.user.username} />
 	      </ScrollView>
 	    );
 	}

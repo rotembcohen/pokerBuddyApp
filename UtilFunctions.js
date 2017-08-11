@@ -40,18 +40,20 @@ export async function fetchFromServer(relative_url,method,body_dict,token=null){
 	
 }
 
-export async function joinGame(navigation,game_identifier,token){
-		
+export async function joinGame(navigation,game_identifier,token,currentUser){
+	
+	//currentUser might not be the one joining game
+	//TODO: allow a host to add a different user to the game
+
 	valid_identifier = game_identifier.toUpperCase();
 	if (valid_identifier.length !== 5){
 		return;
 	}
-	const gameObj = await fetchFromServer('games/' + valid_identifier + '/join_game/','POST',{},token);
+	const response = await fetchFromServer('games/' + valid_identifier + '/join_game/','POST',{},token);
 	//TODO: add error check
-	if (gameObj.status === 200){
-		gameString = gameObj._bodyText;
+	if (response.status === 200){
+		game = JSON.parse(response._bodyText);
 
-		await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
-		navigation.navigate('GameView');
+		navigation.navigate('GameView',{game: game,user: currentUser});
 	}
 }

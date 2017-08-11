@@ -10,26 +10,20 @@ export default class HomeView extends Component {
 
 	constructor(props){
 		super(props);
+		const {navigation} = props;
 		this.state = {
-			token: 'no token',
-			user_id: null,
-			username: null,
+			navigation: navigation,
+			token: navigation.state.params.token,
+			user: navigation.state.params.user,
 			game_identifier: '',
 			active_games: [],
 		};
+		this.getActiveGames();
 	}
 	
-	async componentWillMount(){
-		const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user']);
-		let token = data[0][1];
-		let user = JSON.parse(data[1][1]);
-		this.setState({token: token, user_id: user.id, username: user.username, });
-		await this.getActiveGames();
-	}
-
 	async getActiveGames(){
 		const response = await utils.fetchFromServer(
-			'users/' + this.state.user_id + '/active_games/',
+			'users/' + this.state.user.id + '/active_games/',
 			'GET',
 			null,
 			this.state.token
@@ -42,13 +36,12 @@ export default class HomeView extends Component {
 	}
 
 	render() {
-		const { navigation } = this.props;
+		navigation = this.state.navigation;
 		let active_games = this.state.active_games;
-		console.log("active_games",active_games.length);
-	    return (
+		return (
 	      <View style={styles.container}>
-	      	<Button title='Create Game' onPress={()=>{navigation.navigate('CreateGameView')}} />
-	      	<Text>Current User: {this.state.username}</Text>
+	      	<Button title='Create Game' onPress={()=>{navigation.navigate('CreateGameView',{token:this.state.token,user:this.state.user})}} />
+	      	<Text>Current User: {this.state.user.username}</Text>
 	      	<Text>Game Address: </Text>
 	      	<TextInput
 	      		style={styles.textinput}
@@ -57,7 +50,7 @@ export default class HomeView extends Component {
 	      		autoCapitalize={'characters'}
 	      		maxLength={5}
       		/>
-	        <Button title='Join Game' onPress={()=>{utils.joinGame(navigation,this.state.game_identifier,this.state.token)}} />
+	        <Button title='Join Game' onPress={()=>{utils.joinGame(navigation,this.state.game_identifier,this.state.token,this.state.user)}} />
 
 	        <Picker
 	        	style={{width:125}}
@@ -72,3 +65,6 @@ export default class HomeView extends Component {
 
 }
 
+
+//believe or not this is possible:
+//<Button title='Create Game' onPress={()=>{navigation.navigate('CreateGameView',currentState)}} />
