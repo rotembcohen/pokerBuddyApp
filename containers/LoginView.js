@@ -14,8 +14,10 @@ export default class HomeView extends Component {
 
 	constructor(props){
 		super(props);
+		const {navigation} = props;
 		this.state = {
 			errorLabel: '',
+			navigation: navigation,
 		};
 	}
 
@@ -49,7 +51,7 @@ export default class HomeView extends Component {
 	}
 	
 	render() {
-		const { navigation } = this.props;
+		navigation = this.state.navigation;
 	    return (
 			<View style={styles.container}>
 				<Button title='Login' onPress={()=>{
