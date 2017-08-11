@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { AsyncStorage,Text,View } from 'react-native';
 
+import * as utils from '../UtilFunctions';
+
 export default class WelcomeView extends Component{
     
     constructor(props){
@@ -11,9 +13,9 @@ export default class WelcomeView extends Component{
         const currentToken = AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user'])
         .then((data)=>{
             if (data && data[0][1]!== null && data[1][1] != null){
-                navigation.navigate("HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
+                utils.resetToScreen(navigation,"HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
             }else{
-                navigation.navigate("LoginView");
+                utils.resetToScreen(navigation,"LoginView");
             }
         })
         .catch((error)=>{

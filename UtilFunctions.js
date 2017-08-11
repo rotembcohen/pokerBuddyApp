@@ -98,3 +98,20 @@ export function backOneScreen(navigation){
 	const backAction = NavigationActions.back();
 	navigation.dispatch(backAction);
 }
+
+export function resetToScreen(navigation,screen,params=null){
+	var options = { routeName: screen };
+
+	if (params){
+		options['params'] = params;
+	}
+
+	const resetAction = NavigationActions.reset({
+	  index: 0,
+	  actions: [
+	    NavigationActions.navigate(options)
+	  ]
+	});
+
+	navigation.dispatch(resetAction);
+}

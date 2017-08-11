@@ -39,6 +39,11 @@ export default class HomeView extends Component {
 		}
 	}
 
+	async logout(){
+		await AsyncStorage.multiRemove(['@pokerBuddy:token','@pokerBuddy:user']);
+		utils.resetToScreen(this.state.navigation,'LoginView');
+	}
+
 	render() {
 		navigation = this.state.navigation;
 		let active_games = this.state.active_games;
@@ -63,6 +68,8 @@ export default class HomeView extends Component {
 					<Picker.Item value="" label="" key="placeholder" />
 					{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
 			</Picker>
+
+			<Button title='Logout' onPress={()=>this.logout()} />
 	      </View>
 	    );
 	}

@@ -39,7 +39,7 @@ export default class HomeView extends Component {
 			}
 			const response = await utils.loginWithCreds(this.state.loginUsername,this.state.loginPassword);
 			if (response.error === 'None'){
-				navigation.navigate('HomeView',{user:response.user,token:response.token});
+				utils.resetToScreen(navigation,'HomeView',{user:response.user,token:response.token});
 			}else{
 				this.setState({errorLabel:response.error});
 			}
