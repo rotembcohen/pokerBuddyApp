@@ -8,6 +8,10 @@ import * as utils from '../UtilFunctions';
 
 export default class CreateGameView extends Component {
 
+	static navigationOptions = {
+		title: 'Create Game'
+	}
+
 	constructor(props){
 		super(props);
 		const {navigation} = props;

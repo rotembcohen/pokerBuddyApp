@@ -8,6 +8,10 @@ import * as utils from '../UtilFunctions';
 
 export default class HomeView extends Component {
 
+	static navigationOptions = {
+		title: 'Choose Game'
+	}
+
 	constructor(props){
 		super(props);
 		const {navigation} = props;

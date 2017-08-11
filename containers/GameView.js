@@ -10,7 +10,10 @@ import PlayerList from '../components/PlayerList';
 
 export default class GameView extends Component {
 
-	//TODO: change 'no token' to null
+	static navigationOptions = {
+		title: 'Current Game'
+	}
+
 	constructor(props){
 		super(props);
 		const {navigation} = props;

@@ -8,6 +8,10 @@ import * as utils from '../UtilFunctions';
 
 export default class HomeView extends Component {
 
+	static navigationOptions = {
+		title: 'Welcome to PoCat!'
+	}
+
 	constructor(props){
 		super(props);
 		this.state = {
