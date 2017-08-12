@@ -19,6 +19,7 @@ export default class CreateGameView extends Component {
 			token: navigation.state.params.token,
 			min_bet: 20,
 			user: navigation.state.params.user,
+			navigation: navigation,
 		};
 	}
 
