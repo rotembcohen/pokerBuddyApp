@@ -29,6 +29,7 @@ export default class GameView extends Component {
 			is_host: is_host,
 		    isModalVisible: false,
 		    selected_player: '',
+		    modalType: '',
 		};
 	}
 
@@ -45,16 +46,72 @@ export default class GameView extends Component {
 		</TouchableOpacity>
 	);
 
-	_renderModalContent(){
-		return (
-			<View style={styles.modalContent}>
+/*
+_renderModalContent = ()=>{
+		if(this.state.modalType == "FinishGame"){
+			return (<View>
 				<Text>Are you sure? Pot money is not 0!</Text>
 				<View style={{flexDirection:'row'}}>
 					{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
 					{this._renderButton('No', () => this.setState({ isModalVisible:false }))}
 				</View>
-			</View>
-		)
+			</View>);
+		}
+	}*/
+	_renderModalContent = () => {
+		switch(this.state.modalType){
+			case 'FinishGame':
+				return(
+					<View>
+						<Text>Are you sure? Pot money is not 0!</Text>
+						<View style={{flexDirection:'row'}}>
+							{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
+							{this._renderButton('No', () => this.setState({ isModalVisible:false }))}
+						</View>
+					</View>);
+			case 'BuyIn':
+				return(
+					<View>
+						<Text>Buy in amount:</Text>
+						<View style={{flexDirection:'row',alignItems:'center'}} >
+							<Button title='-' onPress={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} />
+							<Text>{this.state.buy_in_amount}</Text>
+							<Button title='+' onPress={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} />
+						</View>
+						<View style={{flexDirection:'row'}}>
+							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false }))}
+							{this._renderButton('Confirm', async () => {
+								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
+								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
+							})}
+						</View>
+					</View>);
+			case 'LeaveGame':
+				return (
+					<View>
+						<Text style={styles.textSubheader}>Final amount:</Text>
+						<Text>(value of remaining chips, if any)</Text>
+						<TextInput
+							style={styles.textinput}
+							onChangeText={(text)=>{this.setState({result_amount:text})}}
+							value={this.state.result_amount.toString()}
+							keyboardType='numeric'
+							selectTextOnFocus={true}
+							placeholder='Final result'
+						/>
+						<View style={{flexDirection:'row'}}>
+							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false }))}
+							{this._renderButton('Confirm', async () => {
+								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
+								this.setState({game:updated_game,isModalVisible:false});
+							})}	
+						</View>
+					</View>);
+			default:
+				return (<View><Text>Error</Text></View>);
+
+		}
+		
 	}
 
 	calcPotMoney(){
@@ -69,6 +126,7 @@ export default class GameView extends Component {
 		if(this.calcPotMoney === 0){
 			navigation.navigate("PayView");
 		}else{
+			this.setState({modalType:"FinishGame"});
 			this._showModal();
 		}
 	}
@@ -81,11 +139,11 @@ export default class GameView extends Component {
 			//TODO: can you take the view our?
 			renderTopView =
 			(
-				<View style={{flex:0.4}}>
+				<View>
 					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
 					<Picker
 			        	style={{width:250}}
-						selectedValue={this.state.game_identifier}
+						selectedValue={this.state.selected_player}
 						onValueChange={(itemValue, itemIndex) => {this.setState({selected_player: itemValue})}}>
 							{this.state.game.bets.map(
 								(l, i) => {
@@ -102,40 +160,37 @@ export default class GameView extends Component {
 		var potMoney = this.calcPotMoney();
 		return (
 	      <ScrollView contentContainerStyle={styles.container}>
+	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
-				{this._renderModalContent()}
-	        </Modal>
-			<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game.identifier}</Text>
-	    	<Text style={{flex:0.1,fontSize:18}}>Money in the pot: {potMoney.toString()}</Text>
-	    	{renderTopView}    
-	    	<View style={{flex:0.4}}>
-
-				<View style={{flexDirection:'row',alignItems:'center'}} >
-					<Button title='-' onPress={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} />
-					<Text>{this.state.buy_in_amount}</Text>
-					<Button title='+' onPress={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} />
+				<View style={styles.modalContent}>
+					{this._renderModalContent()}
 				</View>
-				<Button title='Buy In' onPress={async ()=>{
-					let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token);
-					this.setState({game:updated_game,buy_in_amount:5});
-				}} />
+	        </Modal>
 
-				<TextInput
-					style={styles.textinput}
-					onChangeText={(text)=>{this.setState({result_amount:text})}}
-					value={this.state.result_amount.toString()}
-					keyboardType='numeric'
-					selectTextOnFocus={true}
-				/>
+	    	{/*Top View*/}
+			<View style={{flex:0.25}}>
+				<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
+		    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
+				{renderTopView}
+			</View>
+
+			{/*Actions*/}
+	    	<View style={{flex:0.25}}>
+				<Button title='Buy In' onPress={async ()=>{
+					this.setState({modalType:"BuyIn"});
+					this._showModal();
+				}} />
 				<Button title='Leave Game' onPress={async ()=>{
-					let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token);
-					this.setState({game:updated_game});
+					this.setState({modalType:"LeaveGame"});
+					this._showModal();
 				}} />
 			</View>
 
-	        <Text style={{flex:0.1}}>Players List:</Text>
-	        <View style={{flex:0.4}}>
-	        	<PlayerList is_host={this.state.is_host} user={this.state.user} game={this.state.game} token={this.state.token} pot={potMoney} />
+			{/*Player List*/}
+	        
+	        <View style={{flex:0.5}}>
+	        	<Text style={styles.textSubheader}>Players List:</Text>
+	        	<PlayerList game={this.state.game} />
 	        </View>
 	      </ScrollView>
 	    );

@@ -9,6 +9,16 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center',
+		margin: 10,
+		padding: 20,
+	},
+	textHeader:{
+		fontSize:24,
+		textAlign: 'center',
+	},
+	textSubheader:{
+		fontSize: 18,
+		textAlign: 'center',
 	},
 	textinput: {
 		height: 40,
