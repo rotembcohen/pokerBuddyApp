@@ -5,6 +5,10 @@ import * as utils from '../UtilFunctions';
 
 export default class WelcomeView extends Component{
     
+    static navigationOptions = {
+        title: 'PoCat v0.1'
+    }
+
     constructor(props){
         super(props);
         const { navigation } = props;

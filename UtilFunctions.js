@@ -59,7 +59,7 @@ export async function joinGame(navigation,game_identifier,token,currentUser){
 	if (response.status === 200){
 		game = JSON.parse(response._bodyText);
 
-		navigation.navigate('GameView',{game: game,user: currentUser});
+		navigation.navigate('GameView',{game: game,user: currentUser,token:token});
 	}
 }
 
@@ -114,4 +114,36 @@ export function resetToScreen(navigation,screen,params=null){
 	});
 
 	navigation.dispatch(resetAction);
+}
+
+//TODO: add way to push updates/ or check updates frequently
+//TODO: duplicate code!
+export async function buy_in(buy_in_amount,game_identifier,token,player_id=null){
+	const gameObj = await fetchFromServer('games/' + game_identifier + "/buy_in/",'POST',{
+		amount: Number(buy_in_amount),
+		player_id: player_id
+	},token);
+	if (gameObj.status === 200){
+		gameString = gameObj._bodyText;
+
+		await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
+
+		let game = JSON.parse(gameString);
+		return game;
+	}
+}
+
+export async function leave_game(result_amount,game_identifier,token,player_id=null){
+	const gameObj = await fetchFromServer('games/' + game_identifier + "/leave_game/",'POST',{
+		result: Number(result_amount),
+		player_id: player_id
+	},token);
+	if (gameObj.status === 200){
+		gameString = gameObj._bodyText;
+
+		await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
+
+		let game = JSON.parse(gameString);
+		return game;
+	}	
 }

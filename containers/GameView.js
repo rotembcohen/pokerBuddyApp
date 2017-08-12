@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -24,10 +24,11 @@ export default class GameView extends Component {
 			token: token,
 			user: user,
 			game: game,
-			buy_in_amount: 0,
+			buy_in_amount: 5,
 			result_amount: 0,
 			is_host: is_host,
 		    isModalVisible: false,
+		    selected_player: '',
 		};
 	}
 
@@ -56,42 +57,6 @@ export default class GameView extends Component {
 		)
 	}
 
-	//TODO: add way to push updates/ or check updates frequently
-	//TODO: duplicate code!
-	async buy_in(player_id=null){
-		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/buy_in/",'POST',{
-			amount: Number(this.state.buy_in_amount),
-			player_id: player_id
-		},this.state.token);
-		if (gameObj.status === 200){
-			gameString = gameObj._bodyText;
-
-			await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
-
-			let game = JSON.parse(gameString);
-			this.setState({
-				playerList: game.bets,
-			});
-		}
-	}
-
-	async leave_game(player_id=null){
-		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/leave_game/",'POST',{
-			result: Number(this.state.result_amount),
-			player_id: player_id
-		},this.state.token);
-		if (gameObj.status === 200){
-			gameString = gameObj._bodyText;
-
-			await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
-
-			let game = JSON.parse(gameString);
-			this.setState({
-				playerList: game.bets,
-			});
-		}	
-	}
-
 	calcPotMoney(){
 		var potMoney = 0;
 		this.state.game.bets.forEach(function(player) {
@@ -111,57 +76,67 @@ export default class GameView extends Component {
 	render() {
 		const { navigation } = this.props;
 		var renderTopView = null;
-		var renderHostButtons = null;
+		let user = this.state.user;
 		if (this.state.is_host){
 			//TODO: can you take the view our?
 			renderTopView =
 			(
 				<View style={{flex:0.4}}>
 					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
+					<Picker
+			        	style={{width:250}}
+						selectedValue={this.state.game_identifier}
+						onValueChange={(itemValue, itemIndex) => {this.setState({selected_player: itemValue})}}>
+							{this.state.game.bets.map(
+								(l, i) => {
+									return <Picker.Item 
+										value={l.player.id}
+										label={l.player.first_name + " " + l.player.last_name}
+										key={l.player.id}  /> 
+								}
+							)}
+					</Picker>
 				</View>
-			);
-			renderHostButtons = 
-			(
-				<View style={{margin:5}}>
-					<Button title='BI' onPress={()=>this.buy_in(item.player.id)}/>
-            		<Button title='LG' onPress={()=>this.leave_game(item.player.id)}/>
-				</View>
-			);
-		}else{
-			renderTopView = 
-			(
-				<View style={{flex:0.4}}>
-			        <TextInput
-			      		style={styles.textinput}
-			      		onChangeText={(text)=>{this.setState({buy_in_amount:text})}}
-			      		value={this.state.buy_in_amount.toString()}
-			      		keyboardType='numeric'
-			      		selectTextOnFocus={true}
-		      		/>
-			        <Button title='Buy In' onPress={()=>{this.buy_in()}} />
-			        <TextInput
-			      		style={styles.textinput}
-			      		onChangeText={(text)=>{this.setState({result_amount:text})}}
-			      		value={this.state.result_amount.toString()}
-			      		keyboardType='numeric'
-			      		selectTextOnFocus={true}
-		      		/>
-			        <Button title='Leave Game' onPress={()=>{this.leave_game()}} />
-		        </View>
 			);
 		}
 		var potMoney = this.calcPotMoney();
-		
-	    return (
+		return (
 	      <ScrollView contentContainerStyle={styles.container}>
 			<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	    	<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game.identifier}</Text>
+			<Text style={{flex:0.1,fontSize:24}}>Game Address: {this.state.game.identifier}</Text>
 	    	<Text style={{flex:0.1,fontSize:18}}>Money in the pot: {potMoney.toString()}</Text>
 	    	{renderTopView}    
+	    	<View style={{flex:0.4}}>
+
+				<View style={{flexDirection:'row',alignItems:'center'}} >
+					<Button title='-' onPress={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} />
+					<Text>{this.state.buy_in_amount}</Text>
+					<Button title='+' onPress={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} />
+				</View>
+				<Button title='Buy In' onPress={async ()=>{
+					let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token);
+					this.setState({game:updated_game,buy_in_amount:5});
+				}} />
+
+				<TextInput
+					style={styles.textinput}
+					onChangeText={(text)=>{this.setState({result_amount:text})}}
+					value={this.state.result_amount.toString()}
+					keyboardType='numeric'
+					selectTextOnFocus={true}
+				/>
+				<Button title='Leave Game' onPress={async ()=>{
+					let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token);
+					this.setState({game:updated_game});
+				}} />
+			</View>
+
 	        <Text style={{flex:0.1}}>Players List:</Text>
-	        <PlayerList data={this.state.game.bets} is_host={this.state.is_host} user_id={this.state.user.id} username={this.state.user.username} />
+	        <View style={{flex:0.4}}>
+	        	<PlayerList is_host={this.state.is_host} user={this.state.user} game={this.state.game} token={this.state.token} pot={potMoney} />
+	        </View>
 	      </ScrollView>
 	    );
 	}

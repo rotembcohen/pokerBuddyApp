@@ -64,7 +64,7 @@ export default class HomeView extends Component {
 	        <Picker
 	        	style={{width:125}}
 				selectedValue={this.state.game_identifier}
-				onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue});console.log("itemValue ",itemValue)}}>
+				onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue})}}>
 					<Picker.Item value="" label="" key="placeholder" />
 					{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
 			</Picker>
