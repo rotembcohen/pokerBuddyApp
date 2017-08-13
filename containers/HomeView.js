@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage, Picker, TouchableOpacity
+  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -147,6 +147,7 @@ export default class HomeView extends Component {
 		let active_games = this.state.active_games;
 		return (
 	      <View style={styles.container}>
+	      	<StatusBar hidden={true} />
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>

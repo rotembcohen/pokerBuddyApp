@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, StatusBar
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -121,6 +121,7 @@ export default class HomeView extends Component {
 		</View>);
 
 	render() {
+
 		navigation = this.state.navigation;
 		onSubmit = async ()=>{
 			this.setState({errorLabel:''});
@@ -141,6 +142,7 @@ export default class HomeView extends Component {
 		}
 	    return (
 			<View style={styles.container}>
+				<StatusBar hidden={true} />
 				<Modal isVisible={this.state.isModalVisible === true}>
 					{this._renderModalContent()}
 		        </Modal>
@@ -169,7 +171,7 @@ export default class HomeView extends Component {
 				<Button title='Sign Up' onPress={()=>{
 					navigation.navigate('RegistrationView');
 				}} />
-				{/*}
+				{/*
 				<Button title='Modals' onPress={()=>{
 					navigation.navigate('ModalExample');
 				}} />*/}

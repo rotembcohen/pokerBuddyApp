@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage,Text,View } from 'react-native';
+import { AsyncStorage,Text,View,StatusBar } from 'react-native';
 
 import * as utils from '../UtilFunctions';
 
@@ -29,6 +29,6 @@ export default class WelcomeView extends Component{
     }
 
     render(){
-        return (<View><Text>Welcome!</Text></View>);
+        return (<View><StatusBar hidden={true} /><Text>Welcome!</Text></View>);
     }
 }

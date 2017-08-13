@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState, StatusBar
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -293,13 +293,14 @@ export default class GameView extends Component {
 		
 		return (
 	      <ScrollView contentContainerStyle={styles.container}>
+	      	<StatusBar hidden={true} />
 	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
 
 	    	{/*Top View*/}
-			<View style={{flex:0.35}}>
+			<View style={{flex:0.4}}>
 				<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
 		    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
 				{renderTopView}
@@ -307,7 +308,7 @@ export default class GameView extends Component {
 			</View>
 
 			{/*Actions*/}
-	    	<View style={{flex:0.25}}>
+	    	<View style={{flex:0.25,width:250}}>
 				<Button title='Buy In' onPress={async ()=>{
 					this.setState({modalType:"BuyIn"});
 					this._showModal();
@@ -320,7 +321,7 @@ export default class GameView extends Component {
 
 			{/*Player List*/}
 	        
-	        <View style={{flex:0.45}}>
+	        <View style={{flex:0.35}}>
 	        	<Text style={styles.textSubheader}>Players List:</Text>
 	        	<PlayerList game={this.state.game} player={this.state.user}/>
 	        </View>

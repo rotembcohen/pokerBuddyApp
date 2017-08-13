@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, StatusBar } from 'react-native';
 
 import Modal from 'react-native-modal';
 import styles from '../Styles';
@@ -100,6 +100,7 @@ export default class RegistrationView extends Component {
 		return (
 			
 			<View style={styles.container}>
+				<StatusBar hidden={true} />
 				{this.renderInputField(onChange5,this.state.first_name,'First Name','5',onSubmit5,false,false,'default','words')}
 				{this.renderInputField(onChange6,this.state.last_name,'Last Name','6',onSubmit6,false,false,'default','words')}
 				{this.renderInputField(onChange2,this.state.password,'Password','2',onSubmit2,true)}
