@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Image } from 'react-native';
 
 import styles from '../Styles';
 
@@ -37,7 +37,11 @@ export default class PlayerList extends Component {
 		            	}
 		            	return (
 		            		<View style={{flexDirection:'row',alignItems:'stretch'}}>
+		            			
+		            			<Image source={{uri:item.player.picture_url}} style={{width:25,height:25,borderWidth: 0,borderRadius:50}} />
+			            		
 			            		<Text style={styles.regularText}>
+			            			
 			            			<Text style={renderItemStyle}>{item.amount} {item.player.first_name} {item.player.last_name}</Text> 
 			            			{renderItemResult}
 			            			<Text style={itemDiffStyle}>{renderItemDiff}</Text>

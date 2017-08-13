@@ -56,28 +56,13 @@ export default class RegistrationView extends Component {
 			return;
 		}
 
+		var response = await utils.user_registration(form);
+		if (response.error === 'None'){
+			utils.resetToScreen(navigation,'HomeView',{user:response.user,token:response.token});
+		}else{
+			this.setState({errorLabel:response.error});
+		}
 		
-		//Regsitration
-		var initResponse = null;
-		try{
-			initResponse = await utils.fetchFromServer('users/','POST',form,null);
-		}
-		catch(error){
-			console.log(error);
-			initResponse = {status: 500};
-		}
-		if (initResponse.status === 201){
-			//get token
-			//TODO: fix server so this wont need 2 requests
-			//TODO: this should behave like fetchfromserver (at lease as far as retrun value)
-			const response = await utils.loginWithCreds(form.username,form.password);
-			if (response.error === 'None'){
-				navigation.navigate('HomeView',{user:response.user,token:response.token});
-			}else{
-				this.setState({errorLabel:response.error});
-			}
-		}
-
 	}
 
 	renderInputField(onChangeText,value,placeholder,index,onSubmit,secure=false,autoFocus=false,keyboardType='default',autoCapitalize='none'){

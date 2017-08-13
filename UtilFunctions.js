@@ -147,3 +147,25 @@ export async function leave_game(result_amount,game_identifier,token,player_id=n
 		return game;
 	}	
 }
+
+export async function user_registration(form) {
+	var initResponse = null;
+	try{
+		initResponse = await fetchFromServer('users/','POST',form,null);
+	}
+	catch(error){
+		console.log(error);
+		initResponse = {status: 500};
+	}
+	if (initResponse.status === 201){
+		//get token
+		//TODO: fix server so this wont need 2 requests
+		//TODO: this should behave like fetchfromserver (at lease as far as retrun value)
+		const response = await loginWithCreds(form.username,form.password);
+		if (response.error === 'None'){
+			return {user:response.user,token:response.token,error:'None'};
+		}else{
+			return {error:response.error};
+		}
+	}
+}
