@@ -41,8 +41,8 @@ export default class CreateGameView extends Component {
 			
 			//TODO: add option for host not to immediately join game
 			//join game
-			utils.joinGame(navigation,game_identifier,this.state.token,this.state.user);
-			
+			game = await utils.joinGame(game_identifier,this.state.token,this.state.user);
+			navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
 		}
 		//TODO:else
 		

@@ -59,7 +59,11 @@ export default class HomeView extends Component {
 	      		autoCapitalize={'characters'}
 	      		maxLength={5}
       		/>
-	        <Button title='Join Game' onPress={()=>{utils.joinGame(navigation,this.state.game_identifier,this.state.token,this.state.user)}} />
+	        <Button title='Join Game' onPress={async ()=>{
+	        	//TODO: check all this occuronces for errors!
+	        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
+	        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+	        }} />
 
 	        <Picker
 	        	style={{width:125}}

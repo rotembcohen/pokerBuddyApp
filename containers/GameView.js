@@ -30,6 +30,11 @@ export default class GameView extends Component {
 		    isModalVisible: false,
 		    selected_player: '',
 		    modalType: '',
+		    guest_first_name: '',
+		    guest_last_name: '',
+		    guest_password: '',
+		    guest_venmo: '',
+		    errorLabel: '',
 		};
 	}
 
@@ -46,23 +51,51 @@ export default class GameView extends Component {
 		</TouchableOpacity>
 	);
 
-/*
-_renderModalContent = ()=>{
-		if(this.state.modalType == "FinishGame"){
-			return (<View>
-				<Text>Are you sure? Pot money is not 0!</Text>
-				<View style={{flexDirection:'row'}}>
-					{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
-					{this._renderButton('No', () => this.setState({ isModalVisible:false }))}
-				</View>
-			</View>);
-		}
-	}*/
 	_renderModalContent = () => {
 		switch(this.state.modalType){
+			case 'AddGuest':
+				return (
+					<View style={styles.modalContent}>
+						<Text>Add Guest</Text>
+						<TextInput
+							style={styles.textinput}
+							onChangeText={(text)=>{this.setState({guest_first_name:text})}}
+							value={this.state.guest_first_name}
+							selectTextOnFocus={true}
+							placeholder='First Name'
+							onSubmitEditing={()=>{this.refs.Input2.focus()}}
+						/>
+						<TextInput
+							ref='Input2'
+							style={styles.textinput}
+							onChangeText={(text)=>{this.setState({guest_last_name:text})}}
+							value={this.state.guest_last_name}
+							selectTextOnFocus={true}
+							placeholder='Last Name'
+							onSubmitEditing={()=>{this.refs.Input3.focus()}}
+						/>
+						<TextInput
+							ref='Input3'
+							style={styles.textinput}
+							onChangeText={(text)=>{this.setState({guest_venmo:text})}}
+							value={this.state.guest_venmo}
+							selectTextOnFocus={true}
+							placeholder='Venmo Account (Optional, without the @)'
+							onSubmitEditing={()=>this.submitGuest()}
+						/>
+						<Text>This guest would be able to login in the future using the credentials:</Text>
+						<Text>Username:{this.state.guest_first_name}-{this.state.guest_last_name}</Text>
+						<Text>Password:{this.state.guest_password}</Text>
+						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+						<View style={{flexDirection:'row'}}>
+							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false,errorLabel:'' }))}
+							{this._renderButton('Confirm', ()=> this.submitGuest())}
+						</View>
+					</View>
+				);
 			case 'FinishGame':
 				return(
-					<View>
+					<View style={styles.modalContent}>
 						<Text>Are you sure? Pot money is not 0!</Text>
 						<View style={{flexDirection:'row'}}>
 							{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
@@ -71,7 +104,7 @@ _renderModalContent = ()=>{
 					</View>);
 			case 'BuyIn':
 				return(
-					<View>
+					<View style={styles.modalContent}>
 						<Text>Buy in amount:</Text>
 						<View style={{flexDirection:'row',alignItems:'center'}} >
 							<Button title='-' onPress={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} />
@@ -88,7 +121,7 @@ _renderModalContent = ()=>{
 					</View>);
 			case 'LeaveGame':
 				return (
-					<View>
+					<View style={styles.modalContent}>
 						<Text style={styles.textSubheader}>Final amount:</Text>
 						<Text>(value of remaining chips, if any)</Text>
 						<TextInput
@@ -114,12 +147,50 @@ _renderModalContent = ()=>{
 		
 	}
 
+	async submitGuest(){
+		this.setState({errorLabel:''})
+		if (!this.state.guest_first_name || !this.state.guest_last_name){
+			this.setState({errorLabel:'All fields are required'});
+			return;
+		}
+		let form = {
+			username: this.state.guest_first_name+"-"+this.state.guest_last_name,
+			first_name: this.state.guest_first_name,
+			last_name: this.state.guest_last_name,
+			password: this.state.guest_password,
+			venmo_username: this.state.guest_venmo
+		}
+		var response = await utils.user_registration(form,false);
+		if (response.error === 'None'){
+			console.log("response user",response.user.id);
+			game = await utils.joinGame(this.state.game.identifier,this.state.token,response.user);
+
+			this.setState({
+				guest_first_name: '',
+				guest_last_name: '',
+				guest_password: '',
+				guest_venmo: '',
+				game: game,
+				isModalVisible:false,
+			});
+		}else{
+			this.setState({errorLabel:response.error});
+		}
+		this.setState({ isModalVisible:false });
+	}
+
 	calcPotMoney(){
 		var potMoney = 0;
 		this.state.game.bets.forEach(function(player) {
 		    potMoney = potMoney + Number(player.amount) - Number(player.result);
 		});
 		return potMoney;
+	}
+
+	addGuest(navigation){
+		//TODO: randomize password
+		this.setState({modalType:"AddGuest",guest_password:"butterfly"});
+		this._showModal();
 	}
 
 	finishGame(navigation){
@@ -140,6 +211,7 @@ _renderModalContent = ()=>{
 			renderTopView =
 			(
 				<View>
+					<Button title='Add Guest' onPress={()=>{this.addGuest(navigation)}} />
 					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
 					<Picker
 			        	style={{width:250}}

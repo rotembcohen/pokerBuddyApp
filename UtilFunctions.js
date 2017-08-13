@@ -45,21 +45,21 @@ export async function fetchFromServer(relative_url,method,body_dict,token=null){
 	
 }
 
-export async function joinGame(navigation,game_identifier,token,currentUser){
+export async function joinGame(game_identifier,token,user){
 	
-	//currentUser might not be the one joining game
+	//current user (whose token it is) might not be the user joining game
 	//TODO: allow a host to add a different user to the game
 
 	valid_identifier = game_identifier.toUpperCase();
 	if (valid_identifier.length !== 5){
 		return;
 	}
-	const response = await fetchFromServer('games/' + valid_identifier + '/join_game/','POST',{},token);
+	const response = await fetchFromServer('games/' + valid_identifier + '/join_game/','POST',{player_id:user.id},token);
 	//TODO: add error check
 	if (response.status === 200){
 		game = JSON.parse(response._bodyText);
 
-		navigation.navigate('GameView',{game: game,user: currentUser,token:token});
+		return game;
 	}
 }
 
@@ -148,7 +148,7 @@ export async function leave_game(result_amount,game_identifier,token,player_id=n
 	}	
 }
 
-export async function user_registration(form) {
+export async function user_registration(form,login=true) {
 	var initResponse = null;
 	try{
 		initResponse = await fetchFromServer('users/','POST',form,null);
@@ -156,6 +156,9 @@ export async function user_registration(form) {
 	catch(error){
 		console.log(error);
 		initResponse = {status: 500};
+	}
+	if (login===false){
+		return {error:'None',user:JSON.parse(initResponse._bodyText)};
 	}
 	if (initResponse.status === 201){
 		//get token
