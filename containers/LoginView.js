@@ -104,19 +104,19 @@ export default class HomeView extends Component {
 
 	_renderModalContent = () => 
 		(<View style={styles.modalContent}>
-			<Text>Add Venmo Account</Text>
+			<Text>Add Venmo Account?</Text>
 			<TextInput
-				style={styles.textinput}
+				style={styles.textinputwide}
 				onChangeText={(text)=>{this.setState({fbVenmo:text})}}
 				value={this.state.fbVenmo}
 				selectTextOnFocus={true}
-				placeholder='Venmo Account (Optional, without the @)'
+				keyboardType={'numeric'}
+				placeholder='Venmo Account (without the @)'
 				onSubmitEditing={()=>this.FBLogIn()}
 			/>
-			<Text>This would be used to refer others to pay you when needed</Text>
+			<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
 			<View style={{flexDirection:'row'}}>
-				{this._renderButton('Cancel', () => this.setState({ isModalVisible:false }))}
-				{this._renderButton('Confirm', ()=> this.FBLogIn())}
+				{this._renderButton('Proceed', ()=> this.FBLogIn())}
 			</View>
 		</View>);
 
