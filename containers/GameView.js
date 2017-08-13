@@ -19,6 +19,7 @@ export default class GameView extends Component {
 		const {navigation} = props;
 		const {user,game,token} = navigation.state.params;
 		const is_host = (game.host === user.id);
+
 		this.state = {
 			navigation: navigation,
 			token: token,
@@ -36,6 +37,7 @@ export default class GameView extends Component {
 		    guest_venmo: '',
 		    errorLabel: '',
 		};
+
 	}
 
 	_showModal = () => this.setState({ isModalVisible: true });
@@ -204,6 +206,15 @@ export default class GameView extends Component {
 		}
 	}
 
+	async refreshGame(){
+		console.log('identifier',this.state.game.identifier);
+		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/",'GET',null,this.state.token);
+		if (response.status === 200){
+			const game = await response.json();
+			this.setState({game:game});
+		}
+	}
+
 	render() {
 		const { navigation } = this.props;
 		var renderTopView = null;
@@ -232,6 +243,7 @@ export default class GameView extends Component {
 			);
 		}
 		var potMoney = this.calcPotMoney();
+		
 		return (
 	      <ScrollView contentContainerStyle={styles.container}>
 	      	{/*Modal*/}
@@ -240,10 +252,11 @@ export default class GameView extends Component {
 	        </Modal>
 
 	    	{/*Top View*/}
-			<View style={{flex:0.25}}>
+			<View style={{flex:0.35}}>
 				<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
 		    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
 				{renderTopView}
+				<Button title='Refresh' onPress={()=>this.refreshGame()}/>
 			</View>
 
 			{/*Actions*/}
@@ -260,7 +273,7 @@ export default class GameView extends Component {
 
 			{/*Player List*/}
 	        
-	        <View style={{flex:0.5}}>
+	        <View style={{flex:0.45}}>
 	        	<Text style={styles.textSubheader}>Players List:</Text>
 	        	<PlayerList game={this.state.game} player={this.state.user}/>
 	        </View>
@@ -269,3 +282,7 @@ export default class GameView extends Component {
 	}
 
 }
+
+
+
+
