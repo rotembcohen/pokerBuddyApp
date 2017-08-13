@@ -11,7 +11,7 @@ import * as utils from '../UtilFunctions';
 export default class HomeView extends Component {
 
 	static navigationOptions = {
-		title: 'Welcome to PoCat!'
+		title: 'Welcome to pocAt!'
 	}
 
 	constructor(props){
