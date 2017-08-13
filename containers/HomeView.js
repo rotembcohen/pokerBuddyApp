@@ -24,6 +24,8 @@ export default class HomeView extends Component {
 			active_games: [],
 			isModalVisible: false,
 			min_bet: 20,
+			new_venmo_username: navigation.state.params.user.venmo_username,
+			modalType: '',
 		};
 		this.getActiveGames();
 	}
@@ -64,24 +66,49 @@ export default class HomeView extends Component {
 	);
 
 	_renderModalContent = () => {
-		navigation = this.state.navigation;
-	    return (
-	      <View style={styles.modalContent}>
-	      	<Text style={styles.textSubheader}>Starting bet</Text>
-	      	<TextInput
-	      		style={styles.textinput}
-	      		onChangeText={(text)=>{this.setState({min_bet:text})}}
-	      		value={this.state.min_bet.toString()}
-	      		selectTextOnFocus={true}
-	      		autoFocus={true}
-	      		onSubmitEditing={()=>{this.createGame(navigation)}}
-      		/>
-	        <View style={{flexDirection:'row'}}>
-				{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-				{this._renderButton('Create Game', ()=>{this.createGame(navigation)})}
-			</View>
-	      </View>
-	    );
+		switch(this.state.modalType){
+			case 'CreateGame':
+				navigation = this.state.navigation;
+			    return (
+			      <View style={styles.modalContent}>
+			      	<Text style={styles.textSubheader}>Starting bet</Text>
+			      	<TextInput
+			      		style={styles.textinput}
+			      		onChangeText={(text)=>{this.setState({min_bet:text})}}
+			      		value={this.state.min_bet.toString()}
+			      		selectTextOnFocus={true}
+			      		autoFocus={true}
+			      		keyboardType={'numeric'}
+			      		onSubmitEditing={()=>{this.createGame(navigation)}}
+		      		/>
+			        <View style={{flexDirection:'row'}}>
+						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
+						{this._renderButton('Create Game', ()=>{this.createGame(navigation)})}
+					</View>
+			      </View>
+			    );
+		    case 'UpdateVemno':
+		    	return (
+			      <View style={styles.modalContent}>
+			      	<Text style={styles.textSubheader}>Update Vemno</Text>
+			      	<TextInput
+			      		style={styles.textinputwide}
+			      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+			      		value={this.state.new_venmo_username}
+			      		selectTextOnFocus={true}
+			      		autoFocus={true}
+			      		placeholder='Account username (without the @)'
+			      		onSubmitEditing={()=>{this.updateVenmo()}}
+		      		/>
+			        <View style={{flexDirection:'row'}}>
+						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
+						{this._renderButton('Confirm', ()=>{this.updateVenmo()})}
+					</View>
+			      </View>
+			    );
+		    default:
+				return (<View><Text>Error</Text></View>);
+		}
 	}
 
 	async getActiveGames(){
@@ -98,6 +125,18 @@ export default class HomeView extends Component {
 		}
 	}
 
+	async updateVenmo(){
+		const response = await utils.fetchFromServer(
+			'users/' + this.state.user.id + '/update_venmo/',
+			'POST',
+			{
+				venmo_username:this.state.new_venmo_username
+			},
+			this.state.token
+		);
+		this.setState({isModalVisible:false});
+	}
+
 	async logout(){
 		await AsyncStorage.multiRemove(['@pokerBuddy:token','@pokerBuddy:user']);
 		utils.resetToScreen(this.state.navigation,'LoginView');
@@ -111,7 +150,8 @@ export default class HomeView extends Component {
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	      	<Button title='Create Game' onPress={()=>{this.setState({isModalVisible:true})}} />
+	      	<Button title='Create Game' onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+	      	<Button title='Update Vemno' onPress={()=>{this.setState({isModalVisible:true,modalType:'UpdateVemno'})}} />
 	      	<Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
 	      	<Text>Game Address: </Text>
 	      	<TextInput
