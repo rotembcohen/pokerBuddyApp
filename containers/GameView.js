@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker
+  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -20,6 +20,9 @@ export default class GameView extends Component {
 		const {user,game,token} = navigation.state.params;
 		const is_host = (game.host === user.id);
 
+		var refreshInterval = setInterval(this.refreshIntervalCreation, 10*1000);
+	    console.log("first started interval");
+
 		this.state = {
 			navigation: navigation,
 			token: token,
@@ -36,9 +39,30 @@ export default class GameView extends Component {
 		    guest_password: '',
 		    guest_venmo: '',
 		    errorLabel: '',
+		    appState: AppState.currentState,
+		    refreshInterval: refreshInterval,
+		    intervalCounter: 0
 		};
 
 	}
+
+	componentDidMount(){
+		this._handleAppStateChange();
+	}
+
+	refreshIntervalCreation = () => {
+	    this.refreshGame();
+	    this.setState({intervalCounter: this.state.intervalCounter + 1})
+	    if (this.state.intervalCounter > 3){
+	    	this.clearRefreshInterval();
+	    }
+    };
+
+    clearRefreshInterval(){
+    	clearInterval(this.state.refreshInterval);
+    	this.setState({intervalCounter:0});
+    	console.log("stopped interval");
+    }
 
 	_showModal = () => this.setState({ isModalVisible: true });
 
@@ -147,6 +171,29 @@ export default class GameView extends Component {
 		}
 		
 	}
+
+	componentDidMount() {
+		AppState.addEventListener('change', this._handleAppStateChange);
+	}
+
+	componentWillUnmount() {
+		AppState.removeEventListener('change', this._handleAppStateChange);
+	}
+
+	_handleAppStateChange = (nextAppState) => {
+
+		if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+			// Toggle the state every 2 minutes
+		    refreshInterval = setInterval(this.refreshIntervalCreation, 20*1000);
+		    this.setState({refreshInterval:refreshInterval});
+		    console.log("started interval");
+		}else{
+			this.clearRefreshInterval();
+		}
+
+		this.setState({appState: nextAppState});
+	}
+
 
 	async submitGuest(){
 		this.setState({errorLabel:''})
