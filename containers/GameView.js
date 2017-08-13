@@ -96,10 +96,9 @@ export default class GameView extends Component {
 			case 'FinishGame':
 				return(
 					<View style={styles.modalContent}>
-						<Text>Are you sure? Pot money is not 0!</Text>
+						<Text>Pot money has to be 0!</Text>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Yes', () => this.setState({ isModalVisible:false }))}
-							{this._renderButton('No', () => this.setState({ isModalVisible:false }))}
+							{this._renderButton('Close', () => this.setState({ isModalVisible:false }))}
 						</View>
 					</View>);
 			case 'BuyIn':
@@ -193,9 +192,12 @@ export default class GameView extends Component {
 		this._showModal();
 	}
 
-	finishGame(navigation){
-		if(this.calcPotMoney === 0){
-			navigation.navigate("PayView");
+	async finishGame(navigation){
+		if(this.calcPotMoney() === 0){
+			const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/finish_game/",'POST',{},this.state.token);
+			if (gameObj.status === 200){
+				utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user});
+			}	
 		}else{
 			this.setState({modalType:"FinishGame"});
 			this._showModal();
@@ -260,7 +262,7 @@ export default class GameView extends Component {
 	        
 	        <View style={{flex:0.5}}>
 	        	<Text style={styles.textSubheader}>Players List:</Text>
-	        	<PlayerList game={this.state.game} />
+	        	<PlayerList game={this.state.game} player={this.state.user}/>
 	        </View>
 	      </ScrollView>
 	    );
