@@ -234,9 +234,7 @@ export default class GameView extends Component {
 	      <ScrollView contentContainerStyle={styles.container}>
 	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
-				<View style={styles.modalContent}>
-					{this._renderModalContent()}
-				</View>
+				{this._renderModalContent()}
 	        </Modal>
 
 	    	{/*Top View*/}
