@@ -32,8 +32,15 @@ export default class PlayerList extends Component {
 		}).catch(err => console.error('An error occurred', err));
 	}
 
+	renderPlayerThumb(image){
+		if (image){
+			return <Image source={{uri:image}} style={{width:25,height:25}} />
+		}else{
+			return <View style={{backgroundColor:'grey',width:25,height:25,borderWidth: 0,borderRadius:50}} />
+		}
+	}
+
 	render() {
-		
 		return (
 			<View>
 		        <FlatList
@@ -58,9 +65,7 @@ export default class PlayerList extends Component {
 		            	}
 		            	return (
 		            		<View style={{flexDirection:'row',alignItems:'stretch'}}>
-		            			
-		            			<Image source={{uri:item.player.picture_url}} style={{width:25,height:25,borderWidth: 0,borderRadius:50}} />
-			            		
+		            			{this.renderPlayerThumb(item.player.picture_url)}
 			            		<Text style={styles.regularText}>
 			            			<Text style={renderItemStyle}>{item.amount} {item.player.first_name} {item.player.last_name}</Text> 
 			            			{renderItemResult}
