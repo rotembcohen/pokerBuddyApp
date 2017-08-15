@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Image, Linking, Button } from 'react-native';
 
-import styles from '../Styles';
+import AppLink from 'react-native-app-link';
 
+import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 
 //props:
@@ -23,13 +24,13 @@ export default class PlayerList extends Component {
 		}
 		let target_amount = target.result - target.amount;
 		var url = "venmo://paycharge?txn=pay" + recipients_field + "&amount=" + target_amount + "&note=You brilliant Poker player, have some cash%21";
-		Linking.canOpenURL(url).then(supported => {
-		  if (!supported) {
-		    console.log('Can\'t handle url: ' + url);
-		  } else {
-		    return Linking.openURL(url);
-		  }
-		}).catch(err => console.error('An error occurred', err));
+		
+		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
+		  console.log("app link success");
+		})
+		.catch((err) => {
+		  console.log("app link error: ", error);
+		});
 	}
 
 	renderPlayerThumb(image){
