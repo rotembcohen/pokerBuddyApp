@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Image, Linking, Button } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 
 import AppLink from 'react-native-app-link';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 
+import SafeImage from './SafeImage';
+import Button from './Button';
 //props:
 //game = contains array of bets (the rows - player info, amount of bet, etc)
 export default class PlayerList extends Component {
@@ -33,12 +35,8 @@ export default class PlayerList extends Component {
 		});
 	}
 
-	renderPlayerThumb(image){
-		if (image){
-			return <Image source={{uri:image}} style={{width:25,height:25}} />
-		}else{
-			return <View style={{backgroundColor:'grey',width:25,height:25,borderWidth: 0,borderRadius:50}} />
-		}
+	renderPlayerThumb(image_uri){
+		return <SafeImage uri={image_uri} style={{width:25,height:25}} />
 	}
 
 	render() {

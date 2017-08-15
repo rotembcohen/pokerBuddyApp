@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Button, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 
 import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
+import Button from '../components/Button';
 
 export default class RegistrationView extends Component {
 

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState, StatusBar
+  StyleSheet, Text, View, ScrollView, FlatList, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState, StatusBar
 } from 'react-native';
 import Modal from 'react-native-modal';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import PlayerList from '../components/PlayerList';
+import Button from '../components/Button';
 
 export default class GameView extends Component {
 
@@ -19,9 +20,6 @@ export default class GameView extends Component {
 		const {navigation} = props;
 		const {user,game,token} = navigation.state.params;
 		const is_host = (game.host === user.id);
-
-		var refreshInterval = setInterval(this.refreshIntervalCreation, 10*1000);
-	    console.log("first started interval");
 
 		this.state = {
 			navigation: navigation,
@@ -40,20 +38,23 @@ export default class GameView extends Component {
 		    guest_venmo: '',
 		    errorLabel: '',
 		    appState: AppState.currentState,
-		    refreshInterval: refreshInterval,
+		    refreshInterval: null,
 		    intervalCounter: 0
 		};
 
 	}
 
-	componentDidMount(){
+	componentWillMount(){
+		console.log("did mount");
 		this._handleAppStateChange();
+		this.state.refreshInterval = setInterval(this.refreshIntervalCreation, 15*1000);
+	    console.log("first started interval");
 	}
 
 	refreshIntervalCreation = () => {
 	    this.refreshGame();
 	    this.setState({intervalCounter: this.state.intervalCounter + 1})
-	    if (this.state.intervalCounter > 3){
+	    if (this.state.intervalCounter >= 4){
 	    	this.clearRefreshInterval();
 	    }
     };
@@ -67,15 +68,6 @@ export default class GameView extends Component {
 	_showModal = () => this.setState({ isModalVisible: true });
 
 	_hideModal = () => this.setState({ isModalVisible: false });
-
-	//TODO: put in utils
-	_renderButton = (text, onPress) => (
-		<TouchableOpacity onPress={onPress}>
-			<View style={styles.modalButton}>
-				<Text>{text}</Text>
-			</View>
-		</TouchableOpacity>
-	);
 
 	_renderModalContent = () => {
 		switch(this.state.modalType){
@@ -114,8 +106,8 @@ export default class GameView extends Component {
 						<Text>Password:{this.state.guest_password}</Text>
 						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false,errorLabel:'' }))}
-							{this._renderButton('Confirm', ()=> this.submitGuest())}
+							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false,errorLabel:'' })} />
+							<Button title='Confirm' onPress={()=> this.submitGuest()} />
 						</View>
 					</View>
 				);
@@ -124,7 +116,7 @@ export default class GameView extends Component {
 					<View style={styles.modalContent}>
 						<Text>Pot money has to be 0!</Text>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Close', () => this.setState({ isModalVisible:false }))}
+							<Button title='Close' onPress={() => this.setState({ isModalVisible:false })} />
 						</View>
 					</View>);
 			case 'BuyIn':
@@ -137,11 +129,11 @@ export default class GameView extends Component {
 							<Button title='+' onPress={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} />
 						</View>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false }))}
-							{this._renderButton('Confirm', async () => {
+							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
+							<Button title='Confirm' onPress={async () => {
 								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
 								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
-							})}
+							}} />
 						</View>
 					</View>);
 			case 'LeaveGame':
@@ -158,11 +150,11 @@ export default class GameView extends Component {
 							placeholder='Final result'
 						/>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Cancel', () => this.setState({ isModalVisible:false }))}
-							{this._renderButton('Confirm', async () => {
+							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
+							<Button title='Confirm' onPress={async () => {
 								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
 								this.setState({game:updated_game,isModalVisible:false});
-							})}	
+							}} />	
 						</View>
 					</View>);
 			default:
@@ -184,8 +176,8 @@ export default class GameView extends Component {
 
 		if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
 			// Toggle the state every 2 minutes
-		    refreshInterval = setInterval(this.refreshIntervalCreation, 20*1000);
-		    this.setState({refreshInterval:refreshInterval});
+		    var interval = setInterval(this.refreshIntervalCreation, 15*1000);
+		    this.setState({refreshInterval:interval});
 		    console.log("started interval");
 		}else{
 			this.clearRefreshInterval();
@@ -292,7 +284,7 @@ export default class GameView extends Component {
 		var potMoney = this.calcPotMoney();
 		
 		return (
-	      <ScrollView contentContainerStyle={styles.container}>
+	      <ScrollView contentContainerStyle={[styles.container,{justifyContent:'flex-start'}]}>
 	      	<StatusBar hidden={true} />
 	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
@@ -300,31 +292,25 @@ export default class GameView extends Component {
 	        </Modal>
 
 	    	{/*Top View*/}
-			<View style={{flex:0.4}}>
-				<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
-		    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
-				{renderTopView}
-				<Button title='Refresh' onPress={()=>this.refreshGame()}/>
-			</View>
-
+			<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
+	    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
+			{renderTopView}
+			<Button title='Refresh' onPress={()=>this.refreshGame()}/>
+		
 			{/*Actions*/}
-	    	<View style={{flex:0.25,width:250}}>
-				<Button title='Buy In' onPress={async ()=>{
-					this.setState({modalType:"BuyIn"});
-					this._showModal();
-				}} />
-				<Button title='Leave Game' onPress={async ()=>{
-					this.setState({modalType:"LeaveGame"});
-					this._showModal();
-				}} />
-			</View>
-
+    		<Button title='Buy In' onPress={async ()=>{
+				this.setState({modalType:"BuyIn"});
+				this._showModal();
+			}} />
+			<Button title='Leave Game' onPress={async ()=>{
+				this.setState({modalType:"LeaveGame"});
+				this._showModal();
+			}} />
+	
 			{/*Player List*/}
 	        
-	        <View style={{flex:0.35}}>
-	        	<Text style={styles.textSubheader}>Players List:</Text>
-	        	<PlayerList game={this.state.game} player={this.state.user}/>
-	        </View>
+        	<Text style={styles.textSubheader}>Players List:</Text>
+        	<PlayerList game={this.state.game} player={this.state.user}/>
 	      </ScrollView>
 	    );
 	}

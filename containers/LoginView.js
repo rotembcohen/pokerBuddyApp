@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, AsyncStorage, TextInput, TouchableOpacity, StatusBar
+  StyleSheet, Text, View, ScrollView, FlatList, AsyncStorage, TextInput, TouchableOpacity, StatusBar
 } from 'react-native';
 
 import Modal from 'react-native-modal';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
+import Button from '../components/Button';
 
 export default class HomeView extends Component {
 
 	static navigationOptions = {
-		title: 'Welcome to pocAt!'
+		title: 'pocAt v0.1'
 	}
 
 	constructor(props){

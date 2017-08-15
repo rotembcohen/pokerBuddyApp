@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-export default class PlayerList extends Component {
+import styles from '../Styles';
+import * as utils from '../UtilFunctions';
+
+export default class ComponentName extends Component {
 
 	render() {
 		return (

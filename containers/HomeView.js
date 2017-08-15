@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, Button, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar
+  StyleSheet, Text, View, ScrollView, FlatList, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar
 } from 'react-native';
 
 import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
+import Button from '../components/Button';
 
 export default class HomeView extends Component {
 
@@ -147,14 +148,17 @@ export default class HomeView extends Component {
 		let active_games = this.state.active_games;
 		return (
 	      <View style={styles.container}>
+	      	{/*Headers*/}
 	      	<StatusBar hidden={true} />
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
+	        <View>
+	        <Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
+	        </View>
 	      	<Button title='Create Game' onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 	      	<Button title='Update Vemno' onPress={()=>{this.setState({isModalVisible:true,modalType:'UpdateVemno'})}} />
-	      	<Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
-	      	<Text>Game Address: </Text>
+	      	
 	      	<TextInput
 	      		style={styles.textinput}
 	      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
@@ -162,6 +166,7 @@ export default class HomeView extends Component {
 	      		autoCapitalize={'characters'}
 	      		selectTextOnFocus={true}
 	      		maxLength={5}
+	      		placeholder='Game Address'
       		/>
 	        <Button title='Join Game' onPress={async ()=>{
 	        	//TODO: check all this occuronces for errors!
