@@ -23,11 +23,22 @@ const styles = StyleSheet.create({
 		height: 40,
 		width: 150,
 		textAlign: 'center',
+		borderWidth:1,
+		borderColor:'#ffccbb',
+		borderRadius:12,
+	},
+	transparentTextinput: {
+		height: 40,
+		width: 150,
+		textAlign: 'center',
 	},
 	textinputwide: {
 		height: 40,
 		width: 300,
 		textAlign: 'center',
+		borderWidth:1,
+		borderColor:'#ffccbb',
+		borderRadius:12,
 	},
 	regularText: {
 		fontSize: 16,
@@ -49,6 +60,11 @@ const styles = StyleSheet.create({
 	//     borderRadius: 4,
 	//     borderColor: 'rgba(0, 0, 0, 0.1)',
 	// },
+	iconButton: {
+		margin: 10,
+		justifyContent:'center',
+		alignItems:'center',
+	},
 	modalButton: {
 		backgroundColor: 'white',
 		borderColor: 'red',

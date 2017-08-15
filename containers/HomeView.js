@@ -7,6 +7,8 @@ import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
+import IconButton from '../components/IconButton';
+import SafeImage from '../components/SafeImage';
 
 export default class HomeView extends Component {
 
@@ -88,7 +90,7 @@ export default class HomeView extends Component {
 					</View>
 			      </View>
 			    );
-		    case 'UpdateVemno':
+		    case 'UpdateVenmo':
 		    	return (
 			      <View style={styles.modalContent}>
 			      	<Text style={styles.textSubheader}>Update Vemno</Text>
@@ -107,6 +109,54 @@ export default class HomeView extends Component {
 					</View>
 			      </View>
 			    );
+		    case 'JoinGame':
+		    	return (
+		    		<View style={styles.modalContent}>
+			    		<TextInput
+				      		style={styles.textinput}
+				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
+				      		value={this.state.game_identifier}
+				      		autoCapitalize={'characters'}
+				      		selectTextOnFocus={true}
+				      		maxLength={5}
+				      		placeholder='Game Address'
+			      		/>
+			      		<View style={{flexDirection:'row'}}>
+				      		{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
+				      		{this._renderButton('Join Game', async ()=>{
+					        	//TODO: check all this occuronces for errors!
+					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
+					        	this.setState({isModalVisible:false});
+					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        })}
+				        </View>
+			        </View>
+	    		);
+		    case 'BackToPrev':
+		    	return (
+		    		<View style={styles.modalContent}>
+		    			<View style={{height:50,width:200,borderWidth:1,borderColor:'#ffccbb',borderRadius:12}}>
+				    		<Picker
+				        		selectedValue={this.state.game_identifier}
+								onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue})}}>
+									<Picker.Item value="" label="Choose Game" key="placeholder" />
+									{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
+							</Picker>
+						</View>
+						<View style={{flexDirection:'row'}}>
+				      		{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
+				      		{this._renderButton('Join Game', async ()=>{
+					        	//TODO: check all this occuronces for errors!
+					        	if (this.state.game_identifier===''){
+					        		return;
+					        	}
+					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
+					        	this.setState({isModalVisible:false});
+					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        })}
+				        </View>
+			        </View>
+	    		);
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
@@ -153,36 +203,15 @@ export default class HomeView extends Component {
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	        <View>
-	        <Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
+	        <View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10}}>
+	        	<Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
 	        </View>
-	      	<Button title='Create Game' onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-	      	<Button title='Update Vemno' onPress={()=>{this.setState({isModalVisible:true,modalType:'UpdateVemno'})}} />
-	      	
-	      	<TextInput
-	      		style={styles.textinput}
-	      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
-	      		value={this.state.game_identifier}
-	      		autoCapitalize={'characters'}
-	      		selectTextOnFocus={true}
-	      		maxLength={5}
-	      		placeholder='Game Address'
-      		/>
-	        <Button title='Join Game' onPress={async ()=>{
-	        	//TODO: check all this occuronces for errors!
-	        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
-	        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
-	        }} />
 
-	        <Picker
-	        	style={{width:125}}
-				selectedValue={this.state.game_identifier}
-				onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue})}}>
-					<Picker.Item value="" label="" key="placeholder" />
-					{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
-			</Picker>
-
-			<Button title='Logout' onPress={()=>this.logout()} />
+	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+	        <IconButton name="ios-create-outline" text="Update Venmo" action={()=>{this.setState({isModalVisible:true,modalType:'UpdateVenmo'})}} />
+	      	<IconButton name="ios-log-in" text='Back To Previous Game' action={()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})}} />
+	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
+	      	<IconButton name="ios-exit-outline" text='Logout' action={()=>this.logout()} />
 	      </View>
 	    );
 	}

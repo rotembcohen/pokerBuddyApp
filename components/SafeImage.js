@@ -11,11 +11,11 @@ export default class SafeImage extends Component {
 	render() {
 		let uri = this.props.uri;
 		if (uri){
-			return <Image source={{uri:uri}} style={[this.props.style,{borderWidth: 0, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.1)'}]} />
+			return <Image source={{uri:uri}} style={this.props.style} />
 		}else{
-			return <View style={[this.props.style,{backgroundColor:'grey',borderWidth: 0, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.1)'}]} />
+			return <View style={[this.props.style,{backgroundColor:'grey'}]} />
 		}
 	}
-
+// borderRadius: 12, borderWidth: 0, borderColor: 'rgba(0, 0, 0, 0.1)'
 
 }

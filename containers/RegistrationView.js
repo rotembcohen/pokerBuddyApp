@@ -64,12 +64,12 @@ export default class RegistrationView extends Component {
 		
 	}
 
-	renderInputField(onChangeText,value,placeholder,index,onSubmit,secure=false,autoFocus=false,keyboardType='default',autoCapitalize='none'){
+	renderInputField(onChangeText,value,placeholder,index,onSubmit,secure=false,autoFocus=false,autoCapitalize='none'){
 		let ref = 'Input' + index;
 		return (
 			<TextInput
 				ref={ref} //works
-	      		style={styles.textinputwide}
+	      		style={[styles.transparentTextinput,{width:300,borderBottomWidth:1,borderColor:"#ffcccc"}]}
 	      		onChangeText={onChangeText}
 	      		value={value}
 	      		placeholder={placeholder}
@@ -77,7 +77,6 @@ export default class RegistrationView extends Component {
 	      		selectTextOnFocus={true}
 	      		onSubmitEditing={onSubmit}
 	      		autoFocus={autoFocus}
-	      		keyboardType={keyboardType}
 	      		autoCapitalize={autoCapitalize}
 	  		/>
 		)
@@ -102,8 +101,8 @@ export default class RegistrationView extends Component {
 			
 			<View style={styles.container}>
 				<StatusBar hidden={true} />
-				{this.renderInputField(onChange5,this.state.first_name,'First Name','5',onSubmit5,false,false,'default','words')}
-				{this.renderInputField(onChange6,this.state.last_name,'Last Name','6',onSubmit6,false,false,'default','words')}
+				{this.renderInputField(onChange5,this.state.first_name,'First Name','5',onSubmit5,false,false,'words')}
+				{this.renderInputField(onChange6,this.state.last_name,'Last Name','6',onSubmit6,false,false,'words')}
 				{this.renderInputField(onChange2,this.state.password,'Password','2',onSubmit2,true)}
 				{this.renderInputField(onChange3,this.state.password_confirm,'Confirm Password','3',onSubmit3,true)}
 				{this.renderInputField(onChange7,this.state.venmo_username,'Venmo ID (Optional,without the @)','7',onSubmit7)}

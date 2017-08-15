@@ -8,6 +8,8 @@ import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
+import IconButton from '../components/IconButton';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 export default class HomeView extends Component {
 
@@ -29,6 +31,7 @@ export default class HomeView extends Component {
 			last_name: '',
 			picture_url: '',
 			facebook_token: '',
+			modalType: '',
 		};
 	}
 	
@@ -67,7 +70,7 @@ export default class HomeView extends Component {
 				utils.resetToScreen(navigation,'HomeView',{user:loginresponse.user,token:loginresponse.token});
 			}else{
 				//new user, check venmo
-				this._showModal();
+				this.setState({modalType:"AddVenmo",isModalVisible:true});
 			}
 		}
 	}
@@ -103,82 +106,119 @@ export default class HomeView extends Component {
 		</TouchableOpacity>
 	);
 
-	_renderModalContent = () => 
-		(<View style={styles.modalContent}>
-			<Text>Add Venmo Account?</Text>
-			<TextInput
-				style={styles.textinputwide}
-				onChangeText={(text)=>{this.setState({fbVenmo:text})}}
-				value={this.state.fbVenmo}
-				selectTextOnFocus={true}
-				keyboardType={'numeric'}
-				placeholder='Venmo Account (without the @)'
-				onSubmitEditing={()=>this.FBLogIn()}
-			/>
-			<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
-			<View style={{flexDirection:'row'}}>
-				{this._renderButton('Proceed', ()=> this.FBLogIn())}
-			</View>
-		</View>);
+	_renderModalContent = () => {
+		switch (this.state.modalType) {
+			case 'AddVenmo':
+				return (
+					<View style={styles.modalContent}>
+						<Text>Add Venmo Account?</Text>
+						<TextInput
+							style={styles.textinputwide}
+							onChangeText={(text)=>{this.setState({fbVenmo:text})}}
+							value={this.state.fbVenmo}
+							selectTextOnFocus={true}
+							keyboardType={'numeric'}
+							placeholder='Venmo Account (without the @)'
+							onSubmitEditing={()=>this.FBLogIn()}
+						/>
+						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
+						<View style={{flexDirection:'row'}}>
+							{this._renderButton('Proceed', ()=> this.FBLogIn())}
+						</View>
+					</View>
+				);
+			case 'Log In':
+				return (
+					<View style={styles.modalContent}>
+						<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
+				        <View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12}}>
+				        	<TextInput
+					      		style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb'}]}
+					      		onChangeText={(text)=>{this.setState({loginUsername:text})}}
+					      		value={this.state.loginUsername}
+					      		selectTextOnFocus={true}
+					      		onSubmitEditing={(event) => { 
+									this.refs.PasswordInput.focus(); 
+								}}
+								placeholder="Username"
+								underlineColorAndroid="transparent"
+				      		/>
+				      		<TextInput
+				      			ref='PasswordInput'
+					      		style={styles.transparentTextinput}
+					      		onChangeText={(text)=>{this.setState({loginPassword:text})}}
+					      		value={this.state.loginPassword}
+					      		secureTextEntry={true}
+					      		selectTextOnFocus={true}
+					      		onSubmitEditing={()=>{
+					      			this.setState({isModalVisible:false});
+					      			this.onSubmit();
+					      		}}
+					      		placeholder="Password"
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
+			      		<View style={{flexDirection:'row'}}>
+							{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
+							{this._renderButton('Login', ()=> {
+								this.setState({isModalVisible:false});
+								this.onSubmit();
+							})}
+						</View>
+					</View>
+				);
+			default:
+				return (<View><Text>Error</Text></View>);
+
+		}
+	}
+	
+	async onSubmit() {
+		this.setState({errorLabel:''});
+		if (this.state.loginUsername === ''){
+			this.setState({errorLabel:'Username is required'});
+			return;
+		}
+		if (this.state.loginPassword === ''){
+			this.setState({errorLabel:'Password is required'});
+			return;
+		}
+		const response = await utils.loginWithCreds(this.state.loginUsername,this.state.loginPassword);
+		if (response.error === 'None'){
+			utils.resetToScreen(navigation,'HomeView',{user:response.user,token:response.token});
+		}else{
+			this.setState({errorLabel:response.error});
+		}
+	}
 
 	render() {
 
 		navigation = this.state.navigation;
-		onSubmit = async ()=>{
-			this.setState({errorLabel:''});
-			if (this.state.loginUsername === ''){
-				this.setState({errorLabel:'Username is required'});
-				return;
-			}
-			if (this.state.loginPassword === ''){
-				this.setState({errorLabel:'Password is required'});
-				return;
-			}
-			const response = await utils.loginWithCreds(this.state.loginUsername,this.state.loginPassword);
-			if (response.error === 'None'){
-				utils.resetToScreen(navigation,'HomeView',{user:response.user,token:response.token});
-			}else{
-				this.setState({errorLabel:response.error});
-			}
-		}
+		
 	    return (
 			<View style={styles.container}>
 				<StatusBar hidden={true} />
 				<Modal isVisible={this.state.isModalVisible === true}>
 					{this._renderModalContent()}
 		        </Modal>
-				<TextInput
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({loginUsername:text})}}
-		      		value={this.state.loginUsername}
-		      		selectTextOnFocus={true}
-		      		onSubmitEditing={(event) => { 
-						this.refs.PasswordInput.focus(); 
-					}}
-					placeholder="Username"
-	      		/>
-	      		<TextInput
-	      			ref='PasswordInput'
-		      		style={styles.textinput}
-		      		onChangeText={(text)=>{this.setState({loginPassword:text})}}
-		      		value={this.state.loginPassword}
-		      		secureTextEntry={true}
-		      		selectTextOnFocus={true}
-		      		onSubmitEditing={onSubmit}
-		      		placeholder="Password"
-	      		/>
-				<Button title='Login' onPress={onSubmit} />
-				<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
-				<Button title='Sign Up' onPress={()=>{
+		        
+				<IconButton name="ios-log-in" text='Log In' action={()=>{
+					this.setState({modalType:'Log In',isModalVisible:true});
+				}} />
+				<IconButton name="ios-create-outline" text="Sign Up" action={()=>{
 					navigation.navigate('RegistrationView');
 				}} />
-				{/*
-				<Button title='Modals' onPress={()=>{
-					navigation.navigate('ModalExample');
-				}} />*/}
-				<Button title='FB Login' onPress={()=>{
-					this.FBRegister(navigation);
-				}} />
+
+		        <View style={{margin:5}}>
+					<TouchableOpacity style={styles.iconButton} onPress={()=>{
+						this.FBRegister(navigation);
+					}} >
+						<SimpleLineIcons name="social-facebook" color="red" size={30} />
+						<Text>Facebook</Text>
+						<Text>Log In</Text>
+					</TouchableOpacity>
+				</View>
+		      	
 			</View>
 	    );
 	}

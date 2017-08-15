@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 
 import AppLink from 'react-native-app-link';
 
@@ -36,15 +36,14 @@ export default class PlayerList extends Component {
 	}
 
 	renderPlayerThumb(image_uri){
-		return <SafeImage uri={image_uri} style={{width:25,height:25}} />
+		return <SafeImage uri={image_uri} style={{width:30,height:30,borderTopLeftRadius:12,borderBottomLeftRadius:0}} />
 	}
 
 	render() {
 		return (
-			<View>
+			<ScrollView contentContainerStyle={this.props.style}>
 		        <FlatList
-		        	style={{flex:0.4}}
-		            data={this.props.game.bets}
+		        	data={this.props.game.bets}
 		            keyExtractor={item=>item.id}
 		            renderItem={({item}) => {
 		            	if (item.result === null) {
@@ -52,30 +51,43 @@ export default class PlayerList extends Component {
 		            		var renderItemResult = '';
 		            		var renderItemDiff = '';
 		            		var renderItemStyle = styles.regularText;
+		            		var itemColorStyle = {};
 		            	} else {
-		            		var renderItemResult = " " + item.result.toString();
-		            		var renderItemDiff = " " + (item.result - item.amount).toString();
-		            		var itemDiffStyle = ((item.result - item.amount) >= 0) ? {color:'green'} : {color:'red'};
+		            		var renderItemResult = " Left with: $" + item.result.toString();
+		            		var renderItemDiff = "$" + (item.result - item.amount).toString();		            		
+		            		if(item.result){
+		            			itemColorStyle = ((item.result - item.amount) >= 0) ? {color:'green'} : {color:'red'};
+		            		}
 		            		var itemPayButton = null;
 		            		if ((item.result - item.amount) >= 0 && item.player.id!=this.props.player.id){
-		            			itemPayButton = (<Button title='Venmo' onPress={()=>this.venmoUser(item)} />);
+		            			// itemPayButton = (<Button title='Venmo' onPress={()=>this.venmoUser(item)} />);
+		            			itemPayButton = (
+		            				<View style={{borderRadius:12,borderColor:'#3D95CE',borderWidth:1,height:50,alignItems:'flex-start',justifyContent:'center', marginLeft:10, paddingRight:5}} >
+			            				<TouchableOpacity onPress={()=>this.venmoUser(item)} style={{flexDirection:'row',alignItems:'center'}} >
+			            					<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-venmo.png" style={{width:25,height:25}} />
+			            					<Text style={{color:'#3D95CE'}}>{renderItemDiff}</Text>
+			            				</TouchableOpacity>
+		            				</View>
+	            				);
 		            		}
-		            		var renderItemStyle = styles.strikethroughText;
 		            	}
 		            	return (
-		            		<View style={{flexDirection:'row',alignItems:'stretch'}}>
-		            			{this.renderPlayerThumb(item.player.picture_url)}
-			            		<Text style={styles.regularText}>
-			            			<Text style={renderItemStyle}>{item.amount} {item.player.first_name} {item.player.last_name}</Text> 
-			            			{renderItemResult}
-			            			<Text style={itemDiffStyle}>{renderItemDiff}</Text>
-		            			</Text>
+		            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',marginBottom:10}} >
+			            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:250}}>
+			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:250}} >
+				            			{this.renderPlayerThumb(item.player.picture_url)}
+				            			<Text style={[itemColorStyle,{marginLeft:10}]}>{item.player.first_name} {item.player.last_name}</Text>
+			            			</View>
+			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',width:300}}>
+			            				<Text style={{marginLeft:10}}>Bet: ${item.amount}{renderItemResult}</Text>
+			            			</View>
+		            			</View>
 		            			{itemPayButton}
 	            			</View>
 	            		);
 		            }}
 		        />
-        	</View>
+        	</ScrollView>
         );
 	}
 

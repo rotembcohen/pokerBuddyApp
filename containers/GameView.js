@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import {
   StyleSheet, Text, View, ScrollView, FlatList, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState, StatusBar
 } from 'react-native';
+
 import Modal from 'react-native-modal';
+import { Ionicons } from '@expo/vector-icons';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import PlayerList from '../components/PlayerList';
 import Button from '../components/Button';
+import IconButton from '../components/IconButton';
+import SafeImage from '../components/SafeImage';
 
 export default class GameView extends Component {
 
@@ -124,9 +128,9 @@ export default class GameView extends Component {
 					<View style={styles.modalContent}>
 						<Text>Buy in amount:</Text>
 						<View style={{flexDirection:'row',alignItems:'center'}} >
-							<Button title='-' onPress={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} />
+							<IconButton action={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} name="ios-remove-circle-outline" />
 							<Text>{this.state.buy_in_amount}</Text>
-							<Button title='+' onPress={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} />
+							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} name="ios-add-circle-outline" />
 						</View>
 						<View style={{flexDirection:'row'}}>
 							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
@@ -173,17 +177,18 @@ export default class GameView extends Component {
 	}
 
 	_handleAppStateChange = (nextAppState) => {
+		if(this.state.appState){
+			if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+				// Toggle the state every 2 minutes
+			    var interval = setInterval(this.refreshIntervalCreation, 15*1000);
+			    this.setState({refreshInterval:interval});
+			    console.log("started interval");
+			}else{
+				this.clearRefreshInterval();
+			}
 
-		if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-			// Toggle the state every 2 minutes
-		    var interval = setInterval(this.refreshIntervalCreation, 15*1000);
-		    this.setState({refreshInterval:interval});
-		    console.log("started interval");
-		}else{
-			this.clearRefreshInterval();
+			this.setState({appState: nextAppState});
 		}
-
-		this.setState({appState: nextAppState});
 	}
 
 
@@ -256,15 +261,22 @@ export default class GameView extends Component {
 
 	render() {
 		const { navigation } = this.props;
-		var renderTopView = null;
+		var renderHostButtons = null;
+		var renderHostPicker = null;
 		let user = this.state.user;
 		if (this.state.is_host){
 			//TODO: can you take the view our?
-			renderTopView =
+			renderHostButtons =
 			(
-				<View>
-					<Button title='Add Guest' onPress={()=>{this.addGuest(navigation)}} />
-					<Button title='Finish Game' onPress={()=>{this.finishGame(navigation)}} />
+				<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',height:90}} >
+					<IconButton action={()=>{this.addGuest(navigation)}} name="ios-person-add-outline" text="Add Guest"/>
+					<IconButton action={()=>{this.finishGame(navigation)}} name="ios-checkmark-circle-outline" text="Finish Game" />
+				</View>
+			);
+			renderHostPicker = 
+			(
+				<View style={{height:90,borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12}}>
+					<Text style={{textAlign:'center',marginTop:10}}>Take action as:</Text>
 					<Picker
 			        	style={{width:250}}
 						selectedValue={this.state.selected_player}
@@ -284,34 +296,49 @@ export default class GameView extends Component {
 		var potMoney = this.calcPotMoney();
 		
 		return (
-	      <ScrollView contentContainerStyle={[styles.container,{justifyContent:'flex-start'}]}>
+	      <View style={[{justifyContent:'center'},styles.container]}>
 	      	<StatusBar hidden={true} />
 	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
 
-	    	{/*Top View*/}
-			<Text style={styles.textHeader}>Game Address: {this.state.game.identifier}</Text>
-	    	<Text style={styles.textSubheader}>Money in the pot: {potMoney.toString()}</Text>
-			{renderTopView}
-			<Button title='Refresh' onPress={()=>this.refreshGame()}/>
-		
-			{/*Actions*/}
-    		<Button title='Buy In' onPress={async ()=>{
-				this.setState({modalType:"BuyIn"});
-				this._showModal();
-			}} />
-			<Button title='Leave Game' onPress={async ()=>{
-				this.setState({modalType:"LeaveGame"});
-				this._showModal();
-			}} />
-	
-			{/*Player List*/}
-	        
-        	<Text style={styles.textSubheader}>Players List:</Text>
-        	<PlayerList game={this.state.game} player={this.state.user}/>
-	      </ScrollView>
+	        <View style={{height:90,justifyContent:'center',alignItems:'flex-start',flexDirection:'row'}}>
+	        	{/*Top View*/}
+	        	<View style={{justifyContent:'flex-start',alignItems:'center',flex:1}}>
+			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>{this.state.game.identifier}</Text>
+			    	<Text>Game Address</Text>
+		    		<Ionicons name="md-link" color="red" size={75} style={{position:'absolute',bottom:12,opacity: 0.2}} />
+		    	</View>
+		    	<View style={{justifyContent:'flex-start',alignItems:'center',flex:1}}>
+			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>${potMoney.toString()}</Text>
+			    	<Text>Pot Money</Text>
+		    		<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-pot.png" style={{position:'absolute',top:0,width:75,height:75,opacity: 0.2}} />
+		    	</View>
+	    	</View>
+			{renderHostButtons}
+
+	        <ScrollView contentContainerStyle={{marginTop:10}} >
+	        	{/*Player List*/}
+		        <PlayerList game={this.state.game} player={this.state.user}/>
+        	</ScrollView>
+
+        	<View style={{height:200,justifyContent:'flex-end',alignItems:'center'}}>
+		    	{/*Actions*/}
+		    	{renderHostPicker}
+				<View style={{height:100,flexDirection:'row'}} >
+					<IconButton action={async ()=>{
+						this.setState({modalType:"BuyIn"});
+						this._showModal();
+					}} name="ios-add-circle-outline" text="Buy In" />
+		    		<IconButton action={async ()=>{
+						this.setState({modalType:"LeaveGame"});
+						this._showModal();
+					}} name="ios-exit-outline" text="Leave Game" />
+					<IconButton action={()=>this.refreshGame()} name="ios-refresh-circle-outline" text="Refresh" />
+				</View>
+			</View>
+	      </View>
 	    );
 	}
 
@@ -320,3 +347,4 @@ export default class GameView extends Component {
 
 
 
+4
