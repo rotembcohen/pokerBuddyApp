@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
+import IconButton from '../components/IconButton';
 
 export default class RegistrationView extends Component {
 
@@ -108,8 +109,8 @@ export default class RegistrationView extends Component {
 				{this.renderInputField(onChange3,this.state.password_confirm,'Confirm Password','3',onSubmit3,true)}
 				{this.renderInputField(onChange7,this.state.venmo_username,'Venmo ID (Optional,without the @)','7',onSubmit7)}
 				<View style={{flexDirection: 'row'}}>
-					<Button title='Back' onPress={()=>utils.backOneScreen(this.state.navigation)} />
-					<Button title='Submit' onPress={()=>this.onSubmit()} />
+					<IconButton action={()=> utils.backOneScreen(this.state.navigation)} name="ios-close-circle-outline" text="Cancel" />
+					<IconButton action={()=> this.onSubmit()} name="ios-checkmark-circle-outline" text="Sign Up" />
 				</View>
 				<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 			</View>

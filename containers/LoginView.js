@@ -92,20 +92,7 @@ export default class HomeView extends Component {
 			this.setState({errorLabel:response.error});
 		}
 	}
-
-	_showModal = () => this.setState({ isModalVisible: true });
-
-	_hideModal = () => this.setState({ isModalVisible: false });
-
-	//TODO: put in utils
-	_renderButton = (text, onPress) => (
-		<TouchableOpacity onPress={onPress}>
-			<View style={styles.modalButton}>
-				<Text>{text}</Text>
-			</View>
-		</TouchableOpacity>
-	);
-
+	
 	_renderModalContent = () => {
 		switch (this.state.modalType) {
 			case 'AddVenmo':
@@ -124,7 +111,7 @@ export default class HomeView extends Component {
 						/>
 						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
 						<View style={{flexDirection:'row'}}>
-							{this._renderButton('Proceed', ()=> this.FBLogIn())}
+							<IconButton action={()=> this.FBLogIn()} name="ios-checkmark-circle-outline" text="Proceed" />
 						</View>
 					</View>
 				);
@@ -160,11 +147,11 @@ export default class HomeView extends Component {
 				      		/>
 			      		</View>
 			      		<View style={{flexDirection:'row'}}>
-							{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-							{this._renderButton('Login', ()=> {
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+							<IconButton action={()=> {
 								this.setState({isModalVisible:false});
 								this.onSubmit();
-							})}
+							}} name="ios-checkmark-circle-outline" text="Login" />
 						</View>
 					</View>
 				);

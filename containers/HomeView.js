@@ -89,8 +89,8 @@ export default class HomeView extends Component {
 			      		/>
 		      		</View>
 			        <View style={{flexDirection:'row'}}>
-						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-						{this._renderButton('Create Game', ()=>{this.createGame(navigation)})}
+			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        	<IconButton action={()=> this.createGame(navigation)} name="ios-checkmark-circle-outline" text="Create" />
 					</View>
 			      </View>
 			    );
@@ -111,8 +111,8 @@ export default class HomeView extends Component {
 			      		/>
 		      		</View>
 			        <View style={{flexDirection:'row'}}>
-						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-						{this._renderButton('Confirm', ()=>{this.updateVenmo()})}
+			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        	<IconButton action={()=> this.updateVenmo()} name="ios-checkmark-circle-outline" text="Confirm" />
 					</View>
 			      </View>
 			    );
@@ -121,7 +121,7 @@ export default class HomeView extends Component {
 		    		<View style={styles.modalContent}>
 		    			<View style={styles.inputContainer}>
 				    		<TextInput
-					      		style={styles.textinput}
+					      		style={styles.transparentTextinput}
 					      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
 					      		value={this.state.game_identifier}
 					      		autoCapitalize={'characters'}
@@ -132,13 +132,13 @@ export default class HomeView extends Component {
 				      		/>
 			      		</View>
 			      		<View style={{flexDirection:'row'}}>
-				      		{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-				      		{this._renderButton('Join Game', async ()=>{
+			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        		<IconButton action={async ()=>{
 					        	//TODO: check all this occuronces for errors!
 					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
-					        })}
+					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
 			        </View>
 	    		);
@@ -154,8 +154,8 @@ export default class HomeView extends Component {
 							</Picker>
 						</View>
 						<View style={{flexDirection:'row'}}>
-				      		{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
-				      		{this._renderButton('Join Game', async ()=>{
+			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+				      		<IconButton action={async ()=>{
 					        	//TODO: check all this occuronces for errors!
 					        	if (this.state.game_identifier===''){
 					        		return;
@@ -163,7 +163,7 @@ export default class HomeView extends Component {
 					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
-					        })}
+					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
 			        </View>
 	    		);
@@ -224,8 +224,8 @@ export default class HomeView extends Component {
 	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
 	        	</View>
 	        	<View style={{flexDirection:'row'}}>
-			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
 			      	<IconButton name="ios-create-outline" text="Update Venmo" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'UpdateVenmo'})}} />
+			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
 		      	</View>
 	        </View>
 

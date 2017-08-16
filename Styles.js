@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
 		borderColor:'#ffccbb',
 		borderWidth:1,
 		borderRadius:12,
+		margin: 5,
 	},
 	textinputwide: {
 		height: 40,

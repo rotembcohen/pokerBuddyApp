@@ -51,43 +51,45 @@ export default class GameView extends Component {
 			case 'AddGuest':
 				return (
 					<View style={styles.modalContent}>
-						<Text>Add Guest</Text>
-						<TextInput
-							style={styles.textinput}
-							onChangeText={(text)=>{this.setState({guest_first_name:text})}}
-							value={this.state.guest_first_name}
-							selectTextOnFocus={true}
-							placeholder='First Name'
-							onSubmitEditing={()=>{this.refs.Input2.focus()}}
-							underlineColorAndroid="transparent"
-						/>
-						<TextInput
-							ref='Input2'
-							style={styles.textinput}
-							onChangeText={(text)=>{this.setState({guest_last_name:text})}}
-							value={this.state.guest_last_name}
-							selectTextOnFocus={true}
-							placeholder='Last Name'
-							onSubmitEditing={()=>{this.refs.Input3.focus()}}
-							underlineColorAndroid="transparent"
-						/>
-						<TextInput
-							ref='Input3'
-							style={styles.textinput}
-							onChangeText={(text)=>{this.setState({guest_venmo:text})}}
-							value={this.state.guest_venmo}
-							selectTextOnFocus={true}
-							placeholder='Venmo Account (Optional, without the @)'
-							onSubmitEditing={()=>this.submitGuest()}
-							underlineColorAndroid="transparent"
-						/>
+						<Text style={styles.textSubheader}>Add Guest</Text>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:300}]}
+					      		onChangeText={(text)=>{this.setState({guest_first_name:text})}}
+								value={this.state.guest_first_name}
+								selectTextOnFocus={true}
+								placeholder='First Name'
+								onSubmitEditing={()=>{this.refs.Input2.focus()}}
+								underlineColorAndroid="transparent"
+							/>
+							<TextInput
+								ref='Input2'
+								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:300}]}
+					      		onChangeText={(text)=>{this.setState({guest_last_name:text})}}
+								value={this.state.guest_last_name}
+								selectTextOnFocus={true}
+								placeholder='Last Name'
+								onSubmitEditing={()=>{this.refs.Input3.focus()}}
+								underlineColorAndroid="transparent"
+							/>
+							<TextInput
+								ref='Input3'
+								style={[styles.transparentTextinput,{width:300}]}
+								onChangeText={(text)=>{this.setState({guest_venmo:text})}}
+								value={this.state.guest_venmo}
+								selectTextOnFocus={true}
+								placeholder='Venmo Account (Optional, without the @)'
+								onSubmitEditing={()=>this.submitGuest()}
+								underlineColorAndroid="transparent"
+							/>
+						</View>
 						<Text>This guest would be able to login in the future using the credentials:</Text>
 						<Text>Username:{this.state.guest_first_name}-{this.state.guest_last_name}</Text>
 						<Text>Password:{this.state.guest_password}</Text>
 						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 						<View style={{flexDirection:'row'}}>
-							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false,errorLabel:'' })} />
-							<Button title='Confirm' onPress={()=> this.submitGuest()} />
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        		<IconButton action={()=> this.submitGuest()} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>
 				);
@@ -96,31 +98,31 @@ export default class GameView extends Component {
 					<View style={styles.modalContent}>
 						<Text>Pot money has to be 0!</Text>
 						<View style={{flexDirection:'row'}}>
-							<Button title='Close' onPress={() => this.setState({ isModalVisible:false })} />
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
 						</View>
 					</View>);
 			case 'BuyIn':
 				return(
 					<View style={styles.modalContent}>
-						<Text>Buy in amount:</Text>
-						<View style={{flexDirection:'row',alignItems:'center'}} >
+						<Text style={styles.textSubheader}>Buy in amount:</Text>
+						<View style={[styles.inputContainer,{flexDirection:'row',alignItems:'center',justifyContent:'center'}]}>
 							<IconButton action={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} name="ios-remove-circle-outline" />
-							<Text>{this.state.buy_in_amount}</Text>
+							<Text style={{fontWeight:'bold',fontSize:30}}>${this.state.buy_in_amount}</Text>
 							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} name="ios-add-circle-outline" />
 						</View>
-						<View style={{flexDirection:'row'}}>
-							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
-							<Button title='Confirm' onPress={async () => {
+						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        		<IconButton action={async () => {
 								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
 								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
-							}} />
+							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>);
 			case 'LeaveGame':
 				return (
 					<View style={styles.modalContent}>
 						<Text style={styles.textSubheader}>Final amount:</Text>
-						<Text>(value of remaining chips, if any)</Text>
+						<Text style={{marginBottom:10}}>(value of remaining chips, if any)</Text>
 						<TextInput
 							style={styles.textinput}
 							onChangeText={(text)=>{this.setState({result_amount:text})}}
@@ -131,11 +133,11 @@ export default class GameView extends Component {
 							underlineColorAndroid="transparent"
 						/>
 						<View style={{flexDirection:'row'}}>
-							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
-							<Button title='Confirm' onPress={async () => {
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        		<IconButton action={async () => {
 								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
 								this.setState({game:updated_game,isModalVisible:false});
-							}} />	
+							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>);
 			default:
