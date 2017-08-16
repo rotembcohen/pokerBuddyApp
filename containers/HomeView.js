@@ -203,15 +203,22 @@ export default class HomeView extends Component {
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	        <View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10}}>
-	        	<Text>Current User: {this.state.user.first_name + " " + this.state.user.last_name}</Text>
+	        
+	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+	        <IconButton name="ios-log-in" text='Back To Previous Game' action={()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})}} />
+	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
+
+	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10}}>
+	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+	        		<SafeImage uri={this.state.user.picture_url} style={{width:30,height:30,borderWidth:0,borderRadius:12,borderColor:'white',margin:10}} />
+	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
+	        	</View>
+	        	<View style={{flexDirection:'row'}}>
+			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
+			      	<IconButton name="ios-create-outline" text="Update Venmo" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'UpdateVenmo'})}} />
+		      	</View>
 	        </View>
 
-	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-	        <IconButton name="ios-create-outline" text="Update Venmo" action={()=>{this.setState({isModalVisible:true,modalType:'UpdateVenmo'})}} />
-	      	<IconButton name="ios-log-in" text='Back To Previous Game' action={()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})}} />
-	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
-	      	<IconButton name="ios-exit-outline" text='Logout' action={()=>this.logout()} />
 	      </View>
 	    );
 	}
