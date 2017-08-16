@@ -59,15 +59,6 @@ export default class HomeView extends Component {
 		
 	}
 
-	//TODO: put in utils
-	_renderButton = (text, onPress) => (
-		<TouchableOpacity onPress={onPress}>
-			<View style={styles.modalButton}>
-				<Text>{text}</Text>
-			</View>
-		</TouchableOpacity>
-	);
-
 	_renderModalContent = () => {
 		switch(this.state.modalType){
 			case 'CreateGame':
