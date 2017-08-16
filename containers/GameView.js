@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, ScrollView, FlatList, AsyncStorage, TextInput, TouchableOpacity, Picker, AppState, StatusBar
+  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar
 } from 'react-native';
 
 import Modal from 'react-native-modal';

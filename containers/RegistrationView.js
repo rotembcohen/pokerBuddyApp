@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, TextInput, StatusBar } from 'react-native';
 
 import Modal from 'react-native-modal';
 import styles from '../Styles';

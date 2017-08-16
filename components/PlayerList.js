@@ -5,9 +5,9 @@ import AppLink from 'react-native-app-link';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
-
 import SafeImage from './SafeImage';
 import Button from './Button';
+
 //props:
 //game = contains array of bets (the rows - player info, amount of bet, etc)
 export default class PlayerList extends Component {

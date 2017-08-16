@@ -16,6 +16,5 @@ export default class SafeImage extends Component {
 			return <View style={[this.props.style,{backgroundColor:'grey'}]} />
 		}
 	}
-// borderRadius: 12, borderWidth: 0, borderColor: 'rgba(0, 0, 0, 0.1)'
 
 }
