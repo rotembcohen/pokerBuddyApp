@@ -120,6 +120,7 @@ export default class HomeView extends Component {
 							keyboardType={'numeric'}
 							placeholder='Venmo Account (without the @)'
 							onSubmitEditing={()=>this.FBLogIn()}
+							underlineColorAndroid="transparent"
 						/>
 						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
 						<View style={{flexDirection:'row'}}>
@@ -131,7 +132,7 @@ export default class HomeView extends Component {
 				return (
 					<View style={styles.modalContent}>
 						<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
-				        <View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12}}>
+				        <View style={styles.inputContainer}>
 				        	<TextInput
 					      		style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb'}]}
 					      		onChangeText={(text)=>{this.setState({loginUsername:text})}}

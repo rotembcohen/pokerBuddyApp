@@ -32,6 +32,11 @@ const styles = StyleSheet.create({
 		width: 150,
 		textAlign: 'center',
 	},
+	inputContainer: {
+		borderColor:'#ffccbb',
+		borderWidth:1,
+		borderRadius:12,
+	},
 	textinputwide: {
 		height: 40,
 		width: 300,

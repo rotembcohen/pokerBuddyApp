@@ -75,15 +75,19 @@ export default class HomeView extends Component {
 			    return (
 			      <View style={styles.modalContent}>
 			      	<Text style={styles.textSubheader}>Starting bet</Text>
-			      	<TextInput
-			      		style={styles.textinput}
-			      		onChangeText={(text)=>{this.setState({min_bet:text})}}
-			      		value={this.state.min_bet.toString()}
-			      		selectTextOnFocus={true}
-			      		autoFocus={true}
-			      		keyboardType={'numeric'}
-			      		onSubmitEditing={()=>{this.createGame(navigation)}}
-		      		/>
+			      	<View style={styles.inputContainer}>
+				      	<TextInput
+				      		style={styles.transparentTextinput}
+				      		border={true}
+				      		onChangeText={(text)=>{this.setState({min_bet:text})}}
+				      		value={this.state.min_bet.toString()}
+				      		selectTextOnFocus={true}
+				      		autoFocus={true}
+				      		keyboardType={'numeric'}
+				      		onSubmitEditing={()=>{this.createGame(navigation)}}
+							underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
 			        <View style={{flexDirection:'row'}}>
 						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
 						{this._renderButton('Create Game', ()=>{this.createGame(navigation)})}
@@ -94,15 +98,18 @@ export default class HomeView extends Component {
 		    	return (
 			      <View style={styles.modalContent}>
 			      	<Text style={styles.textSubheader}>Update Vemno</Text>
-			      	<TextInput
-			      		style={styles.textinputwide}
-			      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
-			      		value={this.state.new_venmo_username}
-			      		selectTextOnFocus={true}
-			      		autoFocus={true}
-			      		placeholder='Account username (without the @)'
-			      		onSubmitEditing={()=>{this.updateVenmo()}}
-		      		/>
+			      	<View style={styles.inputContainer}>
+				      	<TextInput
+				      		style={styles.textinputwide}
+				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+				      		value={this.state.new_venmo_username}
+				      		selectTextOnFocus={true}
+				      		autoFocus={true}
+				      		placeholder='Account username (without the @)'
+				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
 			        <View style={{flexDirection:'row'}}>
 						{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
 						{this._renderButton('Confirm', ()=>{this.updateVenmo()})}
@@ -112,15 +119,18 @@ export default class HomeView extends Component {
 		    case 'JoinGame':
 		    	return (
 		    		<View style={styles.modalContent}>
-			    		<TextInput
-				      		style={styles.textinput}
-				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
-				      		value={this.state.game_identifier}
-				      		autoCapitalize={'characters'}
-				      		selectTextOnFocus={true}
-				      		maxLength={5}
-				      		placeholder='Game Address'
-			      		/>
+		    			<View style={styles.inputContainer}>
+				    		<TextInput
+					      		style={styles.textinput}
+					      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
+					      		value={this.state.game_identifier}
+					      		autoCapitalize={'characters'}
+					      		selectTextOnFocus={true}
+					      		maxLength={5}
+					      		placeholder='Game Address'
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
 			      		<View style={{flexDirection:'row'}}>
 				      		{this._renderButton('Cancel', ()=> this.setState({isModalVisible:false}))}
 				      		{this._renderButton('Join Game', async ()=>{
@@ -135,7 +145,7 @@ export default class HomeView extends Component {
 		    case 'BackToPrev':
 		    	return (
 		    		<View style={styles.modalContent}>
-		    			<View style={{height:50,width:200,borderWidth:1,borderColor:'#ffccbb',borderRadius:12}}>
+		    			<View style={[styles.inputContainer,{height:50,width:200}]}>
 				    		<Picker
 				        		selectedValue={this.state.game_identifier}
 								onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue})}}>
@@ -208,7 +218,7 @@ export default class HomeView extends Component {
 	        <IconButton name="ios-log-in" text='Back To Previous Game' action={()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})}} />
 	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
 
-	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10}}>
+	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
 	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
 	        		<SafeImage uri={this.state.user.picture_url} style={{width:30,height:30,borderWidth:0,borderRadius:12,borderColor:'white',margin:10}} />
 	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>

@@ -78,6 +78,7 @@ export default class RegistrationView extends Component {
 	      		onSubmitEditing={onSubmit}
 	      		autoFocus={autoFocus}
 	      		autoCapitalize={autoCapitalize}
+	      		underlineColorAndroid="transparent"
 	  		/>
 		)
 	}

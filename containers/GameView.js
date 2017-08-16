@@ -42,36 +42,9 @@ export default class GameView extends Component {
 		    guest_venmo: '',
 		    errorLabel: '',
 		    appState: AppState.currentState,
-		    refreshInterval: null,
-		    intervalCounter: 0
 		};
 
 	}
-
-	componentWillMount(){
-		console.log("did mount");
-		this._handleAppStateChange();
-		this.state.refreshInterval = setInterval(this.refreshIntervalCreation, 15*1000);
-	    console.log("first started interval");
-	}
-
-	refreshIntervalCreation = () => {
-	    this.refreshGame();
-	    this.setState({intervalCounter: this.state.intervalCounter + 1})
-	    if (this.state.intervalCounter >= 4){
-	    	this.clearRefreshInterval();
-	    }
-    };
-
-    clearRefreshInterval(){
-    	clearInterval(this.state.refreshInterval);
-    	this.setState({intervalCounter:0});
-    	console.log("stopped interval");
-    }
-
-	_showModal = () => this.setState({ isModalVisible: true });
-
-	_hideModal = () => this.setState({ isModalVisible: false });
 
 	_renderModalContent = () => {
 		switch(this.state.modalType){
@@ -86,6 +59,7 @@ export default class GameView extends Component {
 							selectTextOnFocus={true}
 							placeholder='First Name'
 							onSubmitEditing={()=>{this.refs.Input2.focus()}}
+							underlineColorAndroid="transparent"
 						/>
 						<TextInput
 							ref='Input2'
@@ -95,6 +69,7 @@ export default class GameView extends Component {
 							selectTextOnFocus={true}
 							placeholder='Last Name'
 							onSubmitEditing={()=>{this.refs.Input3.focus()}}
+							underlineColorAndroid="transparent"
 						/>
 						<TextInput
 							ref='Input3'
@@ -104,6 +79,7 @@ export default class GameView extends Component {
 							selectTextOnFocus={true}
 							placeholder='Venmo Account (Optional, without the @)'
 							onSubmitEditing={()=>this.submitGuest()}
+							underlineColorAndroid="transparent"
 						/>
 						<Text>This guest would be able to login in the future using the credentials:</Text>
 						<Text>Username:{this.state.guest_first_name}-{this.state.guest_last_name}</Text>
@@ -152,6 +128,7 @@ export default class GameView extends Component {
 							keyboardType='numeric'
 							selectTextOnFocus={true}
 							placeholder='Final result'
+							underlineColorAndroid="transparent"
 						/>
 						<View style={{flexDirection:'row'}}>
 							<Button title='Cancel' onPress={() => this.setState({ isModalVisible:false })} />
@@ -172,21 +149,12 @@ export default class GameView extends Component {
 		AppState.addEventListener('change', this._handleAppStateChange);
 	}
 
-	componentWillUnmount() {
-		AppState.removeEventListener('change', this._handleAppStateChange);
-	}
-
 	_handleAppStateChange = (nextAppState) => {
 		if(this.state.appState){
 			if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
 				// Toggle the state every 2 minutes
-			    var interval = setInterval(this.refreshIntervalCreation, 15*1000);
-			    this.setState({refreshInterval:interval});
-			    console.log("started interval");
-			}else{
-				this.clearRefreshInterval();
+			    this.refreshGame()
 			}
-
 			this.setState({appState: nextAppState});
 		}
 	}
@@ -234,8 +202,7 @@ export default class GameView extends Component {
 
 	addGuest(navigation){
 		//TODO: randomize password
-		this.setState({modalType:"AddGuest",guest_password:"butterfly"});
-		this._showModal();
+		this.setState({modalType:"AddGuest",guest_password:"butterfly",isModalVisible:true});
 	}
 
 	async finishGame(navigation){
@@ -245,8 +212,7 @@ export default class GameView extends Component {
 				utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user});
 			}	
 		}else{
-			this.setState({modalType:"FinishGame"});
-			this._showModal();
+			this.setState({modalType:"FinishGame",isModalVisible:true});
 		}
 	}
 
@@ -328,12 +294,10 @@ export default class GameView extends Component {
 		    	{renderHostPicker}
 				<View style={{height:100,flexDirection:'row'}} >
 					<IconButton action={async ()=>{
-						this.setState({modalType:"BuyIn"});
-						this._showModal();
+						this.setState({modalType:"BuyIn",isModalVisible:true});
 					}} name="ios-add-circle-outline" text="Buy In" />
 		    		<IconButton action={async ()=>{
-						this.setState({modalType:"LeaveGame"});
-						this._showModal();
+						this.setState({modalType:"LeaveGame",isModalVisible:true});
 					}} name="ios-exit-outline" text="Leave Game" />
 					<IconButton action={()=>this.refreshGame()} name="ios-refresh-circle-outline" text="Refresh" />
 				</View>
