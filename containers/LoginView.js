@@ -189,14 +189,14 @@ export default class HomeView extends Component {
 				<Modal isVisible={this.state.isModalVisible === true}>
 					{this._renderModalContent()}
 		        </Modal>
-		        
+		        {/*
 				<IconButton name="ios-log-in" text='Log In' action={()=>{
 					this.setState({modalType:'Log In',isModalVisible:true});
 				}} />
 				<IconButton name="ios-create-outline" text="Sign Up" action={()=>{
 					navigation.navigate('RegistrationView');
 				}} />
-
+				*/}
 		        <View style={{margin:5}}>
 					<TouchableOpacity style={styles.iconButton} onPress={()=>{
 						this.FBRegister(navigation);
