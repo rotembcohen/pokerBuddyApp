@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar
+  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView,
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -136,25 +136,27 @@ export default class HomeView extends Component {
 		    case 'BackToPrev':
 		    	return (
 		    		<View style={styles.modalContent}>
-		    			<View style={[styles.inputContainer,{height:50,width:200}]}>
-				    		<Picker
-				        		selectedValue={this.state.game_identifier}
-								onValueChange={(itemValue, itemIndex) => {this.setState({game_identifier: itemValue})}}>
-									<Picker.Item value="" label="Choose Game" key="placeholder" />
-									{this.state.active_games.map((l, i) => {return <Picker.Item value={l.game} label={l.game} key={l.game}  /> })}
-							</Picker>
-						</View>
+		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:480}]}> 
+		    				{this.state.active_games.map((l, i) => {
+		    					if (i!==0){
+		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+		    					}else{
+		    						var elementStyle = {borderTopWidth:0,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+		    					}
+		    					return (
+			    					<TouchableOpacity key={l.game} style={elementStyle} onPress={async ()=>{
+							        	//TODO: check all this occuronces for errors!
+							        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
+							        	this.setState({isModalVisible:false});
+							        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+							        }} >
+			    						<Text style={styles.textSubheader} >{l.game}</Text>
+			    					</TouchableOpacity>
+	    						)
+		    				})}
+						</ScrollView>
 						<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-				      		<IconButton action={async ()=>{
-					        	//TODO: check all this occuronces for errors!
-					        	if (this.state.game_identifier===''){
-					        		return;
-					        	}
-					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
-					        	this.setState({isModalVisible:false});
-					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
-					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
 			        </View>
 	    		);
