@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 	},
 	textinputwide: {
 		height: 40,
-		width: 300,
+		width: 250,
 		textAlign: 'center',
 		borderWidth:1,
 		borderColor:'#ffccbb',
@@ -57,15 +57,6 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: 'red',
 	},
-	// modalButton: {
-	//     backgroundColor: 'lightblue',
-	//     padding: 12,
-	//     margin: 16,
-	//     justifyContent: 'center',
-	//     alignItems: 'center',
-	//     borderRadius: 4,
-	//     borderColor: 'rgba(0, 0, 0, 0.1)',
-	// },
 	iconButton: {
 		margin: 10,
 		justifyContent:'center',
@@ -74,7 +65,7 @@ const styles = StyleSheet.create({
 	modalButton: {
 		backgroundColor: 'white',
 		borderColor: 'red',
-		borderWidth: 2,
+		borderWidth: 1.5,
 		justifyContent: 'center',
 		alignItems: 'center',
 		padding: 5,

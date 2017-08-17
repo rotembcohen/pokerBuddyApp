@@ -42,6 +42,7 @@ export default class GameView extends Component {
 		    guest_venmo: '',
 		    errorLabel: '',
 		    appState: AppState.currentState,
+		    isHostMenuVisible: false,
 		};
 
 	}
@@ -263,19 +264,29 @@ export default class GameView extends Component {
 		let user = this.state.user;
 		if (this.state.is_host){
 			//TODO: can you take the view our?
-			renderHostButtons =
-			(
-				<View>
-					<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
-						<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
-						<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
-						<IconButton action={()=>this.finishGame(navigation)} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
+			if (this.state.isHostMenuVisible){
+				renderHostButtons = (
+					<View style={{height:100}}>
+						<View style={{flexDirection:'row'}}>
+						<IconButton action={()=>this.setState({isHostMenuVisible:false})} name="ios-close-circle-outline" style={{margin:3}} text="" size={20}/>
+						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
+							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
+							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
+							<IconButton action={()=>this.finishGame(navigation)} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
+						</View>
+						</View>
+						<Text style={{textAlign:'center',color:'#ffccbb'}}>
+							Host Actions - Acting as {this.state.selected_player.first_name} {this.state.selected_player.last_name}
+						</Text>
 					</View>
-					<Text style={{textAlign:'center',color:'#ffccbb'}}>
-						Host Actions - Acting as {this.state.selected_player.first_name} {this.state.selected_player.last_name}
-					</Text>
-				</View>
-			);
+				);
+				}else{
+					renderHostButtons = (
+						<View style={{height:30}}>
+						<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
+						</View>
+					);
+				}
 		}
 		var potMoney = this.calcPotMoney();
 		
@@ -306,7 +317,7 @@ export default class GameView extends Component {
 		        <PlayerList game={this.state.game} player={this.state.user}/>
         	</ScrollView>
 
-        	<View style={{height:200,justifyContent:'flex-end',alignItems:'center'}}>
+        	<View style={{justifyContent:'flex-end',alignItems:'center'}}>
 		    	{/*Actions*/}
 				{renderHostButtons}
 		    	<View style={{height:100,flexDirection:'row'}} >

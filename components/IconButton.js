@@ -12,8 +12,8 @@ export default class IconButton extends Component {
 		var size = (this.props.size) ? this.props.size : 50;
 
 		return (
-			<View style={{margin:5}}>
-				<TouchableOpacity style={styles.iconButton} onPress={this.props.action} >
+			<View>
+				<TouchableOpacity style={[styles.iconButton,this.props.style]} onPress={this.props.action} >
 					<Ionicons name={this.props.name} color="red" size={size} />
 					<Text>{this.props.text}</Text>
 				</TouchableOpacity>
