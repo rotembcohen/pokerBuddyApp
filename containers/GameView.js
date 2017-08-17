@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar
+  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar, TouchableOpacity,
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -34,7 +34,7 @@ export default class GameView extends Component {
 			result_amount: 0,
 			is_host: is_host,
 		    isModalVisible: false,
-		    selected_player: '',
+		    selected_player: user,
 		    modalType: '',
 		    guest_first_name: '',
 		    guest_last_name: '',
@@ -140,6 +140,32 @@ export default class GameView extends Component {
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>);
+			case 'SelectPlayer':
+				return (
+					<View style={styles.modalContent}>
+						{/*TODO: move to utils*/}
+		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:480}]}> 
+		    				{this.state.game.bets.map((l, i) => {
+		    					if (i!==0){
+		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+		    					}else{
+		    						var elementStyle = {borderTopWidth:0,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+		    					}
+		    					return (
+			    					<TouchableOpacity key={l.player.id} style={elementStyle} onPress={async ()=>{
+							        	//TODO: check all this occuronces for errors!
+							        	this.setState({isModalVisible:false,selected_player:l.player});
+							        }} >
+			    						<Text style={styles.textSubheader} >{l.player.first_name} {l.player.last_name}</Text>
+			    					</TouchableOpacity>
+	    						)
+		    				})}
+						</ScrollView>
+						<View style={{flexDirection:'row'}}>
+			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+				        </View>
+					</View>
+				);
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -218,6 +244,10 @@ export default class GameView extends Component {
 		}
 	}
 
+	selectPlayer(){
+		this.setState({isModalVisible:true,modalType:'SelectPlayer'});
+	}
+
 	async refreshGame(){
 		console.log('identifier',this.state.game.identifier);
 		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/",'GET',null,this.state.token);
@@ -230,34 +260,20 @@ export default class GameView extends Component {
 	render() {
 		const { navigation } = this.props;
 		var renderHostButtons = null;
-		var renderHostPicker = null;
 		let user = this.state.user;
 		if (this.state.is_host){
 			//TODO: can you take the view our?
 			renderHostButtons =
 			(
-				<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',height:90}} >
-					<IconButton action={()=>{this.addGuest(navigation)}} name="ios-person-add-outline" text="Add Guest"/>
-					<IconButton action={()=>{this.finishGame(navigation)}} name="ios-checkmark-circle-outline" text="Finish Game" />
-				</View>
-			);
-			renderHostPicker = 
-			(
-				<View style={{height:90,borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12}}>
-					<Text style={{textAlign:'center',marginTop:10}}>Take action as:</Text>
-					<Picker
-			        	style={{width:250}}
-						selectedValue={this.state.selected_player}
-						onValueChange={(itemValue, itemIndex) => {this.setState({selected_player: itemValue})}}>
-							{this.state.game.bets.map(
-								(l, i) => {
-									return <Picker.Item 
-										value={l.player.id}
-										label={l.player.first_name + " " + l.player.last_name}
-										key={l.player.id}  /> 
-								}
-							)}
-					</Picker>
+				<View>
+					<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
+						<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
+						<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
+						<IconButton action={()=>this.finishGame(navigation)} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
+					</View>
+					<Text style={{textAlign:'center',color:'#ffccbb'}}>
+						Host Actions - Acting as {this.state.selected_player.first_name} {this.state.selected_player.last_name}
+					</Text>
 				</View>
 			);
 		}
@@ -284,7 +300,6 @@ export default class GameView extends Component {
 		    		<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-pot.png" style={{position:'absolute',top:0,width:75,height:75,opacity: 0.2}} />
 		    	</View>
 	    	</View>
-			{renderHostButtons}
 
 	        <ScrollView contentContainerStyle={{marginTop:10}} >
 	        	{/*Player List*/}
@@ -293,8 +308,8 @@ export default class GameView extends Component {
 
         	<View style={{height:200,justifyContent:'flex-end',alignItems:'center'}}>
 		    	{/*Actions*/}
-		    	{renderHostPicker}
-				<View style={{height:100,flexDirection:'row'}} >
+				{renderHostButtons}
+		    	<View style={{height:100,flexDirection:'row'}} >
 					<IconButton action={async ()=>{
 						this.setState({modalType:"BuyIn",isModalVisible:true});
 					}} name="ios-add-circle-outline" text="Buy In" />

@@ -136,6 +136,7 @@ export default class HomeView extends Component {
 		    case 'BackToPrev':
 		    	return (
 		    		<View style={styles.modalContent}>
+		    			{/*TODO: move to utils*/}
 		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:480}]}> 
 		    				{this.state.active_games.map((l, i) => {
 		    					if (i!==0){
