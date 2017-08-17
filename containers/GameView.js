@@ -55,7 +55,7 @@ export default class GameView extends Component {
 						<Text style={styles.textSubheader}>Add Guest</Text>
 						<View style={styles.inputContainer}>
 							<TextInput
-								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:300}]}
+								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:250}]}
 					      		onChangeText={(text)=>{this.setState({guest_first_name:text})}}
 								value={this.state.guest_first_name}
 								selectTextOnFocus={true}
@@ -65,7 +65,7 @@ export default class GameView extends Component {
 							/>
 							<TextInput
 								ref='Input2'
-								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:300}]}
+								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:250}]}
 					      		onChangeText={(text)=>{this.setState({guest_last_name:text})}}
 								value={this.state.guest_last_name}
 								selectTextOnFocus={true}
@@ -75,11 +75,11 @@ export default class GameView extends Component {
 							/>
 							<TextInput
 								ref='Input3'
-								style={[styles.transparentTextinput,{width:300}]}
+								style={[styles.transparentTextinput,{width:250}]}
 								onChangeText={(text)=>{this.setState({guest_venmo:text})}}
 								value={this.state.guest_venmo}
 								selectTextOnFocus={true}
-								placeholder='Venmo Account (Optional, without the @)'
+								placeholder='Venmo Account (Optional, no @)'
 								onSubmitEditing={()=>this.submitGuest()}
 								underlineColorAndroid="transparent"
 							/>
@@ -95,13 +95,27 @@ export default class GameView extends Component {
 					</View>
 				);
 			case 'FinishGame':
-				return(
-					<View style={styles.modalContent}>
-						<Text>Pot money has to be 0!</Text>
-						<View style={{flexDirection:'row'}}>
-							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
-						</View>
-					</View>);
+				if(this.calcPotMoney() === 0){
+					return(
+						<View style={styles.modalContent}>
+							<Text>Are you sure? This will finish the game and is irreversible.</Text>
+							<View style={{flexDirection:'row'}}>
+								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
+								<IconButton action={()=> {
+									this.setState({isModalVisible:false});
+									this.finishGame();
+								}} name="ios-checkmark-circle-outline" text="Confirm" />
+							</View>
+						</View>);
+				}else{
+					return(
+						<View style={styles.modalContent}>
+							<Text>Pot money has to be 0!</Text>
+							<View style={{flexDirection:'row'}}>
+								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
+							</View>
+						</View>);
+				}
 			case 'BuyIn':
 				return(
 					<View style={styles.modalContent}>
@@ -114,7 +128,7 @@ export default class GameView extends Component {
 						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
-								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
+								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id);
 								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
@@ -136,7 +150,7 @@ export default class GameView extends Component {
 						<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
-								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player);
+								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id);
 								this.setState({game:updated_game,isModalVisible:false});
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
@@ -234,15 +248,12 @@ export default class GameView extends Component {
 		this.setState({modalType:"AddGuest",guest_password:"butterfly",isModalVisible:true});
 	}
 
-	async finishGame(navigation){
-		if(this.calcPotMoney() === 0){
-			const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/finish_game/",'POST',{},this.state.token);
-			if (gameObj.status === 200){
-				utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user});
-			}	
-		}else{
-			this.setState({modalType:"FinishGame",isModalVisible:true});
-		}
+	async finishGame(){
+		navigation = this.state.navigation;
+		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/finish_game/",'POST',{},this.state.token);
+		if (gameObj.status === 200){
+			utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user});
+		}	
 	}
 
 	selectPlayer(){
@@ -272,7 +283,7 @@ export default class GameView extends Component {
 						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
 							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
 							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
-							<IconButton action={()=>this.finishGame(navigation)} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
+							<IconButton action={()=>this.setState({modalType:'FinishGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
 						</View>
 						</View>
 						<Text style={{textAlign:'center',color:'#ffccbb'}}>
