@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AsyncStorage,Text,View,StatusBar } from 'react-native';
 
 import * as utils from '../UtilFunctions';
+import styles from '../Styles';
 
 export default class WelcomeView extends Component{
     
@@ -29,6 +30,11 @@ export default class WelcomeView extends Component{
     }
 
     render(){
-        return (<View><StatusBar hidden={true} /><Text>Welcome!</Text></View>);
+        return (
+            <View style={styles.container}>
+                <StatusBar hidden={true} />
+                <Text style={styles.textHeader}>Welcome to POC<Text style={{color:'red'}}>A</Text>T!</Text>
+            </View>
+        );
     }
 }
