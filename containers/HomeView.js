@@ -137,7 +137,7 @@ export default class HomeView extends Component {
 		    	return (
 		    		<View style={styles.modalContent}>
 		    			{/*TODO: move to utils*/}
-		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:480}]}> 
+		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:375}]}> 
 		    				{this.state.active_games.map((l, i) => {
 		    					if (i!==0){
 		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};

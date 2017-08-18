@@ -73,12 +73,12 @@ export default class PlayerList extends Component {
 		            	}
 		            	return (
 		            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',marginBottom:10}} >
-			            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:250}}>
-			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:250}} >
+			            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:210}}>
+			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:210}} >
 				            			{this.renderPlayerThumb(item.player.picture_url)}
 				            			<Text style={[itemColorStyle,{marginLeft:10}]}>{item.player.first_name} {item.player.last_name}</Text>
 			            			</View>
-			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',width:300}}>
+			            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',width:260}}>
 			            				<Text style={{marginLeft:10}}>Bet: ${item.amount}{renderItemResult}</Text>
 			            			</View>
 		            			</View>

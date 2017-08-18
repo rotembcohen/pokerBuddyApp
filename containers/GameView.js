@@ -121,14 +121,20 @@ export default class GameView extends Component {
 					<View style={styles.modalContent}>
 						<Text style={styles.textSubheader}>Buy in amount:</Text>
 						<View style={[styles.inputContainer,{flexDirection:'row',alignItems:'center',justifyContent:'center'}]}>
-							<IconButton action={()=>{if (this.state.buy_in_amount > 5)this.setState({buy_in_amount:this.state.buy_in_amount-5})}} name="ios-remove-circle-outline" />
+							<IconButton action={()=>{
+								if (this.state.buy_in_amount > 5){
+									this.setState({buy_in_amount:this.state.buy_in_amount-5});
+								}
+							}} name="ios-remove-circle-outline" />
 							<Text style={{fontWeight:'bold',fontSize:30}}>${this.state.buy_in_amount}</Text>
 							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} name="ios-add-circle-outline" />
 						</View>
 						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
-								let updated_game = await utils.buy_in(this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id);
+								let updated_game = await utils.buy_in(
+									this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id
+								);
 								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
@@ -150,7 +156,9 @@ export default class GameView extends Component {
 						<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
-								let updated_game = await utils.leave_game(this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id);
+								let updated_game = await utils.leave_game(
+									this.state.result_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id
+								);
 								this.setState({game:updated_game,isModalVisible:false});
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
@@ -159,7 +167,7 @@ export default class GameView extends Component {
 				return (
 					<View style={styles.modalContent}>
 						{/*TODO: move to utils*/}
-		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:480}]}> 
+		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:375}]}> 
 		    				{this.state.game.bets.map((l, i) => {
 		    					if (i!==0){
 		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
