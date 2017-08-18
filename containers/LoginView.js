@@ -92,7 +92,7 @@ export default class HomeView extends Component {
 			this.setState({errorLabel:response.error});
 		}
 	}
-	
+
 	_renderModalContent = () => {
 		switch (this.state.modalType) {
 			case 'AddVenmo':
@@ -104,10 +104,10 @@ export default class HomeView extends Component {
 							onChangeText={(text)=>{this.setState({fbVenmo:text})}}
 							value={this.state.fbVenmo}
 							selectTextOnFocus={true}
-							keyboardType={'numeric'}
 							placeholder='Venmo Account (without the @)'
 							onSubmitEditing={()=>this.FBLogIn()}
 							underlineColorAndroid="transparent"
+							autoCapitalize='words'
 						/>
 						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
 						<View style={{flexDirection:'row'}}>
