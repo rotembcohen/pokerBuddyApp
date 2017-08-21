@@ -53,10 +53,17 @@ export default class HomeView extends Component {
 			//join game
 			game = await utils.joinGame(game_identifier,this.state.token,this.state.user);
 			this.setState({isModalVisible:false});
+			this.updateActiveGames(game.identifier);
 			navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
 		}
 		//TODO:else
 		
+	}
+
+	updateActiveGames(identifier) {
+		let active_games = this.state.active_games;
+		active_games.push({game:identifier});
+		this.setState({active_games:active_games});
 	}
 
 	_renderModalContent = () => {
@@ -128,6 +135,7 @@ export default class HomeView extends Component {
 					        	//TODO: check all this occuronces for errors!
 					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
+					        	this.updateActiveGames(game.identifier);
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
 					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
@@ -200,6 +208,15 @@ export default class HomeView extends Component {
 	render() {
 		navigation = this.state.navigation;
 		let active_games = this.state.active_games;
+		let prevGameColor = null;
+		let prevGameAction = null;
+		if (active_games.length > 0){
+			prevGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})};
+		} else {
+			prevGameAction = ()=>{};
+			prevGameColor = '#ccc';
+		}
+		let prevGameButton = (<IconButton name="ios-log-in" text='Back To Previous Game' action={prevGameAction} color={prevGameColor} />);
 		return (
 	      <View style={styles.container}>
 	      	{/*Headers*/}
@@ -209,7 +226,7 @@ export default class HomeView extends Component {
 	        </Modal>
 	        
 	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-	        <IconButton name="ios-log-in" text='Back To Previous Game' action={()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})}} />
+	        {prevGameButton}
 	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
 
 	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
