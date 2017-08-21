@@ -60,6 +60,8 @@ export async function joinGame(game_identifier,token,user){
 		game = JSON.parse(response._bodyText);
 
 		return game;
+	}else{
+		return {error:'Game address not found'};
 	}
 }
 

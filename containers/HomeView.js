@@ -29,6 +29,7 @@ export default class HomeView extends Component {
 			min_bet: 20,
 			new_venmo_username: navigation.state.params.user.venmo_username,
 			modalType: '',
+			errorLabel: '',
 		};
 		this.getActiveGames();
 	}
@@ -129,11 +130,16 @@ export default class HomeView extends Component {
 					      		underlineColorAndroid="transparent"
 				      		/>
 			      		</View>
+			      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 			      		<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async ()=>{
 					        	//TODO: check all this occuronces for errors!
 					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
+					        	if (game.error){
+					        		this.setState({errorLabel:game.error});
+					        		return;
+					        	}
 					        	this.setState({isModalVisible:false});
 					        	this.updateActiveGames(game.identifier);
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
@@ -227,7 +233,7 @@ export default class HomeView extends Component {
 	        
 	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 	        {prevGameButton}
-	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({isModalVisible:true,modalType:'JoinGame'})}} />
+	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
 
 	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
 	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
