@@ -360,8 +360,3 @@ export default class GameView extends Component {
 	}
 
 }
-
-
-
-
-4
