@@ -13,7 +13,7 @@ import SafeImage from '../components/SafeImage';
 export default class HomeView extends Component {
 
 	static navigationOptions = {
-		title: 'pocAt v0.1'
+		title: 'POCAT v0.2'
 	}
 
 	constructor(props){

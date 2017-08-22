@@ -11,7 +11,7 @@ export default class RegistrationView extends Component {
 
 
 	static navigationOptions = {
-		title: 'pocAt Registration'
+		title: 'POCAT Registration'
 	}
 
 	constructor(props){

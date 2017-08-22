@@ -7,7 +7,7 @@ import styles from '../Styles';
 export default class WelcomeView extends Component{
     
     static navigationOptions = {
-        title: 'pocAt v0.1'
+        title: 'POCAT v0.2'
     }
 
     constructor(props){
