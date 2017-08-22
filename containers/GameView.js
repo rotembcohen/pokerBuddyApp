@@ -82,11 +82,9 @@ export default class GameView extends Component {
 								placeholder='Venmo Account (Optional, no @)'
 								onSubmitEditing={()=>this.submitGuest()}
 								underlineColorAndroid="transparent"
+								autoCapitalize='words'
 							/>
 						</View>
-						<Text>This guest would be able to login in the future using the credentials:</Text>
-						<Text>Username:{this.state.guest_first_name}-{this.state.guest_last_name}</Text>
-						<Text>Password:{this.state.guest_password}</Text>
 						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 						<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
