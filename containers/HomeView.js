@@ -134,14 +134,25 @@ export default class HomeView extends Component {
 			      		<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async ()=>{
-					        	//TODO: check all this occuronces for errors!
+					        	//TODO: better generic error handling
+					        	
+					        	//join game
 					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
 					        	if (game.error){
 					        		this.setState({errorLabel:game.error});
 					        		return;
 					        	}
+
+					        	//check if game is already in active games list
+					        	let active_games = this.state.active_games;
+					        	let game_already_active = active_games.find((elem)=>{return elem.game == this.state.game_identifier});
+					        	
+					        	if(game_already_active == null){
+					        		//if not there, add to it
+				        			this.updateActiveGames(game.identifier);
+					        	}
+
 					        	this.setState({isModalVisible:false});
-					        	this.updateActiveGames(game.identifier);
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
 					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
