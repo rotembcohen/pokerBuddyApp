@@ -122,8 +122,16 @@ export default class GameView extends Component {
 						<Text style={styles.textSubheader}>Buy in amount:</Text>
 						<View style={[styles.inputContainer,{flexDirection:'row',alignItems:'center',justifyContent:'center'}]}>
 							<IconButton action={()=>{
-								if (this.state.buy_in_amount > 5){
+								if (this.state.is_host){
+									let bets = this.state.game.bets;
+									let selected_bet = bets.find((elem)=>{return elem.player.id == this.state.selected_player.id});
+									if (this.state.buy_in_amount > (-1 * selected_bet.amount)){
+										this.setState({buy_in_amount:this.state.buy_in_amount-5});
+									}
+								} else if (this.state.buy_in_amount > 5){
 									this.setState({buy_in_amount:this.state.buy_in_amount-5});
+								} else {
+									return;
 								}
 							}} name="ios-remove-circle-outline" />
 							<Text style={{fontWeight:'bold',fontSize:30}}>${this.state.buy_in_amount}</Text>
