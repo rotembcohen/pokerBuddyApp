@@ -2,6 +2,8 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
+import { Permissions, Notifications } from 'expo';
+
 //TODO: better network error check across the board
 
 export async function fetchFromServer(relative_url,method,body_dict,token=null){
@@ -174,3 +176,39 @@ export async function user_registration(form,login=true) {
 		}
 	}
 }
+
+//handle push notifications
+export async function registerForPushNotificationsAsync(user_id) {
+	const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+	let finalStatus = existingStatus;
+
+	// only ask if permissions have not already been determined, because
+	// iOS won't necessarily prompt the user a second time.
+	if (existingStatus !== 'granted') {
+		// Android remote notification permissions are granted during the app
+		// install, so this will only ask on iOS
+		const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+		finalStatus = status;
+	}
+
+	// Stop here if the user did not grant permissions
+	if (finalStatus !== 'granted') {
+		return;
+	}
+
+	// Get the token that uniquely identifies this device
+	let token = await Notifications.getExpoPushTokenAsync();
+
+	// POST the token to our backend so we can use it to send pushes from there
+	response = await fetchFromServer('users/'+ user_id +'/push_token/','POST',{
+			push_token: token,
+		},null);
+	
+	if (response.status === 200){
+		user = await response.json();
+		return {user: user,error:'None'};
+	}
+
+	return {error:'Server Error'};
+}
+

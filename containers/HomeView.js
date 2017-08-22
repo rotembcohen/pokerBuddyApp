@@ -31,7 +31,19 @@ export default class HomeView extends Component {
 			modalType: '',
 			errorLabel: '',
 		};
+
 		this.getActiveGames();
+
+		this.getPushToken(navigation.state.params.user);
+	}
+
+	//TODO: remove this after implemented in registration
+	//need to test on iOS and make sure it works perferctly
+	async getPushToken(user){
+		if (!user.push_token){
+			response = await utils.registerForPushNotificationsAsync(user.id);
+			await AsyncStorage.setItem('@pokerBuddy:user', JSON.stringify(response.user));
+		}
 	}
 	
 	async createGame(navigation){
