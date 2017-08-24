@@ -196,8 +196,7 @@ export default class GameView extends Component {
 					        	//TODO: check all this occuronces for errors!
 					        	this.setState({isModalVisible:false,selected_player:l.player});
 					        }}
-					        textStyle={styles.textSubheader}
-					        textExtractor={(l,i)=>l.player.first_name + " " + l.player.last_name}
+					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.player.first_name} {l.player.last_name}</Text>}
 						/>
 						<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />

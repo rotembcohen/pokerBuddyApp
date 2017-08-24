@@ -183,8 +183,7 @@ export default class HomeView extends Component {
 					        	this.setState({isModalVisible:false});
 					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
 					        }}
-					        textStyle={styles.textSubheader}
-					        textExtractor={(l,i)=>l.game}
+					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
 						/>
 		    			<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, } from 'react-native';
+import { View, ScrollView, TouchableOpacity, } from 'react-native';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -26,7 +26,7 @@ export default class ComponentName extends Component {
 					}
 					return (
 						<TouchableOpacity key={this.props.keyExtractor(l,i)} style={elementStyle} onPress={this.props.onPressElement(l,i)} >
-							<Text style={this.props.textStyle} >{this.props.textExtractor(l,i)}</Text>
+							{this.props.textExtractor(l,i)}
 						</TouchableOpacity>
 					)
 				})}
