@@ -13,6 +13,16 @@ import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
 
+import Pusher from 'pusher-js/react-native';
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+var pusher = new Pusher('442e9fce1c86b001266e', {
+  cluster: 'us2',
+  encrypted: true
+});
+
 export default class GameView extends Component {
 
 	static navigationOptions = {
@@ -44,6 +54,12 @@ export default class GameView extends Component {
 		    appState: AppState.currentState,
 		    isHostMenuVisible: false,
 		};
+
+		var channel = pusher.subscribe(game.identifier);
+		channel.bind('game-update', function(data) {
+		  this.setState({game:data.game});
+		  console.log("WOOOP");
+		}.bind(this));
 
 	}
 
