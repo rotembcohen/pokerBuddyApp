@@ -272,9 +272,6 @@ export default class GameView extends Component {
 	async finishGame(){
 		navigation = this.state.navigation;
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/finish_game/",'POST',{},this.state.token);
-		if (gameObj.status === 200){
-			utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user});
-		}	
 	}
 
 	selectPlayer(){
@@ -319,6 +316,19 @@ export default class GameView extends Component {
 					);
 				}
 		}
+		if (this.state.game.is_active){
+			var renderPlayerButtons = (
+				<View style={{height:100,flexDirection:'row'}} >
+	    			<IconButton action={
+						()=>this.setState({modalType:"BuyIn",isModalVisible:true})
+					} name="ios-add-circle-outline" text="Buy In" />
+		    		<IconButton action={
+						()=>this.setState({modalType:"LeaveGame",isModalVisible:true})
+					} name="ios-exit-outline" text="Leave Game" />
+				</View>
+			);
+			var renderList = <PlayerList game={this.state.game} player={this.state.user}/>;
+		}
 		var potMoney = this.calcPotMoney();
 		
 		return (
@@ -351,15 +361,7 @@ export default class GameView extends Component {
         	<View style={{justifyContent:'flex-end',alignItems:'center'}}>
 		    	{/*Actions*/}
 				{renderHostButtons}
-		    	<View style={{height:100,flexDirection:'row'}} >
-					<IconButton action={async ()=>{
-						this.setState({modalType:"BuyIn",isModalVisible:true});
-					}} name="ios-add-circle-outline" text="Buy In" />
-		    		<IconButton action={async ()=>{
-						this.setState({modalType:"LeaveGame",isModalVisible:true});
-					}} name="ios-exit-outline" text="Leave Game" />
-					{/*<IconButton action={()=>this.refreshGame()} name="ios-refresh-circle-outline" text="Refresh" />*/}
-				</View>
+				{renderPlayerButtons}
 			</View>
 	      </View>
 	    );
