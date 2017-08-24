@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import PlayerList from '../components/PlayerList';
+import ResultList from '../components/ResultList';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
@@ -54,12 +55,19 @@ export default class GameView extends Component {
 		    errorLabel: '',
 		    appState: AppState.currentState,
 		    isHostMenuVisible: false,
+		    paying_player_id: null,
+		    paying_amount: 0,
 		};
 
 		var channel = pusher.subscribe(game.identifier);
 		channel.bind('game-update', function(data) {
 		  this.setState({game:data.game});
 		}.bind(this));
+
+		//TODO: any other way to solve this?
+		console.ignoredYellowBox = [
+			'Setting a timer'
+		];
 
 	}
 
@@ -203,6 +211,43 @@ export default class GameView extends Component {
 				        </View>
 					</View>
 				);
+			case 'ConfirmPayment':
+				return (
+					<View style={styles.modalContent}>
+						<Text style={styles.textHeader}>Confirm transfer received</Text>
+						<Text style={styles.textSubheader}>From:</Text>
+						<ListPicker
+							containerStyle={{width:200,maxHeight:175}} 
+							optionArray={this.state.game.bets}
+							keyExtractor={(l,i)=>l.player.id}
+							onPressElement={(l,i)=> ()=>{
+					        	this.setState({paying_player_id:l.player.id})
+							}}
+					        textExtractor={(l,i) => {
+					        	let textStyle = (this.state.paying_player_id===l.player.id) ? [styles.regularText,{fontWeight:'bold'}] : styles.regularText;
+						        return <Text style={textStyle} >{l.player.first_name} {l.player.last_name}</Text>;
+					        }}
+						/>
+						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+							<Text style={[styles.textSubheader,{marginRight:5}]}>Of:</Text>
+							<TextInput
+								style={styles.textinput}
+								onChangeText={(text)=>{this.setState({paying_amount:text})}}
+								value={this.state.paying_amount.toString()}
+								keyboardType='numeric'
+								underlineColorAndroid="transparent"
+								onSubmitEditing={()=>{/*TODO*/}}
+								selectTextOnFocus={true}
+							/>
+						</View>
+						<View style={{flexDirection:'row'}}>
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			        		<IconButton action={async () => {
+								this.setState({isModalVisible:false});
+							}} name="ios-checkmark-circle-outline" text="Confirm" />
+						</View>
+					</View>
+				);
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -316,6 +361,7 @@ export default class GameView extends Component {
 					);
 				}
 		}
+		
 		if (this.state.game.is_active){
 			var renderPlayerButtons = (
 				<View style={{height:100,flexDirection:'row'}} >
@@ -328,7 +374,18 @@ export default class GameView extends Component {
 				</View>
 			);
 			var renderList = <PlayerList game={this.state.game} player={this.state.user}/>;
+		}else{
+			var renderPlayerButtons = (
+				<View style={{height:100,flexDirection:'row'}} >
+	    			<IconButton action={
+						()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true})
+					} name="ios-cash-outline" text="Confirm Payment" />
+				</View>
+			);
+			var renderList = <ResultList game={this.state.game} player={this.state.user}/>;
 		}
+
+
 		var potMoney = this.calcPotMoney();
 		
 		return (
@@ -355,7 +412,7 @@ export default class GameView extends Component {
 
 	        <ScrollView contentContainerStyle={{marginTop:10}} >
 	        	{/*Player List*/}
-		        <PlayerList game={this.state.game} player={this.state.user}/>
+		        {renderList}
         	</ScrollView>
 
         	<View style={{justifyContent:'flex-end',alignItems:'center'}}>
