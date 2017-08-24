@@ -9,6 +9,7 @@ import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
+import ListPicker from '../components/ListPicker';
 
 export default class HomeView extends Component {
 
@@ -172,27 +173,20 @@ export default class HomeView extends Component {
 		    case 'BackToPrev':
 		    	return (
 		    		<View style={styles.modalContent}>
-		    			{/*TODO: move to utils*/}
-		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:375}]}> 
-		    				{this.state.active_games.map((l, i) => {
-		    					if (i!==0){
-		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
-		    					}else{
-		    						var elementStyle = {borderTopWidth:0,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
-		    					}
-		    					return (
-			    					<TouchableOpacity key={l.game} style={elementStyle} onPress={async ()=>{
-							        	//TODO: check all this occuronces for errors!
-							        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
-							        	this.setState({isModalVisible:false});
-							        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
-							        }} >
-			    						<Text style={styles.textSubheader} >{l.game}</Text>
-			    					</TouchableOpacity>
-	    						)
-		    				})}
-						</ScrollView>
-						<View style={{flexDirection:'row'}}>
+		    			<ListPicker
+							containerStyle={{width:200,maxHeight:375}} 
+							optionArray={this.state.active_games}
+							keyExtractor={(l,i)=>l.game}
+							onPressElement={(l,i)=> async ()=>{
+					        	//TODO: check all this occuronces for errors!
+					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
+					        	this.setState({isModalVisible:false});
+					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        }}
+					        textStyle={styles.textSubheader}
+					        textExtractor={(l,i)=>l.game}
+						/>
+		    			<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
 			        </View>

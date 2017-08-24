@@ -12,6 +12,7 @@ import PlayerList from '../components/PlayerList';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
+import ListPicker from '../components/ListPicker';
 
 import Pusher from 'pusher-js/react-native';
 
@@ -188,23 +189,17 @@ export default class GameView extends Component {
 				return (
 					<View style={styles.modalContent}>
 						{/*TODO: move to utils*/}
-		    			<ScrollView style={[styles.inputContainer,{width:200,maxHeight:375}]}> 
-		    				{this.state.game.bets.map((l, i) => {
-		    					if (i!==0){
-		    						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
-		    					}else{
-		    						var elementStyle = {borderTopWidth:0,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
-		    					}
-		    					return (
-			    					<TouchableOpacity key={l.player.id} style={elementStyle} onPress={async ()=>{
-							        	//TODO: check all this occuronces for errors!
-							        	this.setState({isModalVisible:false,selected_player:l.player});
-							        }} >
-			    						<Text style={styles.textSubheader} >{l.player.first_name} {l.player.last_name}</Text>
-			    					</TouchableOpacity>
-	    						)
-		    				})}
-						</ScrollView>
+		    			<ListPicker
+							containerStyle={{width:200,maxHeight:375}} 
+							optionArray={this.state.game.bets}
+							keyExtractor={(l,i)=>l.player.id}
+							onPressElement={(l,i)=> async ()=>{
+					        	//TODO: check all this occuronces for errors!
+					        	this.setState({isModalVisible:false,selected_player:l.player});
+					        }}
+					        textStyle={styles.textSubheader}
+					        textExtractor={(l,i)=>l.player.first_name + " " + l.player.last_name}
+						/>
 						<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
