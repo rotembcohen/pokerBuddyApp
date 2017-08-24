@@ -188,8 +188,7 @@ export default class GameView extends Component {
 			case 'SelectPlayer':
 				return (
 					<View style={styles.modalContent}>
-						{/*TODO: move to utils*/}
-		    			<ListPicker
+						<ListPicker
 							containerStyle={{width:200,maxHeight:375}} 
 							optionArray={this.state.game.bets}
 							keyExtractor={(l,i)=>l.player.id}
