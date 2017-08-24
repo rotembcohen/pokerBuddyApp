@@ -365,7 +365,7 @@ export default class GameView extends Component {
 		    		<IconButton action={async ()=>{
 						this.setState({modalType:"LeaveGame",isModalVisible:true});
 					}} name="ios-exit-outline" text="Leave Game" />
-					<IconButton action={()=>this.refreshGame()} name="ios-refresh-circle-outline" text="Refresh" />
+					{/*<IconButton action={()=>this.refreshGame()} name="ios-refresh-circle-outline" text="Refresh" />*/}
 				</View>
 			</View>
 	      </View>
