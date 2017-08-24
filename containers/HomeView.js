@@ -55,7 +55,6 @@ export default class HomeView extends Component {
 			min_bet: this.state.min_bet
 		},this.state.token);
 
-		console.log(response.status);
 		//game created succesfully
 		if (response.status===201){
 			//get new game identifier
@@ -213,7 +212,6 @@ export default class HomeView extends Component {
 		if (response.status===200){
 			let response_json = JSON.parse(response._bodyText);
 			this.setState({active_games:response_json});
-			//console.log("active_games",this.state.active_games[0].game);
 		}
 	}
 

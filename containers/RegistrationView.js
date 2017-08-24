@@ -45,7 +45,6 @@ export default class RegistrationView extends Component {
 		const navigation = this.state.navigation;
 
 		//form validation
-		console.log("form: ", JSON.stringify(form))
 		this.setState({errorLabel:""});
 		if (form.password !== form.password_confirm){
 			this.setState({errorLabel:"Passwords don't match"});

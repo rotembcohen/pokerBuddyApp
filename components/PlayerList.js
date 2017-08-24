@@ -28,7 +28,7 @@ export default class PlayerList extends Component {
 		var url = "venmo://paycharge?txn=pay" + recipients_field + "&amount=" + target_amount + "&note=You brilliant Poker player, have some cash%21";
 		
 		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
-		  console.log("app link success");
+		  // console.log("app link success");
 		})
 		.catch((err) => {
 		  console.log("app link error: ", error);

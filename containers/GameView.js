@@ -58,7 +58,6 @@ export default class GameView extends Component {
 		var channel = pusher.subscribe(game.identifier);
 		channel.bind('game-update', function(data) {
 		  this.setState({game:data.game});
-		  console.log("WOOOP");
 		}.bind(this));
 
 	}
@@ -248,7 +247,6 @@ export default class GameView extends Component {
 		}
 		var response = await utils.user_registration(form,false);
 		if (response.error === 'None'){
-			console.log("response user",response.user.id);
 			game = await utils.joinGame(this.state.game.identifier,this.state.token,response.user);
 
 			this.setState({
@@ -291,7 +289,6 @@ export default class GameView extends Component {
 	}
 
 	async refreshGame(){
-		console.log('identifier',this.state.game.identifier);
 		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/",'GET',null,this.state.token);
 		if (response.status === 200){
 			const game = await response.json();

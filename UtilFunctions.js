@@ -85,7 +85,7 @@ export async function loginWithCreds(username,password){
 		let token = responseJson.token;	
 		let userObj = responseJson.user;
 		let user = JSON.stringify(userObj);
-		console.log("Recieved token: " + token);
+		//console.log("Recieved token: " + token);
 		//TODO: remove everything but saving token?
 		await AsyncStorage.multiSet([['@pokerBuddy:token', token], ['@pokerBuddy:user', user]]);
 
