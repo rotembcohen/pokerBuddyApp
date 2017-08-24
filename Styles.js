@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 	},
 	regularText: {
 		fontSize: 16,
+		textAlign: 'center',
 	},
 	strikethroughText: {
 		fontSize: 16,

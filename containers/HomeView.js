@@ -26,6 +26,7 @@ export default class HomeView extends Component {
 			user: navigation.state.params.user,
 			game_identifier: '',
 			active_games: [],
+			past_games: [],
 			isModalVisible: false,
 			min_bet: 20,
 			new_venmo_username: navigation.state.params.user.venmo_username,
@@ -34,8 +35,10 @@ export default class HomeView extends Component {
 		};
 
 		this.getActiveGames();
+		this.getPastGames();
 
 		this.getPushToken(navigation.state.params.user);
+		
 	}
 
 	//TODO: remove this after implemented in registration
@@ -190,6 +193,26 @@ export default class HomeView extends Component {
 				        </View>
 			        </View>
 	    		);
+    		case 'BackToPast':
+		    	return (
+		    		<View style={styles.modalContent}>
+		    			<ListPicker
+							containerStyle={{width:200,maxHeight:375}} 
+							optionArray={this.state.past_games}
+							keyExtractor={(l,i)=>l.game}
+							onPressElement={(l,i)=> async ()=>{
+					        	//TODO: check all this occuronces for errors!
+					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
+					        	this.setState({isModalVisible:false});
+					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        }}
+					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
+						/>
+		    			<View style={{flexDirection:'row'}}>
+			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+				        </View>
+			        </View>
+	    		);
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
@@ -205,6 +228,19 @@ export default class HomeView extends Component {
 		if (response.status===200){
 			let response_json = JSON.parse(response._bodyText);
 			this.setState({active_games:response_json});
+		}
+	}
+
+	async getPastGames(){
+		const response = await utils.fetchFromServer(
+			'users/' + this.state.user.id + '/past_games/',
+			'GET',
+			null,
+			this.state.token
+		);
+		if (response.status===200){
+			let response_json = JSON.parse(response._bodyText);
+			this.setState({past_games:response_json});
 		}
 	}
 
@@ -227,6 +263,7 @@ export default class HomeView extends Component {
 
 	render() {
 		navigation = this.state.navigation;
+		
 		let active_games = this.state.active_games;
 		let prevGameColor = null;
 		let prevGameAction = null;
@@ -236,7 +273,20 @@ export default class HomeView extends Component {
 			prevGameAction = ()=>{};
 			prevGameColor = '#ccc';
 		}
-		let prevGameButton = (<IconButton name="ios-log-in" text='Back To Previous Game' action={prevGameAction} color={prevGameColor} />);
+		let prevGameButton = (<IconButton name="ios-log-in" text='Rejoin Game' action={prevGameAction} color={prevGameColor} />);
+
+		let past_games = this.state.past_games;
+		let pastGameColor = null;
+		let pastGameAction = null;
+		if (past_games.length > 0){
+			pastGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPast'})};
+		} else {
+			pastGameAction = ()=>{};
+			pastGameColor = "#ccc";
+		}
+		let pastGameButton = (<IconButton name="ios-timer-outline" text='Past Games' action={pastGameAction} color={pastGameColor} />);
+
+		
 		return (
 	      <View style={styles.container}>
 	      	{/*Headers*/}
@@ -246,9 +296,10 @@ export default class HomeView extends Component {
 	        </Modal>
 	        
 	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-	        {prevGameButton}
-	      	<IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
-
+	        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
+	      	{prevGameButton}
+	      	{pastGameButton}
+	      	
 	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
 	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
 	        		<SafeImage uri={this.state.user.picture_url} style={{width:30,height:30,borderWidth:0,borderRadius:12,borderColor:'white',margin:10}} />
