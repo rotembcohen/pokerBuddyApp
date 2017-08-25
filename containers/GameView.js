@@ -212,13 +212,16 @@ export default class GameView extends Component {
 					</View>
 				);
 			case 'ConfirmPayment':
+				let losing_bets = this.state.game.bets.filter( (l, i) => {
+				    return ((Number(l.result) - Number(l.amount) < 0) && (l.player.id !== this.state.selected_player.id));
+				});
 				return (
 					<View style={styles.modalContent}>
 						<Text style={styles.textHeader}>Confirm transfer received</Text>
 						<Text style={styles.textSubheader}>From:</Text>
 						<ListPicker
 							containerStyle={{width:200,maxHeight:175}} 
-							optionArray={this.state.game.bets}
+							optionArray={losing_bets}
 							keyExtractor={(l,i)=>l.player.id}
 							onPressElement={(l,i)=> ()=>{
 					        	this.setState({paying_player_id:l.player.id})
@@ -240,10 +243,17 @@ export default class GameView extends Component {
 								selectTextOnFocus={true}
 							/>
 						</View>
+						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 						<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
-								this.setState({isModalVisible:false});
+			        			this.setState({errorLabel:''});
+								let response = await this.confirmPayment();
+								if (response.error === "None"){
+									this.setState({isModalVisible:false});
+								}else{
+									this.setState({errorLabel:response.error});
+								}
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>
@@ -269,6 +279,22 @@ export default class GameView extends Component {
 		}
 	}
 
+	async confirmPayment(){
+		if (this.state.paying_amount <= 0){
+			return {error:"Amount has to be bigger than 0"};
+		}
+		if (!this.state.paying_player_id || this.state.paying_player_id == this.state.selected_player.id){
+			return {error:"Please select a player"};
+		}
+		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/confirm_payment/",'POST',{
+			source_id: this.state.paying_player_id,
+			amount: this.state.paying_amount,
+		},this.state.token);
+		if (response.status !== 200){
+			return {error:"Server Error: "+response.status};
+		}
+		return {error:"None"};
+	}
 
 	async submitGuest(){
 		this.setState({errorLabel:''})
@@ -378,7 +404,7 @@ export default class GameView extends Component {
 			var renderPlayerButtons = (
 				<View style={{height:100,flexDirection:'row'}} >
 	    			<IconButton action={
-						()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true})
+						()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
 					} name="ios-cash-outline" text="Confirm Payment" />
 				</View>
 			);
