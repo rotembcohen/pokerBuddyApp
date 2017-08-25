@@ -280,8 +280,8 @@ export default class GameView extends Component {
 	}
 
 	async confirmPayment(){
-		if (this.state.paying_amount <= 0){
-			return {error:"Amount has to be bigger than 0"};
+		if (this.state.paying_amount < 0){
+			return {error:"Amount has to be a positive number"};
 		}
 		if (!this.state.paying_player_id || this.state.paying_player_id == this.state.selected_player.id){
 			return {error:"Please select a player"};
@@ -289,6 +289,7 @@ export default class GameView extends Component {
 		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/confirm_payment/",'POST',{
 			source_id: this.state.paying_player_id,
 			amount: this.state.paying_amount,
+			target_id: this.state.selected_player.id,
 		},this.state.token);
 		if (response.status !== 200){
 			return {error:"Server Error: "+response.status};
@@ -408,7 +409,7 @@ export default class GameView extends Component {
 					} name="ios-cash-outline" text="Confirm Payment" />
 				</View>
 			);
-			var renderList = <ResultList game={this.state.game} player={this.state.user}/>;
+			var renderList = <ResultList game={this.state.game} player={this.state.user} />;
 		}
 
 
