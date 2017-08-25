@@ -14,6 +14,7 @@ import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
+import CalculatorInput from '../components/CalculatorInput';
 
 import Pusher from 'pusher-js/react-native';
 
@@ -57,6 +58,12 @@ export default class GameView extends Component {
 		    isHostMenuVisible: false,
 		    paying_player_id: null,
 		    paying_amount: 0,
+		    result_calc_1: 0,
+		    result_calc_2: 0,
+		    result_calc_3: 0,
+		    result_calc_4: 0,
+		    result_calc_5: 0,
+		    isCalcVisible: false,
 		};
 
 		var channel = pusher.subscribe(game.identifier);
@@ -197,8 +204,13 @@ export default class GameView extends Component {
 							selectTextOnFocus={true}
 							placeholder='Final result'
 							underlineColorAndroid="transparent"
+							editable={!this.state.isCalcVisible}
 						/>
+
+						{this.renderResultCalc()}
+
 						<View style={{flexDirection:'row'}}>
+							<IconButton action={()=> this.setState({isCalcVisible:!this.state.isCalcVisible})} name="ios-calculator-outline" text="Calculator" />
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
 								let updated_game = await utils.leave_game(
@@ -292,6 +304,35 @@ export default class GameView extends Component {
 			}
 			this.setState({appState: nextAppState});
 		}
+	}
+
+	renderResultCalc() {
+
+		if(this.state.isCalcVisible){
+		return (
+			<View>
+				<View style={{flexDirection:'row'}}>
+					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_1:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_1} borderColor={'#ccc'} text="$1/4"/>
+					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_2:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_2} borderColor={'#f00'} text="$1/2"/>
+					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_3:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_3} borderColor={'#0c0'} text="$1"/>
+					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_4:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_4} borderColor={'#00f'} text="$2"/>
+					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_5:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_5} borderColor={'#000'} text="$4"/>
+				</View>
+			</View>
+		)
+		}else{
+			return null;
+		}
+	}
+
+	calcResult(){
+		return (
+			this.state.result_calc_1 * 0.25 +
+			this.state.result_calc_2 * 0.5 +
+			this.state.result_calc_3 * 1 +
+			this.state.result_calc_4 * 2 +
+			this.state.result_calc_5 * 4
+		);
 	}
 
 	async confirmPayment(){
