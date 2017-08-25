@@ -10,7 +10,7 @@ export default class CalculatorInput extends Component {
 		return (
 			<View>
 				<TextInput
-					style={[styles.textinput,{borderColor:this.props.borderColor,width:50,margin:5}]}
+					style={[styles.textinput,{borderColor:this.props.borderColor,width:50,margin:3}]}
 					onChangeText={this.props.onChangeText}
 					value={this.props.value.toString()}
 					keyboardType='numeric'

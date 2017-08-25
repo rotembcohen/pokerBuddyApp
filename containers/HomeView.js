@@ -295,10 +295,14 @@ export default class HomeView extends Component {
 				{this._renderModalContent()}
 	        </Modal>
 	        
-	        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-	        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
-	      	{prevGameButton}
-	      	{pastGameButton}
+	        <View style={{flexDirection:'row'}}>
+		        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+		        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
+	        </View>
+	        <View style={{flexDirection:'row'}}>
+		      	{prevGameButton}
+		      	{pastGameButton}
+	      	</View>
 	      	
 	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
 	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
