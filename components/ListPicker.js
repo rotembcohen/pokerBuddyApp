@@ -15,7 +15,6 @@ import * as utils from '../UtilFunctions';
 export default class ComponentName extends Component {
 
 	render() {
-		console.log("optionArray: ",this.props.optionArray);
 		return (
 			<ScrollView style={[styles.inputContainer,this.props.containerStyle]}> 
 				{this.props.optionArray.map((l, i) => {

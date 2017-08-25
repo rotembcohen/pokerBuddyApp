@@ -70,7 +70,7 @@ export default class HomeView extends Component {
 			game = await utils.joinGame(game_identifier,this.state.token,this.state.user);
 			this.setState({isModalVisible:false});
 			this.updateActiveGames(game.identifier);
-			navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+			utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 		}
 		//TODO:else
 		
@@ -168,7 +168,7 @@ export default class HomeView extends Component {
 					        	}
 
 					        	this.setState({isModalVisible:false});
-					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 					        }} name="ios-checkmark-circle-outline" text="Join" />
 				        </View>
 			        </View>
@@ -184,7 +184,7 @@ export default class HomeView extends Component {
 					        	//TODO: check all this occuronces for errors!
 					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
-					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 					        }}
 					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
 						/>
@@ -204,7 +204,7 @@ export default class HomeView extends Component {
 					        	//TODO: check all this occuronces for errors!
 					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
-					        	navigation.navigate('GameView',{game: game,user: this.state.user,token:this.state.token});
+					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 					        }}
 					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
 						/>

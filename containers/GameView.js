@@ -138,6 +138,21 @@ export default class GameView extends Component {
 							</View>
 						</View>);
 				}
+			case 'ApproveGame':
+				case 'FinishGame':
+					return(
+						<View style={styles.modalContent}>
+							<Text>Are you sure? This will end the game and no more payments can be listed.</Text>
+							<View style={{flexDirection:'row'}}>
+								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
+								<IconButton action={async ()=> {
+									await this.approveGame();
+									//TODO: check if error
+									this.setState({isModalVisible:false});
+								}} name="ios-checkmark-circle-outline" text="Confirm" />
+							</View>
+						</View>);
+				
 			case 'BuyIn':
 				return(
 					<View style={styles.modalContent}>
@@ -330,10 +345,26 @@ export default class GameView extends Component {
 
 	calcPotMoney(){
 		var potMoney = 0;
+		var earningsTotal = 0;
 		this.state.game.bets.forEach(function(player) {
-		    potMoney = potMoney + Number(player.amount) - Number(player.result);
+			let earnings = Number(player.result) - Number(player.amount);
+		    potMoney = potMoney + earnings;
+		    if (earnings > 0){
+		    	earningsTotal = earningsTotal + earnings;
+		    }
 		});
-		return potMoney;
+
+		return {earningsTotal:earningsTotal,potMoney:potMoney};
+	}
+
+	calcPaidMoney(){
+		var paidMoney = 0;
+		this.state.game.bets.forEach(function(bet) {
+			bet.payments.forEach(function(payment) {
+				paidMoney = paidMoney + Number(payment.amount);
+			});
+		});
+		return paidMoney;
 	}
 
 	addGuest(navigation){
@@ -344,6 +375,11 @@ export default class GameView extends Component {
 	async finishGame(){
 		navigation = this.state.navigation;
 		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/finish_game/",'POST',{},this.state.token);
+	}
+
+	async approveGame(){
+		navigation = this.state.navigation;
+		const gameObj = await utils.fetchFromServer('games/' + this.state.game.identifier + "/approve_game/",'POST',{is_approved: true},this.state.token);
 	}
 
 	selectPlayer(){
@@ -360,38 +396,56 @@ export default class GameView extends Component {
 
 	render() {
 		const { navigation } = this.props;
-		var renderHostButtons = null;
+		var renderHostMenu = null;
 		let user = this.state.user;
-		if (this.state.is_host){
+		if (this.state.is_host && !this.state.game.is_approved){
 			//TODO: can you take the view our?
 			if (this.state.isHostMenuVisible){
-				renderHostButtons = (
-					<View style={{height:100}}>
-						<View style={{flexDirection:'row'}}>
-						<IconButton action={()=>this.setState({isHostMenuVisible:false})} name="ios-close-circle-outline" style={{margin:3}} text="" size={20}/>
+				if (this.state.game.is_active){
+					var renderHostButtons = (
 						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
 							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
 							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
 							<IconButton action={()=>this.setState({modalType:'FinishGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
 						</View>
+					);
+				} else if (!this.state.game.is_approved){
+					var renderHostButtons = (
+						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
+							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
+							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
+							<IconButton action={()=>this.setState({modalType:'ApproveGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Approve" size={30}/>
+						</View>
+					);
+				}
+				renderHostMenu = (
+					<View style={{height:100}}>
+						<View style={{flexDirection:'row'}}>
+						<IconButton action={()=>this.setState({isHostMenuVisible:false})} name="ios-close-circle-outline" style={{margin:3}} text="" size={20}/>
+						{renderHostButtons}
 						</View>
 						<Text style={{textAlign:'center',color:'#ffccbb'}}>
 							Host Actions - Acting as {this.state.selected_player.first_name} {this.state.selected_player.last_name}
 						</Text>
 					</View>
 				);
-				}else{
-					renderHostButtons = (
-						<View style={{height:30}}>
-						<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
-						</View>
-					);
-				}
+				
+			}else{
+				renderHostMenu = (
+					<View style={{height:30}}>
+					<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
+					</View>
+				);
+			}
 		}
+
+		var renderExtraButtons = null
+		var {potMoney,earningsTotal} = this.calcPotMoney();
+		var paidMoney = this.calcPaidMoney();
 		
 		if (this.state.game.is_active){
-			var renderPlayerButtons = (
-				<View style={{height:100,flexDirection:'row'}} >
+			renderExtraButtons = (
+				<View style={{flexDirection:'row'}} >
 	    			<IconButton action={
 						()=>this.setState({modalType:"BuyIn",isModalVisible:true})
 					} name="ios-add-circle-outline" text="Buy In" />
@@ -401,19 +455,36 @@ export default class GameView extends Component {
 				</View>
 			);
 			var renderList = <PlayerList game={this.state.game} player={this.state.user}/>;
+			var PotLabel = "Pot Money";
+			var PotValue = "$" + potMoney.toString();
 		}else{
-			var renderPlayerButtons = (
-				<View style={{height:100,flexDirection:'row'}} >
-	    			<IconButton action={
-						()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
-					} name="ios-cash-outline" text="Confirm Payment" />
-				</View>
-			);
+			if (!this.state.game.is_approved){
+				renderExtraButtons = (
+					<View style={{flexDirection:'row'}} >
+		    			<IconButton action={
+							()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
+						} name="ios-cash-outline" text="Confirm Payment" />
+					</View>
+				);
+				var PotLabel = "Unpaid Money";
+				var PotValue = "$" + (earningsTotal-paidMoney).toString();	
+			}else{
+				var PotLabel = "Paid Money";
+				var PotValue = "$" + earningsTotal.toString();
+			}
 			var renderList = <ResultList game={this.state.game} player={this.state.user} />;
 		}
+	
+		var renderPlayerButtons = (
+			<View style={{height:100,flexDirection:'row'}} >
+    			{renderExtraButtons}
+    			<IconButton action={
+					()=> utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user})
+				} name="ios-home-outline" text="Main Menu" />
+			</View>
+		);
 
-
-		var potMoney = this.calcPotMoney();
+		
 		
 		return (
 	      <View style={[{justifyContent:'center'},styles.container]}>
@@ -431,8 +502,8 @@ export default class GameView extends Component {
 		    		<Ionicons name="md-link" color="red" size={75} style={{position:'absolute',bottom:12,opacity: 0.2}} />
 		    	</View>
 		    	<View style={{justifyContent:'flex-start',alignItems:'center',flex:1}}>
-			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>${potMoney.toString()}</Text>
-			    	<Text>Pot Money</Text>
+			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>{PotValue}</Text>
+			    	<Text>{PotLabel}</Text>
 		    		<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-pot.png" style={{position:'absolute',top:0,width:75,height:75,opacity: 0.2}} />
 		    	</View>
 	    	</View>
@@ -444,7 +515,7 @@ export default class GameView extends Component {
 
         	<View style={{justifyContent:'flex-end',alignItems:'center'}}>
 		    	{/*Actions*/}
-				{renderHostButtons}
+				{renderHostMenu}
 				{renderPlayerButtons}
 			</View>
 	      </View>
