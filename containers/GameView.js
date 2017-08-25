@@ -348,7 +348,7 @@ export default class GameView extends Component {
 		var earningsTotal = 0;
 		this.state.game.bets.forEach(function(player) {
 			let earnings = Number(player.result) - Number(player.amount);
-		    potMoney = potMoney + earnings;
+		    potMoney = potMoney - earnings;
 		    if (earnings > 0){
 		    	earningsTotal = earningsTotal + earnings;
 		    }
