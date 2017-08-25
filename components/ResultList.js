@@ -65,12 +65,14 @@ export default class PlayerList extends Component {
 	            		var paymentRows = [];
 	            		if (item.payments.length > 0){
 	            			item.payments.forEach((l)=>{
-	            				paymentRows.push(
-	            					<View style={{flexDirection:'row',margin:5,justifyContent:'flex-start',alignItems:'center'}} key={l.source.id}>
-	            						<Ionicons size={10} name='ios-cash-outline' style={{marginRight:5}} color="#666" />
-	            						<Text style={{fontSize:12,color:"#666"}}>{l.source.first_name} {l.source.last_name} paid ${Number(l.amount)}</Text>
-            						</View>
-	            					);
+	            				if (l.amount > 0){
+		            				paymentRows.push(
+		            					<View style={{flexDirection:'row',margin:5,justifyContent:'flex-start',alignItems:'center'}} key={l.source.id}>
+		            						<Ionicons size={10} name='ios-cash-outline' style={{marginRight:5}} color="#666" />
+		            						<Text style={{fontSize:12,color:"#666"}}>{l.source.first_name} {l.source.last_name} paid ${Number(l.amount)}</Text>
+	            						</View>
+		            					);
+		            			}
 	            				sum += Number(l.amount);
 	            			});
 	            			if (sum > 0) itemReceieved = 'Recieved: $' + sum;
