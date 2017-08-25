@@ -117,7 +117,7 @@ export default class GameView extends Component {
 					</View>
 				);
 			case 'FinishGame':
-				if(this.calcPotMoney() === 0){
+				if(this.calcPotMoney().potMoney === 0){
 					return(
 						<View style={styles.modalContent}>
 							<Text>Are you sure? This will finish the game and is irreversible.</Text>
