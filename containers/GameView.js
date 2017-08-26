@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar, TouchableOpacity,
+  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar, TouchableOpacity, AsyncStorage
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -520,7 +520,10 @@ export default class GameView extends Component {
 			<View style={{height:100,flexDirection:'row'}} >
     			{renderExtraButtons}
     			<IconButton action={
-					()=> utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user})
+					()=> {
+						AsyncStorage.removeItem('@pokerBuddy:currentGame');
+						utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user})
+					}
 				} name="ios-home-outline" text="Main Menu" />
 			</View>
 		);

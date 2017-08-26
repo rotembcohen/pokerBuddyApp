@@ -61,6 +61,8 @@ export async function joinGame(game_identifier,token,user){
 	if (response.status === 200){
 		game = JSON.parse(response._bodyText);
 
+		await AsyncStorage.setItem('@pokerBuddy:currentGame', game.identifier);
+		console.log("set identifier:",game.identifier)
 		return game;
 	}else{
 		return {error:'Game address not found'};
@@ -130,8 +132,6 @@ export async function buy_in(buy_in_amount,game_identifier,token,player_id=null)
 	if (gameObj.status === 200){
 		gameString = gameObj._bodyText;
 
-		await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
-
 		let game = JSON.parse(gameString);
 		return game;
 	}
@@ -144,8 +144,6 @@ export async function leave_game(result_amount,game_identifier,token,player_id=n
 	},token);
 	if (gameObj.status === 200){
 		gameString = gameObj._bodyText;
-
-		await AsyncStorage.setItem('@pokerBuddy:currentGame', gameString);
 
 		let game = JSON.parse(gameString);
 		return game;
