@@ -15,7 +15,8 @@ const App = StackNavigator({
     RegistrationView: {screen: RegistrationView}
 },
 {
-    initialRouteName: 'WelcomeView'
+    initialRouteName: 'WelcomeView',
+    headerMode: 'none'
 });
 
 export default App;
