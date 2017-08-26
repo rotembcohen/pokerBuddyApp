@@ -1,5 +1,11 @@
 {
-  "expo": {
-    "sdkVersion": "19.0.0"
-  }
+	"expo": {
+		"sdkVersion": "19.0.0",
+		"name": "POCAT",
+		"slug": "pocat",
+		"version": "0.2",
+		"icon": "https://s3.amazonaws.com/pokerbuddy/images/app_logo.png",
+		"primaryColor": "#bc0000",
+		"orientation": "portrait"
+	}
 }
