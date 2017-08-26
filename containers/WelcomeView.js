@@ -21,8 +21,6 @@ export default class WelcomeView extends Component{
 
         await this.timeout(2000);
 
-        console.log("game ident:",data[2][1]);
-
         if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
             token = data[0][1];
             user = JSON.parse(data[1][1]);

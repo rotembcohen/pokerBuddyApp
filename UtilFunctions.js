@@ -62,8 +62,8 @@ export async function joinGame(game_identifier,token,user){
 		game = JSON.parse(response._bodyText);
 
 		await AsyncStorage.setItem('@pokerBuddy:currentGame', game.identifier);
-		console.log("set identifier:",game.identifier)
 		return game;
+
 	}else{
 		return {error:'Game address not found'};
 	}
