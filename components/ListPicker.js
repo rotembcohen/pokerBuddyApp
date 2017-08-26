@@ -12,7 +12,7 @@ import * as utils from '../UtilFunctions';
 //containerStyle - style for the containing view, should contain width and maxHeight
 //textStyle - style of display text
 
-export default class ComponentName extends Component {
+export default class ListPicker extends Component {
 
 	render() {
 		return (
