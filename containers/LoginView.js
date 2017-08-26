@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, TouchableOpacity, StatusBar
+  Text, View, TextInput, TouchableOpacity, StatusBar, Image
 } from 'react-native';
 
 import Modal from 'react-native-modal';
 
-import styles from '../Styles';
+import styles, {app_red} from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
@@ -179,37 +179,21 @@ export default class HomeView extends Component {
 		}
 	}
 
-	render() {
-
-		navigation = this.state.navigation;
-		
-	    return (
-			<View style={styles.container}>
-				<StatusBar hidden={true} />
-				<Modal isVisible={this.state.isModalVisible === true}>
-					{this._renderModalContent()}
-		        </Modal>
-		        {/*
-				<IconButton name="ios-log-in" text='Log In' action={()=>{
-					this.setState({modalType:'Log In',isModalVisible:true});
-				}} />
-				<IconButton name="ios-create-outline" text="Sign Up" action={()=>{
-					navigation.navigate('RegistrationView');
-				}} />
-				*/}
-		        <View style={{margin:5}}>
-					<TouchableOpacity style={styles.iconButton} onPress={()=>{
+	render(){
+        const { navigation } = this.props;
+        return (
+            <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
+                <StatusBar hidden={true} />
+                <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} /> 
+                <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
 						this.FBRegister(navigation);
-					}} >
-						<SimpleLineIcons name="social-facebook" color="red" size={30} />
-						<Text>Facebook</Text>
-						<Text>Log In</Text>
-					</TouchableOpacity>
-				</View>
-		      	
-			</View>
-	    );
-	}
+					}}>
+                	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
+                	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH FACEBOOK</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
 }
 

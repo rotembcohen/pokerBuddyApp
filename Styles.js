@@ -3,6 +3,7 @@ import {
 	StyleSheet
 } from 'react-native';
 
+const app_red = "#bc0000";
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
 	},
 	errorLabel: {
 		fontSize: 14,
-		color: 'red',
+		color: app_red,
 	},
 	iconButton: {
 		margin: 10,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
 	},
 	modalButton: {
 		backgroundColor: 'white',
-		borderColor: 'red',
+		borderColor: app_red,
 		borderWidth: 1.5,
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -84,4 +85,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default styles;
+export {styles as default,app_red};

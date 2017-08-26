@@ -3,14 +3,14 @@ import { View,TouchableOpacity,Text } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import styles from '../Styles';
+import styles, { app_red } from '../Styles';
 import * as utils from '../UtilFunctions';
 
 export default class IconButton extends Component {
 
 	render() {
 		var size = (this.props.size) ? this.props.size : 50;
-		var iconColor = (this.props.color) ? this.props.color : 'red';
+		var iconColor = (this.props.color) ? this.props.color : app_red;
 		var fontColor = (this.props.color) ? this.props.color : 'black';
 
 		return (

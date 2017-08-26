@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView,
+  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -294,7 +294,7 @@ export default class HomeView extends Component {
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	        
+	        <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo_text.png'}} style={{width:300,height:130}} /> 
 	        <View style={{flexDirection:'row'}}>
 		        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 		        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
