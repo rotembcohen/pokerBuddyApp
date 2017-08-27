@@ -184,6 +184,10 @@ export default class HomeView extends Component {
         return (
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
                 <StatusBar hidden={true} />
+                {/*Modal*/}
+				<Modal isVisible={this.state.isModalVisible === true}>
+					{this._renderModalContent()}
+		        </Modal>
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} /> 
                 <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
 						this.FBRegister(navigation);
@@ -191,6 +195,7 @@ export default class HomeView extends Component {
                 	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
                 	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH FACEBOOK</Text>
                 </TouchableOpacity>
+                <Text style={{color:'white',textAlign:'center'}}>{this.state.errorLabel}</Text>
             </View>
         );
     }
