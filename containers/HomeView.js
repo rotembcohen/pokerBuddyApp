@@ -186,7 +186,7 @@ export default class HomeView extends Component {
 					        	this.setState({isModalVisible:false});
 					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 					        }}
-					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
+					        textExtractor={this.gameDateExtractor}
 						/>
 		    			<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
@@ -206,7 +206,7 @@ export default class HomeView extends Component {
 					        	this.setState({isModalVisible:false});
 					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 					        }}
-					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.game}</Text>}
+					        textExtractor={this.gameDateExtractor}
 						/>
 		    			<View style={{flexDirection:'row'}}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
@@ -216,6 +216,14 @@ export default class HomeView extends Component {
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
+	}
+
+	gameDateExtractor(l,i) {
+		let date = new Date(l.created_at);
+    	let hour = date.getHours();
+    	hour = (hour < 12) ? hour + "am" : ((hour==12)? hour + "pm" : (hour-12) + "pm");
+    	let dateStr = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + hour;
+    	return <Text style={styles.textSubheader} >{dateStr}</Text>
 	}
 
 	async getActiveGames(){
