@@ -8,25 +8,25 @@ export default class CalculatorInput extends Component {
 
 	render() {
 		if(this.props.inputIndex == 1){
-				var inputStyle ={
-					borderTopLeftRadius:12,
-					borderBottomLeftRadius:12,
-				};
-			} else if (this.props.inputIndex == 2){
-				var inputStyle ={
-					borderLeftWidth:0,
-					borderRightWidth:0,
-				};
-			} else if (this.props.inputIndex == 5){
-				var inputStyle ={
-					borderTopRightRadius:12,
-					borderBottomRightRadius:12,
-				};
-			} else {
-				var inputStyle ={
-					borderRightWidth:0,
-				};
-			}
+			var inputStyle ={
+				borderTopLeftRadius:12,
+				borderBottomLeftRadius:12,
+			};
+		} else if (this.props.inputIndex == 2){
+			var inputStyle ={
+				borderLeftWidth:0,
+				borderRightWidth:0,
+			};
+		} else if (this.props.inputIndex == 5){
+			var inputStyle ={
+				borderTopRightRadius:12,
+				borderBottomRightRadius:12,
+			};
+		} else {
+			var inputStyle ={
+				borderRightWidth:0,
+			};
+		}
 		return (
 			<View>
 				<TextInput
