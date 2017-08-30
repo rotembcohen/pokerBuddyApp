@@ -360,7 +360,7 @@ export default class GameView extends Component {
 			return;
 		}
 		let form = {
-			username: this.state.guest_first_name+"-"+this.state.guest_last_name,
+			username: this.state.guest_first_name+"-"+this.state.guest_last_name+"-"+this.state.game.identifier,
 			first_name: this.state.guest_first_name,
 			last_name: this.state.guest_last_name,
 			password: this.state.guest_password,
