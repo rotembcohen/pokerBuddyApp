@@ -9,7 +9,7 @@ import styles, {app_red} from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 export default class HomeView extends Component {
 
@@ -146,6 +146,12 @@ export default class HomeView extends Component {
 					      		underlineColorAndroid="transparent"
 				      		/>
 			      		</View>
+			      		<TouchableOpacity onPress={()=>{
+			      			this.setState({isModalVisible:false});
+			      			this.state.navigation.navigate('RegistrationView');
+			      		}}>
+			      			<Text style={{color:app_red,textDecorationLine:'underline'}}>Sign up</Text>
+			      		</TouchableOpacity>
 			      		<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 							<IconButton action={()=> {
@@ -173,7 +179,7 @@ export default class HomeView extends Component {
 		}
 		const response = await utils.loginWithCreds(this.state.loginUsername,this.state.loginPassword);
 		if (response.error === 'None'){
-			utils.resetToScreen(navigation,'HomeView',{user:response.user,token:response.token});
+			utils.resetToScreen(this.state.navigation,'HomeView',{user:response.user,token:response.token});
 		}else{
 			this.setState({errorLabel:response.error});
 		}
@@ -190,10 +196,16 @@ export default class HomeView extends Component {
 		        </Modal>
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} /> 
                 <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
-						this.FBRegister(navigation);
-					}}>
+					this.FBRegister(navigation);
+				}}>
                 	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
                 	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH FACEBOOK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
+                	this.setState({modalType:"Log In",isModalVisible:true,errorLabel:""})	
+                }}>
+                	<Ionicons name="ios-log-in-outline" color={app_red} size={30} />
+                	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH POCAT USER</Text>
                 </TouchableOpacity>
                 <Text style={{color:'white',textAlign:'center'}}>{this.state.errorLabel}</Text>
             </View>
