@@ -19,14 +19,22 @@ export default class PlayerList extends Component {
 		}
 	}
 
-	venmoUser(target){
-		let target_venmo = target.player.venmo_username;
-		let recipients_field = '';
-		if (target_venmo) {
-			recipients_field = "&recipients=" + target_venmo;
+	async confirmPayment(payment_id){
+		const response = await utils.fetchFromServer('games/' + this.props.game.identifier + "/confirm_payment_receipt/",'POST',{
+			payment_id: payment_id
+		},this.props.token);
+		if (response.status !== 200){
+			return {error:"Server Error: "+response.status};
 		}
-		let target_amount = target.result - target.amount;
-		var url = "venmo://paycharge?txn=pay" + recipients_field + "&amount=" + target_amount + "&note=You brilliant Poker player, have some cash%21";
+		return {error:"None"};
+	}
+
+	chargeUser(amount,recipient=null){
+		let recipients_field = '';
+		if (recipient) {
+			recipients_field = "&recipients=" + recipient;
+		}
+		var url = "venmo://paycharge?txn=charge" + recipients_field + "&amount=" + amount + "&note=Please transfer me my poker winnings, thanks%21";
 		
 		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
 		  // console.log("app link success");
@@ -50,7 +58,7 @@ export default class PlayerList extends Component {
 		});
 		return (
 			<ScrollView contentContainerStyle={this.props.style}>
-		        <FlatList
+				<FlatList
 		        	data={ordered_bets}
 		            keyExtractor={item=>item.id}
 		            renderItem={({item}) => {
@@ -58,51 +66,63 @@ export default class PlayerList extends Component {
 	            			            		
 	            		var itemColorStyle = (earnings >= 0) ? {color:'green'} : {color:'red'};
             			var itemWording = (earnings >= 0) ? 'Won' : 'Lost';
-	            		var isCurrentUser = (item.player.id===this.props.player.id);
-	            		var itemPayButton = null;
+	            		var itemChargeButton = null;
 	            		var itemReceieved = null;
 	            		let sum = 0;
 	            		var paymentRows = [];
 	            		if (item.payments.length > 0){
 	            			item.payments.forEach((l)=>{
 	            				if (l.amount > 0){
-		            				paymentRows.push(
-		            					<View style={{flexDirection:'row',margin:5,justifyContent:'flex-start',alignItems:'center'}} key={l.source.id}>
-		            						<Ionicons size={10} name='ios-cash-outline' style={{marginRight:5}} color="#666" />
-		            						<Text style={{fontSize:12,color:"#666"}}>{l.source.first_name} {l.source.last_name} paid ${Number(l.amount)}</Text>
-	            						</View>
+	            					if (l.is_confirmed){
+	            						{/*Payment confirmed - just list it*/}
+			            				paymentRows.push(
+			            					<View style={{flexDirection:'row',margin:5,justifyContent:'flex-start',alignItems:'center'}} key={l.source.id}>
+			            						<Ionicons size={10} name='ios-cash-outline' style={{marginRight:5}} color="#666" />
+			            						<Text style={{fontSize:12,color:"#666"}}>{l.source.first_name} {l.source.last_name} paid ${Number(l.amount)} {l.is_confirmed}</Text>
+		            						</View>
 		            					);
+		            					sum += Number(l.amount);
+			            			} else if (item.player.id===this.props.player.id){
+			            			{/*Payment unconfirmed - venmo charge and confirm payment buttons*/}
+			            				paymentRows.push(
+			            					<View style={{flexDirection:'row'}} key={l.id}>
+			            						{/*charge player*/}
+			            						<View style={{borderRadius:12,borderColor:'#3D95CE',borderWidth:1,height:50,alignItems:'center',justifyContent:'center', marginLeft:10, paddingRight:5}} >
+						            				<TouchableOpacity onPress={()=>this.chargeUser(l.amount,l.source.venmo_username)} style={{flexDirection:'row',alignItems:'center'}} >
+						            					<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-venmo.png" style={{width:25,height:25}} />
+						            					<Text style={{color:'#3D95CE'}}>{"Charge " + l.source.first_name + " " + l.source.last_name + "\n for $" + l.amount}</Text>
+						            				</TouchableOpacity>
+					            				</View>
+			            						
+			            						{/*confirm payment*/}
+			            						<View style={{borderRadius:12,borderColor:'green',borderWidth:1,height:50,alignItems:'center',justifyContent:'center', marginLeft:10, paddingRight:5}} >
+						            				<TouchableOpacity onPress={()=>this.confirmPayment(l.id)} style={{flexDirection:'row',alignItems:'center'}} >
+						            					<Ionicons name='ios-thumbs-up-outline' style={{margin:5}} color='green' size={30} />
+						            					<Text style={{color:'green'}}>Confirm</Text>
+						            				</TouchableOpacity>
+					            				</View>
+												
+			            					</View>
+		            					);
+			            			}
 		            			}
-	            				sum += Number(l.amount);
 	            			});
 	            			if (sum > 0) itemReceieved = 'Recieved: $' + sum;
 	            		}
 	            		var itemPayments = <View>{paymentRows}</View>;
-	            		var renderItemDiff = "$" + (earnings-sum).toString();	
-	            		if (earnings >= 0 && !isCurrentUser && sum < earnings){
-	            			itemPayButton = (
-	            				<View style={{borderRadius:12,borderColor:'#3D95CE',borderWidth:1,height:50,alignItems:'flex-start',justifyContent:'center', marginLeft:10, paddingRight:5}} >
-		            				<TouchableOpacity onPress={()=>this.venmoUser(item)} style={{flexDirection:'row',alignItems:'center'}} >
-		            					<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-venmo.png" style={{width:25,height:25}} />
-		            					<Text style={{color:'#3D95CE'}}>{renderItemDiff}</Text>
-		            				</TouchableOpacity>
-	            				</View>
-            				);
-	            		}
-
+	            		
 		            	return (
-		            		<View>
-			            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',marginBottom:2,marginTop:8}} >
-				            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:210}}>
-				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:210}} >
+		            		<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+			            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginBottom:2,marginTop:8,flex:1}} >
+				            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:'100%'}}>
+				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:'100%'}} >
 					            			{this.renderPlayerThumb(item.player.picture_url)}
 					            			<Text style={[itemColorStyle,{marginLeft:10}]}>{item.player.first_name} {item.player.last_name}</Text>
 				            			</View>
-				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',width:260}}>
+				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>
 				            				<Text style={{marginLeft:10}}>{itemWording}: ${earnings} {itemReceieved}</Text>
 				            			</View>
 			            			</View>
-			            			{itemPayButton}
 		            			</View>
 		            			{itemPayments}
 	            			</View>

@@ -239,52 +239,52 @@ export default class GameView extends Component {
 					</View>
 				);
 			case 'ConfirmPayment':
-				let losing_bets = this.state.game.bets.filter( (l, i) => {
-				    return ((Number(l.result) - Number(l.amount) < 0) && (l.player.id !== this.state.selected_player.id));
-				});
-				return (
-					<View style={styles.modalContent}>
-						<Text style={styles.textHeader}>Confirm transfer received</Text>
-						<Text style={styles.textSubheader}>From:</Text>
-						<ListPicker
-							containerStyle={{width:200,maxHeight:175}} 
-							optionArray={losing_bets}
-							keyExtractor={(l,i)=>l.player.id}
-							onPressElement={(l,i)=> ()=>{
-					        	this.setState({paying_player_id:l.player.id})
-							}}
-					        textExtractor={(l,i) => {
-					        	let textStyle = (this.state.paying_player_id===l.player.id) ? [styles.regularText,{fontWeight:'bold'}] : styles.regularText;
-						        return <Text style={textStyle} >{l.player.first_name} {l.player.last_name}</Text>;
-					        }}
-						/>
-						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-							<Text style={[styles.textSubheader,{marginRight:5}]}>Of:</Text>
-							<TextInput
-								style={styles.textinput}
-								onChangeText={(text)=>{this.setState({paying_amount:text})}}
-								value={this.state.paying_amount.toString()}
-								keyboardType='numeric'
-								underlineColorAndroid="transparent"
-								onSubmitEditing={()=>{/*TODO*/}}
-								selectTextOnFocus={true}
-							/>
-						</View>
-						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-						<View style={{flexDirection:'row'}}>
-							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			        		<IconButton action={async () => {
-			        			this.setState({errorLabel:''});
-								let response = await this.confirmPayment();
-								if (response.error === "None"){
-									this.setState({isModalVisible:false});
-								}else{
-									this.setState({errorLabel:response.error});
-								}
-							}} name="ios-checkmark-circle-outline" text="Confirm" />
-						</View>
-					</View>
-				);
+				// let bets_with_unconfirmed_payments = this.state.game.bets.filter( (l, i) => {
+				//     return ((Number(l.result) - Number(l.amount) < 0) && (l.player.id !== this.state.selected_player.id));
+				// });
+				// return (
+				// 	<View style={styles.modalContent}>
+				// 		<Text style={styles.textHeader}>Confirm transfer received</Text>
+				// 		<Text style={styles.textSubheader}>From:</Text>
+				// 		<ListPicker
+				// 			containerStyle={{width:200,maxHeight:175}} 
+				// 			optionArray={losing_bets}
+				// 			keyExtractor={(l,i)=>l.player.id}
+				// 			onPressElement={(l,i)=> ()=>{
+				// 	        	this.setState({paying_player_id:l.player.id})
+				// 			}}
+				// 	        textExtractor={(l,i) => {
+				// 	        	let textStyle = (this.state.paying_player_id===l.player.id) ? [styles.regularText,{fontWeight:'bold'}] : styles.regularText;
+				// 		        return <Text style={textStyle} >{l.player.first_name} {l.player.last_name}</Text>;
+				// 	        }}
+				// 		/>
+				// 		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+				// 			<Text style={[styles.textSubheader,{marginRight:5}]}>Of:</Text>
+				// 			<TextInput
+				// 				style={styles.textinput}
+				// 				onChangeText={(text)=>{this.setState({paying_amount:text})}}
+				// 				value={this.state.paying_amount.toString()}
+				// 				keyboardType='numeric'
+				// 				underlineColorAndroid="transparent"
+				// 				onSubmitEditing={()=>{/*TODO*/}}
+				// 				selectTextOnFocus={true}
+				// 			/>
+				// 		</View>
+				// 		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+				// 		<View style={{flexDirection:'row'}}>
+				// 			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+			 //        		<IconButton action={async () => {
+			 //        			this.setState({errorLabel:''});
+				// 				let response = await this.confirmPayment();
+				// 				if (response.error === "None"){
+				// 					this.setState({isModalVisible:false});
+				// 				}else{
+				// 					this.setState({errorLabel:response.error});
+				// 				}
+				// 			}} name="ios-checkmark-circle-outline" text="Confirm" />
+				// 		</View>
+				// 	</View>
+				// );
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -402,7 +402,9 @@ export default class GameView extends Component {
 		var paidMoney = 0;
 		this.state.game.bets.forEach(function(bet) {
 			bet.payments.forEach(function(payment) {
-				paidMoney = paidMoney + Number(payment.amount);
+				if (payment.is_confirmed){
+					paidMoney = paidMoney + Number(payment.amount);
+				}
 			});
 		});
 		return paidMoney;
@@ -453,7 +455,9 @@ export default class GameView extends Component {
 				} else if (!this.state.game.is_approved){
 					var renderHostButtons = (
 						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
-							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
+							<IconButton action={
+								()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
+							} name="ios-cash-outline" text='Confirm Payment' size={30} />
 							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
 							<IconButton action={()=>this.setState({modalType:'ApproveGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Approve" size={30}/>
 						</View>
@@ -495,25 +499,18 @@ export default class GameView extends Component {
 					} name="ios-exit-outline" text="Leave Game" />
 				</View>
 			);
-			var renderList = <PlayerList game={this.state.game} player={this.state.user}/>;
+			var renderList = <PlayerList game={this.state.game} player={this.state.selected_player}/>;
 			var PotLabel = "Pot Money";
 			var PotValue = "$" + potMoney.toString();
 		}else{
 			if (!this.state.game.is_approved){
-				renderExtraButtons = (
-					<View style={{flexDirection:'row'}} >
-		    			<IconButton action={
-							()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
-						} name="ios-cash-outline" text="Confirm Payment" />
-					</View>
-				);
 				var PotLabel = "Unpaid Money";
 				var PotValue = "$" + (earningsTotal-paidMoney).toString();	
 			}else{
 				var PotLabel = "Paid Money";
 				var PotValue = "$" + earningsTotal.toString();
 			}
-			var renderList = <ResultList game={this.state.game} player={this.state.user} />;
+			var renderList = <ResultList game={this.state.game} player={this.state.selected_player} token={this.state.token} />;
 		}
 	
 		var renderPlayerButtons = (
@@ -531,7 +528,7 @@ export default class GameView extends Component {
 		
 		
 		return (
-	      <View style={[{justifyContent:'center'},styles.container]}>
+	      <View style={[{justifyContent:'center',flex:1},styles.container]}>
 	      	<StatusBar hidden={true} />
 	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
@@ -552,7 +549,7 @@ export default class GameView extends Component {
 		    	</View>
 	    	</View>
 
-	        <ScrollView contentContainerStyle={{marginTop:10}} >
+	        <ScrollView contentContainerStyle={{flex:1,marginTop:10,padding:15}} >
 	        	{/*Player List*/}
 		        {renderList}
         	</ScrollView>
