@@ -82,7 +82,7 @@ export default class PlayerList extends Component {
 		            						</View>
 		            					);
 		            					sum += Number(l.amount);
-			            			} else if (item.player.id===this.props.player.id || this.props.is_host){
+			            			} else if (!this.props.game.is_approved && (item.player.id===this.props.player.id || this.props.is_host)){
 			            			{/*Payment unconfirmed - venmo charge and confirm payment buttons*/}
 			            				paymentRows.push(
 			            					<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',margin:5}} key={l.id}>

@@ -13,10 +13,6 @@ import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 export default class HomeView extends Component {
 
-	static navigationOptions = {
-		title: 'POCAT v0.2'
-	}
-
 	constructor(props){
 		super(props);
 		const {navigation} = props;

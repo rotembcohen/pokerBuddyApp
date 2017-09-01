@@ -3,15 +3,21 @@
 		"sdkVersion": "19.0.0",
 		"name": "POCAT",
 		"slug": "pocat",
-		"version": "0.2",
+		"version": "1.0",
 		"icon": "https://s3.amazonaws.com/pokerbuddy/images/app_icon.png",
 		"primaryColor": "#bc0000",
 		"orientation": "portrait",
 		"ios": {
-			"bundleIdentifier": "com.hecodesthings.pocat"
+			"bundleIdentifier": "com.hecodesthings.pocat",
+			"buildNumber": 2,
+			"supportsTablets": true,
+
 		},
 		"android": {
-			"package": "com.hecodesthings.pocat"
-		}
+			"package": "com.hecodesthings.pocat",
+			"versionCode": 1
+		},
+		"scheme": "pocat",
+		"facebookScheme": "fb309462139518578"
 	}
 }

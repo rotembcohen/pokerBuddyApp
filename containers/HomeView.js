@@ -13,10 +13,6 @@ import ListPicker from '../components/ListPicker';
 
 export default class HomeView extends Component {
 
-	static navigationOptions = {
-		title: 'POCAT v0.2'
-	}
-
 	constructor(props){
 		super(props);
 		const {navigation} = props;

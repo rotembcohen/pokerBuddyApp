@@ -6,18 +6,13 @@ import styles from '../Styles';
 
 export default class WelcomeView extends Component{
     
-    static navigationOptions = {
-        title: 'POCAT v0.2'
-    }
-
     timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-
     async RedirectToGame(navigation){
         
-        const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame'])
+        const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
 
         await this.timeout(2000);
 
@@ -41,7 +36,7 @@ export default class WelcomeView extends Component{
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
                 <StatusBar hidden={true} />
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={()=>this.RedirectToGame(navigation)}/> 
-                <Text style={[styles.textHeader,{color:'white'}]}>POCAT v0.2</Text>
+                <Text style={[styles.textHeader,{color:'white'}]}>POCAT v1.0</Text>
             </View>
         );
     }

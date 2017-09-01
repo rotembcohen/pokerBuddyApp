@@ -9,11 +9,6 @@ import IconButton from '../components/IconButton';
 
 export default class RegistrationView extends Component {
 
-
-	static navigationOptions = {
-		title: 'POCAT Registration'
-	}
-
 	constructor(props){
 		super(props);
 		const { navigation } = props;

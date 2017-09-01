@@ -28,10 +28,6 @@ var pusher = new Pusher('442e9fce1c86b001266e', {
 
 export default class GameView extends Component {
 
-	static navigationOptions = {
-		title: 'Current Game'
-	}
-
 	constructor(props){
 		super(props);
 		const {navigation} = props;
