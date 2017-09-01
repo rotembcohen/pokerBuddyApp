@@ -2,7 +2,9 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications, Constants } from 'expo';
+
+var qs = require('qs');
 
 //TODO: better network error check across the board
 
@@ -210,3 +212,50 @@ export async function registerForPushNotificationsAsync(user_id) {
 	return {error:'Server Error'};
 }
 
+
+export async function parseUrl(url){
+    if (url) {
+        let queryString = url.replace(Constants.linkingUri, '');
+        if (queryString) {
+            let data = qs.parse(queryString);
+            console.log(`Linked to app with data: ${JSON.stringify(data)}`);
+            let game_identifier = data.join;
+            
+            //TODO: check regex
+            if (game_identifier && game_identifier.length === 5){
+                game_identifier = game_identifier.toUpperCase();
+                await AsyncStorage.setItem('@pokerBuddy:currentGame', game_identifier);
+            }
+        }
+        //console.log('Initial url is: ' + url,'\nqueryString is ' + queryString, "\nconst is " + Constants.linkingUri);
+    }
+}
+
+export async function RedirectToGame(navigation){
+        
+    const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
+
+    await this.timeout(2000);
+
+    if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
+        token = data[0][1];
+        user = JSON.parse(data[1][1]);
+        game_identifier = data[2][1];
+        game = await this.joinGame(game_identifier,token,user);
+        if (!game.error || game.error === "None"){
+            this.resetToScreen(navigation,"GameView",{game: game,user: user,token:token});
+            return;
+        }
+    }
+    if (data && data[0][1]!== null && data[1][1] != null){
+        AsyncStorage.removeItem('@pokerbuddy:currentGame');
+        this.resetToScreen(navigation,"HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
+    }else{
+        this.resetToScreen(navigation,"LoginView");
+    }
+    //TODO: error handling
+}
+
+export function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, TouchableOpacity, StatusBar, Image
+  Text, View, TextInput, TouchableOpacity, StatusBar, Image, AsyncStorage
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -30,7 +30,8 @@ export default class HomeView extends Component {
 			modalType: '',
 		};
 	}
-	
+
+	//TODO: change func names, they are confusing!
 	async FBRegister(navigation) {
 		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('309462139518578', {
 			permissions: ['public_profile'],
@@ -63,7 +64,7 @@ export default class HomeView extends Component {
 			const loginresponse = await utils.loginWithCreds(form.username,form.password);
 			if (loginresponse.error === 'None'){
 				//existing user
-				utils.resetToScreen(navigation,'HomeView',{user:loginresponse.user,token:loginresponse.token});
+				this.loginToApp(loginresponse.user,loginresponse.token);
 			}else{
 				//new user, check venmo
 				this.setState({modalType:"AddVenmo",isModalVisible:true});
@@ -83,10 +84,25 @@ export default class HomeView extends Component {
 		};
 		var response = await utils.user_registration(form);
 		if (response.error === 'None'){
-			utils.resetToScreen(this.state.navigation,'HomeView',{user:response.user,token:response.token});
+			this.loginToApp(response.user,response.token);
 		}else{
 			this.setState({errorLabel:response.error});
 		}
+	}
+
+	async loginToApp(user,token){
+		const currentGame = await AsyncStorage.getItem('@pokerBuddy:currentGame');
+		if (currentGame){
+			game = await utils.joinGame(currentGame,token,user);
+			if (!game.error || game.error === "None"){
+				utils.resetToScreen(this.state.navigation,"GameView",{game:game,user:user,token:token});
+				return;
+			}else{
+				AsyncStorage.removeItem('@pokerBuddy:currentGame');
+			}
+		}
+		utils.resetToScreen(this.state.navigation,'HomeView',{user:user,token:token});	
+	
 	}
 
 	_renderModalContent = () => {

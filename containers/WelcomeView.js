@@ -1,41 +1,35 @@
 import React, { Component } from 'react';
-import { AsyncStorage,Text,View,StatusBar,Image } from 'react-native';
+import { AsyncStorage,Text,View,StatusBar,Image,Linking } from 'react-native';
 
 import * as utils from '../UtilFunctions';
 import styles from '../Styles';
 
 export default class WelcomeView extends Component{
     
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    constructor(props){
+        super(props);
+        this.state = {
+            navigation: props.navigation
+        }
     }
 
-    async RedirectToGame(navigation){
-        
-        const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
+    //TODO: is there any way to put this only on one view???
+    componentDidMount() {
+        Linking.addEventListener('url', this._handleOpenUrl.bind(this));
+        Linking.getInitialURL().then(this.parseUrl).catch(err => console.error('An error occurred', err));
+    }
 
-        await this.timeout(2000);
-
-        if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
-            token = data[0][1];
-            user = JSON.parse(data[1][1]);
-            game_identifier = data[2][1];
-            game = await utils.joinGame(game_identifier,token,user);
-            utils.resetToScreen(navigation,"GameView",{game: game,user: user,token:token});
-        }else if (data && data[0][1]!== null && data[1][1] != null){
-            utils.resetToScreen(navigation,"HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
-        }else{
-            utils.resetToScreen(navigation,"LoginView");
-        }
-        //TODO: error handling
+    _handleOpenUrl(event){
+        utils.parseUrl(event.url);
+        utils.RedirectToGame(navigation);
     }
 
     render(){
-        const { navigation } = this.props;
+        navigation = this.state.navigation;
         return (
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
                 <StatusBar hidden={true} />
-                <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={()=>this.RedirectToGame(navigation)}/> 
+                <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={()=>utils.RedirectToGame(navigation)}/> 
                 <Text style={[styles.textHeader,{color:'white'}]}>POCAT v1.0</Text>
             </View>
         );
