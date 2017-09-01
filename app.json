@@ -9,7 +9,7 @@
 		"orientation": "portrait",
 		"ios": {
 			"bundleIdentifier": "com.hecodesthings.pocat",
-			"buildNumber": 2
+			"buildNumber": "2"
 		},
 		"android": {
 			"package": "com.hecodesthings.pocat",
