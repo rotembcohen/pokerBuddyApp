@@ -82,23 +82,25 @@ export default class PlayerList extends Component {
 		            						</View>
 		            					);
 		            					sum += Number(l.amount);
-			            			} else if (item.player.id===this.props.player.id){
+			            			} else if (item.player.id===this.props.player.id || this.props.is_host){
 			            			{/*Payment unconfirmed - venmo charge and confirm payment buttons*/}
 			            				paymentRows.push(
-			            					<View style={{flexDirection:'row'}} key={l.id}>
+			            					<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',margin:5}} key={l.id}>
 			            						{/*charge player*/}
-			            						<View style={{borderRadius:12,borderColor:'#3D95CE',borderWidth:1,height:50,alignItems:'center',justifyContent:'center', marginLeft:10, paddingRight:5}} >
+			            						<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,borderColor:'#3D95CE',borderWidth:1,height:50,alignItems:'center',justifyContent:'center', padding:5}} >
 						            				<TouchableOpacity onPress={()=>this.chargeUser(l.amount,l.source.venmo_username)} style={{flexDirection:'row',alignItems:'center'}} >
-						            					<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-venmo.png" style={{width:25,height:25}} />
-						            					<Text style={{color:'#3D95CE'}}>{"Charge " + l.source.first_name + " " + l.source.last_name + "\n for $" + l.amount}</Text>
+						            					<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-venmo.png" style={{width:25,height:25,marginRight:5}} />
+						            					<Text style={{color:'#3D95CE'}}>{"Charge " + l.source.first_name + " " + l.source.last_name[0] + ".\n for $" + l.amount}</Text>
 						            				</TouchableOpacity>
 					            				</View>
 			            						
 			            						{/*confirm payment*/}
-			            						<View style={{borderRadius:12,borderColor:'green',borderWidth:1,height:50,alignItems:'center',justifyContent:'center', marginLeft:10, paddingRight:5}} >
-						            				<TouchableOpacity onPress={()=>this.confirmPayment(l.id)} style={{flexDirection:'row',alignItems:'center'}} >
-						            					<Ionicons name='ios-thumbs-up-outline' style={{margin:5}} color='green' size={30} />
-						            					<Text style={{color:'green'}}>Confirm</Text>
+			            						<View style={{borderTopRightRadius:12,borderBottomRightRadius:12,borderColor:'#3D95CE',
+			            							backgroundColor:'#3D95CE',borderWidth:1,
+			            							height:50,width:50,alignItems:'center',justifyContent:'center',padding:5}} >
+						            				<TouchableOpacity onPress={()=>this.confirmPayment(l.id)} style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
+						            					<Ionicons name='ios-thumbs-up-outline' style={{margin:5}} color='white' size={30} />
+						            					{/*<Text style={{color:'green'}}>Confirm</Text>*/}
 						            				</TouchableOpacity>
 					            				</View>
 												

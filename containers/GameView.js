@@ -238,53 +238,6 @@ export default class GameView extends Component {
 				        </View>
 					</View>
 				);
-			case 'ConfirmPayment':
-				// let bets_with_unconfirmed_payments = this.state.game.bets.filter( (l, i) => {
-				//     return ((Number(l.result) - Number(l.amount) < 0) && (l.player.id !== this.state.selected_player.id));
-				// });
-				// return (
-				// 	<View style={styles.modalContent}>
-				// 		<Text style={styles.textHeader}>Confirm transfer received</Text>
-				// 		<Text style={styles.textSubheader}>From:</Text>
-				// 		<ListPicker
-				// 			containerStyle={{width:200,maxHeight:175}} 
-				// 			optionArray={losing_bets}
-				// 			keyExtractor={(l,i)=>l.player.id}
-				// 			onPressElement={(l,i)=> ()=>{
-				// 	        	this.setState({paying_player_id:l.player.id})
-				// 			}}
-				// 	        textExtractor={(l,i) => {
-				// 	        	let textStyle = (this.state.paying_player_id===l.player.id) ? [styles.regularText,{fontWeight:'bold'}] : styles.regularText;
-				// 		        return <Text style={textStyle} >{l.player.first_name} {l.player.last_name}</Text>;
-				// 	        }}
-				// 		/>
-				// 		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-				// 			<Text style={[styles.textSubheader,{marginRight:5}]}>Of:</Text>
-				// 			<TextInput
-				// 				style={styles.textinput}
-				// 				onChangeText={(text)=>{this.setState({paying_amount:text})}}
-				// 				value={this.state.paying_amount.toString()}
-				// 				keyboardType='numeric'
-				// 				underlineColorAndroid="transparent"
-				// 				onSubmitEditing={()=>{/*TODO*/}}
-				// 				selectTextOnFocus={true}
-				// 			/>
-				// 		</View>
-				// 		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-				// 		<View style={{flexDirection:'row'}}>
-				// 			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			 //        		<IconButton action={async () => {
-			 //        			this.setState({errorLabel:''});
-				// 				let response = await this.confirmPayment();
-				// 				if (response.error === "None"){
-				// 					this.setState({isModalVisible:false});
-				// 				}else{
-				// 					this.setState({errorLabel:response.error});
-				// 				}
-				// 			}} name="ios-checkmark-circle-outline" text="Confirm" />
-				// 		</View>
-				// 	</View>
-				// );
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -333,24 +286,6 @@ export default class GameView extends Component {
 			this.state.result_calc_4 * 2 +
 			this.state.result_calc_5 * 4
 		);
-	}
-
-	async confirmPayment(){
-		if (this.state.paying_amount < 0){
-			return {error:"Amount has to be a positive number"};
-		}
-		if (!this.state.paying_player_id || this.state.paying_player_id == this.state.selected_player.id){
-			return {error:"Please select a player"};
-		}
-		const response = await utils.fetchFromServer('games/' + this.state.game.identifier + "/confirm_payment/",'POST',{
-			source_id: this.state.paying_player_id,
-			amount: this.state.paying_amount,
-			target_id: this.state.selected_player.id,
-		},this.state.token);
-		if (response.status !== 200){
-			return {error:"Server Error: "+response.status};
-		}
-		return {error:"None"};
 	}
 
 	async submitGuest(){
@@ -440,11 +375,17 @@ export default class GameView extends Component {
 	render() {
 		const { navigation } = this.props;
 		var renderHostMenu = null;
+		var ActingAsText = null;
 		let user = this.state.user;
 		if (this.state.is_host && !this.state.game.is_approved){
 			//TODO: can you take the view our?
 			if (this.state.isHostMenuVisible){
 				if (this.state.game.is_active){
+					if (this.state.selected_player.id !== this.state.user.id){
+						ActingAsText = (
+							<Text>Acting as <Text style={{fontWeight:'bold'}} >{this.state.selected_player.first_name} {this.state.selected_player.last_name}</Text>{"\n"}</Text>
+						);
+					}
 					var renderHostButtons = (
 						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
 							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
@@ -455,29 +396,26 @@ export default class GameView extends Component {
 				} else if (!this.state.game.is_approved){
 					var renderHostButtons = (
 						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
-							<IconButton action={
-								()=>this.setState({modalType:"ConfirmPayment",isModalVisible:true,errorLabel:''})
-							} name="ios-cash-outline" text='Confirm Payment' size={30} />
-							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
 							<IconButton action={()=>this.setState({modalType:'ApproveGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Approve" size={30}/>
 						</View>
 					);
 				}
 				renderHostMenu = (
-					<View style={{height:100}}>
+					<View style={{height:100,alignItems:'center',justifyContent:'center'}}>
 						<View style={{flexDirection:'row'}}>
 						<IconButton action={()=>this.setState({isHostMenuVisible:false})} name="ios-close-circle-outline" style={{margin:3}} text="" size={20}/>
 						{renderHostButtons}
 						</View>
 						<Text style={{textAlign:'center',color:'#ffccbb'}}>
-							Host Actions - Acting as {this.state.selected_player.first_name} {this.state.selected_player.last_name}
+							{ActingAsText}
+							As Host of this game, only you can make these actions
 						</Text>
 					</View>
 				);
 				
 			}else{
 				renderHostMenu = (
-					<View style={{height:30}}>
+					<View style={{height:30,alignItems:'center',justifyContent:'center'}}>
 					<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
 					</View>
 				);
@@ -510,7 +448,7 @@ export default class GameView extends Component {
 				var PotLabel = "Paid Money";
 				var PotValue = "$" + earningsTotal.toString();
 			}
-			var renderList = <ResultList game={this.state.game} player={this.state.selected_player} token={this.state.token} />;
+			var renderList = <ResultList game={this.state.game} player={this.state.selected_player} token={this.state.token} is_host={this.state.is_host} />;
 		}
 	
 		var renderPlayerButtons = (
