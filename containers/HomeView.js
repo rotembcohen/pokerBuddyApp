@@ -154,6 +154,7 @@ export default class HomeView extends Component {
 					        		return;
 					        	}
 
+					        	//TODO: no need for updating active list?
 					        	//check if game is already in active games list
 					        	let active_games = this.state.active_games;
 					        	let game_already_active = active_games.find((elem)=>{return elem.game == this.state.game_identifier});
