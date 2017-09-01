@@ -442,7 +442,7 @@ export default class GameView extends Component {
 				var PotValue = "$" + (earningsTotal-paidMoney).toString();	
 			}else{
 				var PotLabel = "Paid Money";
-				var PotValue = "$" + earningsTotal.toString();
+				var PotValue = "$" + paidMoney.toString();
 			}
 			var renderList = <ResultList game={this.state.game} player={this.state.selected_player} token={this.state.token} is_host={this.state.is_host} />;
 		}
