@@ -42,7 +42,7 @@ export default class WelcomeView extends Component{
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
                 <StatusBar hidden={true} />
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={()=>utils.RedirectToGame(navigation)}/> 
-                <Text style={[styles.textHeader,{color:'white'}]}>POCAT v1.0</Text>
+                <Text style={[styles.textHeader,{color:'white'}]}>POCAT v1.1</Text>
                 <Text style={[styles.textSubheader,{color:'white',fontStyle:'italic',marginTop:20}]}>{this.renderOddsTip()}</Text>
             </View>
         );

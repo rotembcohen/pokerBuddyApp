@@ -430,11 +430,11 @@ export default class GameView extends Component {
 					} name="ios-add-circle-outline" text="Buy In" />
 		    		<IconButton action={
 						()=>this.setState({modalType:"LeaveGame",isModalVisible:true})
-					} name="ios-exit-outline" text="Leave Game" />
+					} name="ios-exit-outline" text="Cash Out" />
 				</View>
 			);
 			var renderList = <PlayerList game={this.state.game} player={this.state.selected_player}/>;
-			var PotLabel = "Pot Money";
+			var PotLabel = "Game Money";
 			var PotValue = "$" + potMoney.toString();
 		}else{
 			if (!this.state.game.is_approved){
