@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, ScrollView, TextInput, Picker, StatusBar, TouchableOpacity, AsyncStorage
+  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar, TouchableOpacity, AsyncStorage
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -50,6 +50,7 @@ export default class GameView extends Component {
 		    guest_password: '',
 		    guest_venmo: '',
 		    errorLabel: '',
+		    appState: AppState.currentState,
 		    isHostMenuVisible: false,
 		    paying_player_id: null,
 		    paying_amount: 0,
@@ -238,6 +239,20 @@ export default class GameView extends Component {
 
 		}
 		
+	}
+
+	componentDidMount() {
+		AppState.addEventListener('change', this._handleAppStateChange);
+	}
+
+	_handleAppStateChange = (nextAppState) => {
+		if(this.state.appState){
+			if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+				// Toggle the state every 2 minutes
+			    this.refreshGame()
+			}
+			this.setState({appState: nextAppState});
+		}
 	}
 
 	renderResultCalc() {
