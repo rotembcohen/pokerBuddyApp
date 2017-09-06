@@ -235,7 +235,7 @@ export async function RedirectToGame(navigation){
         
     const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
 
-    await this.timeout(2000);
+    await this.timeout(4000);
 
     if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
         token = data[0][1];
