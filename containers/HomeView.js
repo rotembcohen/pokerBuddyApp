@@ -234,7 +234,7 @@ export default class HomeView extends Component {
     					<Text style={{fontWeight:'bold',color:app_red}} onPress={
     						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+this.APP_VERSION)
     					}>hecodesthings@gmail.com</Text>
-    					<View style={{flexDirection:'row'}}>
+    					<View style={{flexDirection:'row',justifyContent:'space-between',width:'75%'}}>
 			      			<IconButton action={()=> this.donate()} name="ios-cash-outline" text="Donate" />
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
 				        </View>

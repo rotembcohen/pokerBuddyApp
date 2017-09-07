@@ -412,7 +412,7 @@ export default class GameView extends Component {
 			}else{
 				renderHostMenu = (
 					<View style={{height:30,alignItems:'center',justifyContent:'center'}}>
-					<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
+						<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
 					</View>
 				);
 			}
