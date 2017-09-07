@@ -24,6 +24,7 @@
     "react": "16.0.0-alpha.12",
     "react-native": "^0.46.1",
     "react-native-app-link": "^0.4.0",
+    "react-native-dotenv": "^0.1.0",
     "react-native-modal": "^2.5.0",
     "react-navigation": "^1.0.0-beta.12"
   }

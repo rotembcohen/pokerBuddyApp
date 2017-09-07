@@ -5,6 +5,7 @@ import {
 
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
+import { PUSHER_API_KEY,PUSHER_CLUSTER } from 'react-native-dotenv';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -21,8 +22,8 @@ import Pusher from 'pusher-js/react-native';
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
 
-var pusher = new Pusher('442e9fce1c86b001266e', {
-  cluster: 'us2',
+var pusher = new Pusher(PUSHER_API_KEY, {
+  cluster: PUSHER_CLUSTER,
   encrypted: true
 });
 

@@ -4,6 +4,8 @@ import { NavigationActions } from 'react-navigation';
 
 import { Permissions, Notifications, Constants } from 'expo';
 
+import { SERVER_ADDRESS } from 'react-native-dotenv';
+
 var qs = require('qs');
 
 //TODO: better network error check across the board
@@ -36,7 +38,7 @@ export async function fetchFromServer(relative_url,method,body_dict,token=null){
 	}
 
 	//TODO: handle promise error
-	const response = await fetch('http://54.236.5.23/' + relative_url, content);
+	const response = await fetch(SERVER_ADDRESS + relative_url, content);
 
 	//TODO: return error that says something
 	if (response.status / 100 < 4){
