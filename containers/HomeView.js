@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image
+  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image, Linking
 } from 'react-native';
 
+import AppLink from 'react-native-app-link';
+
 import Modal from 'react-native-modal';
-import styles from '../Styles';
+import styles, {app_red} from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
@@ -36,6 +38,8 @@ export default class HomeView extends Component {
 		this.getPushToken(navigation.state.params.user);
 		
 	}
+
+	APP_VERSION = '1.2';
 
 	//TODO: remove this after implemented in registration
 	//need to test on iOS and make sure it works perferctly
@@ -76,6 +80,17 @@ export default class HomeView extends Component {
 		let active_games = this.state.active_games;
 		active_games.push({game:identifier});
 		this.setState({active_games:active_games});
+	}
+
+	donate(){
+		var url = "venmo://paycharge?txn=pay&recipients=Rotem-Cohen&note=Pocat donation";
+		
+		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
+		  // console.log("app link success");
+		})
+		.catch((err) => {
+		  console.log("app link error: ", error);
+		});
 	}
 
 	_renderModalContent = () => {
@@ -210,6 +225,21 @@ export default class HomeView extends Component {
 				        </View>
 			        </View>
 	    		);
+    		case 'About':
+    			return (
+    				<View style={styles.modalContent}>
+    					<Text>Version: <Text style={{fontWeight:'bold'}}>{this.APP_VERSION}</Text></Text>
+    					<Text>Developer: <Text style={{fontWeight:'bold'}}>Rotem Cohen</Text></Text>
+    					<Text>Support & feedback: </Text>
+    					<Text style={{fontWeight:'bold',color:app_red}} onPress={
+    						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+this.APP_VERSION)
+    					}>hecodesthings@gmail.com</Text>
+    					<View style={{flexDirection:'row'}}>
+			      			<IconButton action={()=> this.donate()} name="ios-cash-outline" text="Donate" />
+			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
+				        </View>
+    				</View>
+				);
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
@@ -293,22 +323,29 @@ export default class HomeView extends Component {
 
 		
 		return (
-	      <View style={styles.container}>
+	      <View style={[styles.container,{justifyContent:'center',flex:1}]}>
 	      	{/*Headers*/}
 	      	<StatusBar hidden={true} />
 	      	<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
-	        <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo_text.png'}} style={{width:300,height:130}} /> 
-	        <View style={{flexDirection:'row'}}>
-		        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-		        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
-	        </View>
-	        <View style={{flexDirection:'row'}}>
-		      	{prevGameButton}
-		      	{pastGameButton}
+	    	
+	    	{/*Top - logo*/}
+	        <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo_text.png'}} style={{width:300,height:130,marginBottom:10}} /> 
+
+	    	{/*Middle - main menu*/}
+	        <View>
+		        <View style={{flexDirection:'row'}}>
+			        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
+		        </View>
+		        <View style={{flexDirection:'row'}}>
+			      	{prevGameButton}
+			      	{pastGameButton}
+		      	</View>
 	      	</View>
 	      	
+	      	{/*Buttom - user menu*/}
 	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
 	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
 	        		<SafeImage uri={this.state.user.picture_url} style={{width:30,height:30,borderWidth:0,borderRadius:12,borderColor:'white',margin:10}} />
@@ -319,6 +356,11 @@ export default class HomeView extends Component {
 			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
 		      	</View>
 	        </View>
+
+	    	{/*Footer - about pocat*/}
+	        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:20}}>
+				<Button title="About Pocat" onPress={()=>this.setState({isModalVisible:true,modalType:'About'})} />
+			</View>
 
 	      </View>
 	    );
