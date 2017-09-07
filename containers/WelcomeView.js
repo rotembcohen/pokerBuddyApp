@@ -40,11 +40,16 @@ export default class WelcomeView extends Component{
         navigation = this.state.navigation;
         return (
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
+                {/*Headers*/}
                 <StatusBar hidden={true} />
+                
+                {/*Logo with onload=redirect in 5 seconds*/}
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={async ()=>{
                     await utils.timeout(5000);
                     utils.RedirectToGame(navigation);
                 }}/> 
+
+                {/*Tip Text with skip button*/}
                 <Text style={[styles.textSubheader,{color:'white',fontStyle:'italic',margin:40}]}>{this.renderOddsTip()}</Text>
                 <TouchableOpacity
                     style={{flexDirection:'row',padding:5,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}}

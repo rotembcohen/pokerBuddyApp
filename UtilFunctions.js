@@ -235,9 +235,8 @@ export async function RedirectToGame(navigation){
         
     const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
 
-    await this.timeout(4000);
-
     if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
+    	//player in middle of a game
         token = data[0][1];
         user = JSON.parse(data[1][1]);
         game_identifier = data[2][1];
@@ -248,9 +247,11 @@ export async function RedirectToGame(navigation){
         }
     }
     if (data && data[0][1]!== null && data[1][1] != null){
+    	//player logged in
         AsyncStorage.removeItem('@pokerbuddy:currentGame');
         this.resetToScreen(navigation,"HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
     }else{
+    	//player not authenticated
         this.resetToScreen(navigation,"LoginView");
     }
     //TODO: error handling

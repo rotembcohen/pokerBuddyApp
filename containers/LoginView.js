@@ -201,12 +201,16 @@ export default class HomeView extends Component {
         const { navigation } = this.props;
         return (
             <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
+                {/*Headers*/}
                 <StatusBar hidden={true} />
-                {/*Modal*/}
-				<Modal isVisible={this.state.isModalVisible === true}>
+                <Modal isVisible={this.state.isModalVisible === true}>
 					{this._renderModalContent()}
 		        </Modal>
+
+		    	{/*Logo*/}
                 <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} /> 
+
+            	{/*Login/signUp Buttons*/}
                 <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
 					this.FBRegister(navigation);
 				}}>
@@ -219,6 +223,8 @@ export default class HomeView extends Component {
                 	<Ionicons name="ios-log-in-outline" color={app_red} size={30} />
                 	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH POCAT USER</Text>
                 </TouchableOpacity>
+
+            	{/*Error text*/}
                 <Text style={{color:'white',textAlign:'center'}}>{this.state.errorLabel}</Text>
             </View>
         );
