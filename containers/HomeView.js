@@ -154,6 +154,7 @@ export default class HomeView extends Component {
 					      		maxLength={5}
 					      		placeholder='Game Address'
 					      		underlineColorAndroid="transparent"
+					      		autoFocus={true}
 				      		/>
 			      		</View>
 			      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
