@@ -34,7 +34,7 @@ export default class PlayerList extends Component {
 		if (recipient) {
 			recipients_field = "&recipients=" + recipient;
 		}
-		var url = "venmo://paycharge?txn=charge" + recipients_field + "&amount=" + amount + "&note=Please transfer me my poker winnings, thanks%21";
+		var url = "venmo://paycharge?txn=charge" + recipients_field + "&amount=" + amount + "&note=Poker";
 		
 		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
 		  // console.log("app link success");
