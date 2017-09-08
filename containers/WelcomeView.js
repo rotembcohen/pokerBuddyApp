@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { AsyncStorage,Text,View,StatusBar,Image,Linking, TouchableOpacity } from 'react-native';
 
+import { ASSET_APP_LOGO } from 'react-native-dotenv';
+
 import * as utils from '../UtilFunctions';
 import styles from '../Styles';
 import TipsDatabase from '../components/TipsDatabase';
-import { ASSET_APP_LOGO } from 'react-native-dotenv';
 
 export default class WelcomeView extends Component{
     

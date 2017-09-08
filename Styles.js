@@ -132,6 +132,26 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		textAlign: 'center',
 	},
+	welcome_errorText: {
+		color:'white',
+		textAlign:'center',
+	},
+
+	//Login View
+	login_signupButton:{
+		color:app_red,
+		textDecorationLine:'underline',
+	},
+	login_button: {
+		flexDirection:'row',
+		padding:5,
+		margin:5,
+		borderWidth:0,
+		borderRadius:12,
+		backgroundColor:'white',
+		justifyContent:'center',
+		alignItems:'center',
+	},
 
 	//Game View
 	game_topView: {

@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import {
   Text, View, TextInput, TouchableOpacity, StatusBar, Image, AsyncStorage
 } from 'react-native';
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 import Modal from 'react-native-modal';
+import { ASSET_APP_LOGO,EXPO_FB_ID } from 'react-native-dotenv';
 
-import styles, {app_red} from '../Styles';
+import styles, {app_red,app_pink} from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
-import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 export default class HomeView extends Component {
 
@@ -33,7 +34,7 @@ export default class HomeView extends Component {
 
 	//TODO: change func names, they are confusing!
 	async FBRegister(navigation) {
-		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('309462139518578', {
+		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(EXPO_FB_ID, {
 			permissions: ['public_profile'],
 		});
 		if (type === 'success') {
@@ -122,8 +123,10 @@ export default class HomeView extends Component {
 							autoCapitalize='words'
 						/>
 						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
-						<View style={{flexDirection:'row'}}>
-							<IconButton action={()=> this.FBLogIn()} name="ios-checkmark-circle-outline" text="Proceed" />
+						<View style={styles.row}>
+							<IconButton name="ios-checkmark-circle-outline" text="Proceed" action={()=> 
+								this.FBLogIn()
+							} />
 						</View>
 					</View>
 				);
@@ -133,7 +136,7 @@ export default class HomeView extends Component {
 						<Text style={styles.errorLabel} >{this.state.errorLabel}</Text>
 				        <View style={styles.inputContainer}>
 				        	<TextInput
-					      		style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb'}]}
+					      		style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:app_pink}]}
 					      		onChangeText={(text)=>{this.setState({loginUsername:text})}}
 					      		value={this.state.loginUsername}
 					      		selectTextOnFocus={true}
@@ -162,7 +165,7 @@ export default class HomeView extends Component {
 			      			this.setState({isModalVisible:false});
 			      			this.state.navigation.navigate('RegistrationView');
 			      		}}>
-			      			<Text style={{color:app_red,textDecorationLine:'underline'}}>Sign up</Text>
+			      			<Text style={styles.login_signupButton}>Sign up</Text>
 			      		</TouchableOpacity>
 			      		<View style={{flexDirection:'row'}}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
@@ -200,7 +203,7 @@ export default class HomeView extends Component {
 	render(){
         const { navigation } = this.props;
         return (
-            <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
+            <View style={styles.welcome_container}>
                 {/*Headers*/}
                 <StatusBar hidden={true} />
                 <Modal isVisible={this.state.isModalVisible === true}>
@@ -208,24 +211,24 @@ export default class HomeView extends Component {
 		        </Modal>
 
 		    	{/*Logo*/}
-                <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} /> 
+                <Image source={{uri:ASSET_APP_LOGO}} style={styles.welcome_logoImage} /> 
 
             	{/*Login/signUp Buttons*/}
-                <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
+                <TouchableOpacity style={styles.login_button} onPress={()=>{
 					this.FBRegister(navigation);
 				}}>
                 	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
-                	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH FACEBOOK</Text>
+                	<Text style={styles.welcome_buttonText}>LOGIN WITH FACEBOOK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{flexDirection:'row',margin:20,padding:10,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}} onPress={()=>{
+                <TouchableOpacity style={styles.login_button} onPress={()=>{
                 	this.setState({modalType:"Log In",isModalVisible:true,errorLabel:""})	
                 }}>
                 	<Ionicons name="ios-log-in-outline" color={app_red} size={30} />
-                	<Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>LOGIN WITH POCAT USER</Text>
+                	<Text style={styles.welcome_buttonText}>LOGIN WITH POCAT USER</Text>
                 </TouchableOpacity>
 
             	{/*Error text*/}
-                <Text style={{color:'white',textAlign:'center'}}>{this.state.errorLabel}</Text>
+                <Text style={styles.welcome_errorText}>{this.state.errorLabel}</Text>
             </View>
         );
     }
