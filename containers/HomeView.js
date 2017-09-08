@@ -220,11 +220,11 @@ export default class HomeView extends Component {
     		case 'About':
     			return (
     				<View style={styles.modalContent}>
-    					<Text>Version: <Text style={{fontWeight:'bold'}}>{this.APP_VERSION}</Text></Text>
+    					<Text>Version: <Text style={{fontWeight:'bold'}}>{APP_VERSION}</Text></Text>
     					<Text>Developer: <Text style={{fontWeight:'bold'}}>Rotem Cohen</Text></Text>
     					<Text>Support & feedback: </Text>
     					<Text style={{fontWeight:'bold',color:app_red}} onPress={
-    						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+this.APP_VERSION)
+    						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)
     					}>hecodesthings@gmail.com</Text>
     					<View style={{flexDirection:'row',justifyContent:'space-between',width:'75%'}}>
 			      			<IconButton action={()=> this.donate()} name="ios-cash-outline" text="Donate" />
