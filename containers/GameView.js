@@ -83,7 +83,7 @@ export default class GameView extends Component {
 						<Text style={styles.textSubheader}>Add Guest</Text>
 						<View style={styles.inputContainer}>
 							<TextInput
-								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:250}]}
+								style={styles.game_modals_textInput}
 					      		onChangeText={(text)=>{this.setState({guest_first_name:text})}}
 								value={this.state.guest_first_name}
 								selectTextOnFocus={true}
@@ -93,7 +93,7 @@ export default class GameView extends Component {
 							/>
 							<TextInput
 								ref='Input2'
-								style={[styles.transparentTextinput,{borderBottomWidth:1,borderColor:'#ffccbb',width:250}]}
+								style={styles.game_modals_textInput}
 					      		onChangeText={(text)=>{this.setState({guest_last_name:text})}}
 								value={this.state.guest_last_name}
 								selectTextOnFocus={true}
@@ -103,7 +103,7 @@ export default class GameView extends Component {
 							/>
 							<TextInput
 								ref='Input3'
-								style={[styles.transparentTextinput,{width:250}]}
+								style={styles.game_modals_textInputButtom}
 								onChangeText={(text)=>{this.setState({guest_venmo:text})}}
 								value={this.state.guest_venmo}
 								selectTextOnFocus={true}
@@ -114,7 +114,7 @@ export default class GameView extends Component {
 							/>
 						</View>
 						<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-						<View style={{flexDirection:'row'}}>
+						<View style={styles.modalButtonsContainer} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={()=> this.submitGuest()} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
@@ -125,7 +125,7 @@ export default class GameView extends Component {
 					return(
 						<View style={styles.modalContent}>
 							<Text>Are you sure? This will finish the game and is irreversible.</Text>
-							<View style={{flexDirection:'row'}}>
+							<View style={styles.modalButtonsContainer} >
 								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
 								<IconButton action={()=> {
 									this.setState({isModalVisible:false});
@@ -137,25 +137,24 @@ export default class GameView extends Component {
 					return(
 						<View style={styles.modalContent}>
 							<Text>Pot money has to be 0!</Text>
-							<View style={{flexDirection:'row'}}>
+							<View style={styles.row}>
 								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
 							</View>
 						</View>);
 				}
 			case 'ApproveGame':
-				case 'FinishGame':
-					return(
-						<View style={styles.modalContent}>
-							<Text>Are you sure? This will end the game and no more payments can be listed.</Text>
-							<View style={{flexDirection:'row'}}>
-								<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
-								<IconButton action={async ()=> {
-									await this.approveGame();
-									//TODO: check if error
-									this.setState({isModalVisible:false});
-								}} name="ios-checkmark-circle-outline" text="Confirm" />
-							</View>
-						</View>);
+				return(
+					<View style={styles.modalContent}>
+						<Text>Are you sure? This will end the game and no more payments can be listed.</Text>
+						<View style={styles.modalButtonsContainer} >
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
+							<IconButton action={async ()=> {
+								await this.approveGame();
+								//TODO: check if error
+								this.setState({isModalVisible:false});
+							}} name="ios-checkmark-circle-outline" text="Confirm" />
+						</View>
+					</View>);
 				
 			case 'BuyIn':
 				return(
@@ -175,10 +174,10 @@ export default class GameView extends Component {
 									return;
 								}
 							}} name="ios-remove-circle-outline" />
-							<Text style={{fontWeight:'bold',fontSize:30}}>${this.state.buy_in_amount}</Text>
+							<Text style={styles.game_valueText}>${this.state.buy_in_amount}</Text>
 							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} name="ios-add-circle-outline" />
 						</View>
-						<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
+						<View style={styles.modalButtonsContainer} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
 								let updated_game = await utils.buy_in(
@@ -206,7 +205,7 @@ export default class GameView extends Component {
 
 						{this.renderResultCalc()}
 
-						<View style={{flexDirection:'row'}}>
+						<View style={styles.modalButtonsContainer} >
 							<IconButton action={()=> this.setState({isCalcVisible:!this.state.isCalcVisible})} name="ios-calculator-outline" text="Calculator" />
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async () => {
@@ -230,7 +229,7 @@ export default class GameView extends Component {
 					        }}
 					        textExtractor={(l,i)=> <Text style={styles.textSubheader} >{l.player.first_name} {l.player.last_name}</Text>}
 						/>
-						<View style={{flexDirection:'row'}}>
+						<View style={styles.modalButtonsContainer} >
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
 					</View>
@@ -261,7 +260,7 @@ export default class GameView extends Component {
 		if(this.state.isCalcVisible){
 		return (
 			<View>
-				<View style={{flexDirection:'row'}}>
+				<View style={styles.row}>
 					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_1:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_1} color={'#aaa'} text="$1/4" inputIndex={1}/>
 					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_2:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_2} color={'#f00'} text="$1/2" inputIndex={2}/>
 					<CalculatorInput onChangeText={async (text)=>{await this.setState({result_calc_3:text});this.setState({result_amount:this.calcResult()})}} value={this.state.result_calc_3} color={'#0c0'} text="$1" inputIndex={3}/>
@@ -380,7 +379,7 @@ export default class GameView extends Component {
 				if (this.state.game.is_active){
 					if (this.state.selected_player.id !== this.state.user.id){
 						ActingAsText = (
-							<Text>Acting as <Text style={{fontWeight:'bold'}} >{this.state.selected_player.first_name} {this.state.selected_player.last_name}</Text>{"\n"}</Text>
+							<Text>Acting as <Text style={styles.boldText} >{this.state.selected_player.first_name} {this.state.selected_player.last_name}</Text>{"\n"}</Text>
 						);
 					}
 					var renderHostButtons = (
@@ -483,12 +482,12 @@ export default class GameView extends Component {
 	        {/*Top View*/}
 	        <View style={styles.game_topView}>
 	        	<View style={styles.game_topView_section}>
-			    	<Text style={styles.game_topView_value}>{this.state.game.identifier}</Text>
+			    	<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
 			    	<Text>Game Address</Text>
 		    		<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
 		    	</View>
 		    	<View style={styles.game_topView_section}>
-			    	<Text style={styles.game_topView_value}>{PotValue}</Text>
+			    	<Text style={styles.game_valueText}>{PotValue}</Text>
 			    	<Text>{PotLabel}</Text>
 		    		<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
 		    	</View>

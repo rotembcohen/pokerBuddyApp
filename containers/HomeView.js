@@ -104,7 +104,7 @@ export default class HomeView extends Component {
 							underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
-			        <View style={{flexDirection:'row'}}>
+			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        	<IconButton action={()=> this.createGame(navigation)} name="ios-checkmark-circle-outline" text="Create" />
 					</View>
@@ -126,7 +126,7 @@ export default class HomeView extends Component {
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
-			        <View style={{flexDirection:'row'}}>
+			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        	<IconButton action={()=> this.updateVenmo()} name="ios-checkmark-circle-outline" text="Confirm" />
 					</View>
@@ -149,7 +149,7 @@ export default class HomeView extends Component {
 				      		/>
 			      		</View>
 			      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-			      		<View style={{flexDirection:'row'}}>
+		        		<View style={styles.modalButtonsContainer}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        		<IconButton action={async ()=>{
 					        	//TODO: better generic error handling
@@ -192,7 +192,7 @@ export default class HomeView extends Component {
 					        }}
 					        textExtractor={this.gameDateExtractor}
 						/>
-		    			<View style={{flexDirection:'row'}}>
+		    			<View style={styles.modalButtonsContainer}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
 			        </View>
@@ -212,7 +212,7 @@ export default class HomeView extends Component {
 					        }}
 					        textExtractor={this.gameDateExtractor}
 						/>
-		    			<View style={{flexDirection:'row'}}>
+		    			<View style={styles.modalButtonsContainer}>
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
 			        </View>
@@ -226,7 +226,7 @@ export default class HomeView extends Component {
     					<Text style={{fontWeight:'bold',color:app_red}} onPress={
     						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)
     					}>hecodesthings@gmail.com</Text>
-    					<View style={{flexDirection:'row',justifyContent:'space-between',width:'75%'}}>
+    					<View style={styles.game_modals_aboutButtonsContainer}>
 			      			<IconButton action={()=> this.donate()} name="ios-cash-outline" text="Donate" />
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
 				        </View>

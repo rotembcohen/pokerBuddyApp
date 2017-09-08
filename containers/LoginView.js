@@ -123,7 +123,7 @@ export default class HomeView extends Component {
 							autoCapitalize='words'
 						/>
 						<Text>This would be used to refer others to pay you when needed. No login is required and no further information is kept.</Text>
-						<View style={styles.row}>
+						<View style={styles.modalButtonsContainer} >
 							<IconButton name="ios-checkmark-circle-outline" text="Proceed" action={()=> 
 								this.FBLogIn()
 							} />
@@ -167,7 +167,7 @@ export default class HomeView extends Component {
 			      		}}>
 			      			<Text style={styles.login_signupButton}>Sign up</Text>
 			      		</TouchableOpacity>
-			      		<View style={{flexDirection:'row'}}>
+			      		<View style={styles.modalButtonsContainer} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 							<IconButton action={()=> {
 								this.setState({isModalVisible:false});

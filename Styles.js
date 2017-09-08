@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: app_red,
 	},
+	boldText: {
+		fontWeight: 'bold',
+	},
 
 	//textInput
 	inputContainer: {
@@ -96,6 +99,11 @@ const styles = StyleSheet.create({
 	    alignItems: 'center',
 	    borderRadius: 4,
 	    borderColor: 'rgba(0, 0, 0, 0.1)',
+	},
+	modalButtonsContainer: {
+		flexDirection:'row',
+		alignItems:'center',
+		justifyContent:'center',
 	},
 	
 	//Welcome View
@@ -181,7 +189,7 @@ const styles = StyleSheet.create({
 		height:75,
 		opacity: 0.2,
 	},
-	game_topView_value: {
+	game_valueText: {
 		fontWeight:'bold',
 		fontSize:30,
 		margin:8,
@@ -216,6 +224,23 @@ const styles = StyleSheet.create({
 		borderRadius:12,
 		borderColor:app_pink,
 		borderWidth:1,
+	},
+	game_modals_textInput: {
+		height: 40,
+		textAlign: 'center',
+		borderBottomWidth:1,
+		borderColor:app_pink,
+		width:250,
+	},
+	game_modals_textInputButtom: {
+		height: 40,
+		width: 250,
+		textAlign: 'center',
+	},
+	game_modals_aboutButtonsContainer: {
+		flexDirection:'row',
+		justifyContent:'space-between',
+		width:'75%',
 	},
 });
 
