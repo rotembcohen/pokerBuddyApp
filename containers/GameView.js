@@ -5,7 +5,7 @@ import {
 
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
-import { PUSHER_API_KEY,PUSHER_CLUSTER } from 'react-native-dotenv';
+import { PUSHER_API_KEY,PUSHER_CLUSTER,ASSET_POT_ICON } from 'react-native-dotenv';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -384,26 +384,36 @@ export default class GameView extends Component {
 						);
 					}
 					var renderHostButtons = (
-						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
-							<IconButton action={()=>this.addGuest(navigation)} name="ios-person-add-outline" text="Add Guest" size={30}/>
-							<IconButton action={()=>this.selectPlayer()} name="ios-eye-outline" text="Act As..." size={30}/>
-							<IconButton action={()=>this.setState({modalType:'FinishGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Finish Game" size={30}/>
+						<View style={styles.game_actionsView_hostButtons} >
+							<IconButton name="ios-person-add-outline" text="Add Guest" size={30} action={()=>
+								this.addGuest(navigation)
+							} />
+							<IconButton name="ios-eye-outline" text="Act As..." size={30} action={()=>
+								this.selectPlayer()
+							} />
+							<IconButton name="ios-checkmark-circle-outline" text="Finish Game" size={30} action={()=>
+								this.setState({modalType:'FinishGame',isModalVisible:true})
+							} />
 						</View>
 					);
 				} else if (!this.state.game.is_approved){
 					var renderHostButtons = (
-						<View style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',borderRadius:12,borderColor:'#ffccbb' ,borderWidth:1}} >
-							<IconButton action={()=>this.setState({modalType:'ApproveGame',isModalVisible:true})} name="ios-checkmark-circle-outline" text="Approve" size={30}/>
+						<View style={styles.game_actionsView_hostButtons} >
+							<IconButton name="ios-checkmark-circle-outline" text="Approve" size={30} action={()=>
+								this.setState({modalType:'ApproveGame',isModalVisible:true})
+							} />
 						</View>
 					);
 				}
 				renderHostMenu = (
-					<View style={{height:100,alignItems:'center',justifyContent:'center'}}>
-						<View style={{flexDirection:'row'}}>
-						<IconButton action={()=>this.setState({isHostMenuVisible:false})} name="ios-close-circle-outline" style={{margin:3}} text="" size={20}/>
+					<View style={styles.game_actionsView_hostMenu}>
+						<View style={styles.row}>
+						<IconButton name="ios-close-circle-outline" style={styles.narrowMargin} text="" size={20} action={
+							()=>this.setState({isHostMenuVisible:false})
+						} />
 						{renderHostButtons}
 						</View>
-						<Text style={{textAlign:'center',color:'#ffccbb'}}>
+						<Text style={styles.game_actionsView_hostText}>
 							{ActingAsText}
 							As Host of this game, only you can make these actions
 						</Text>
@@ -412,26 +422,26 @@ export default class GameView extends Component {
 				
 			}else{
 				renderHostMenu = (
-					<View style={{height:30,alignItems:'center',justifyContent:'center'}}>
+					<View style={styles.game_actionsView_hostShowButton}>
 						<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
 					</View>
 				);
 			}
 		}
 
-		var renderExtraButtons = null
+		var renderExtraButtons = null;
 		var {potMoney,earningsTotal} = this.calcPotMoney();
 		var paidMoney = this.calcPaidMoney();
 		
 		if (this.state.game.is_active){
 			renderExtraButtons = (
-				<View style={{flexDirection:'row'}} >
-	    			<IconButton action={
+				<View style={styles.row} >
+	    			<IconButton name="ios-add-circle-outline" text="Buy In" action={
 						()=>this.setState({modalType:"BuyIn",isModalVisible:true})
-					} name="ios-add-circle-outline" text="Buy In" />
-		    		<IconButton action={
+					} />
+		    		<IconButton name="ios-exit-outline" text="Cash Out" action={
 						()=>this.setState({modalType:"LeaveGame",isModalVisible:true})
-					} name="ios-exit-outline" text="Cash Out" />
+					} />
 				</View>
 			);
 			var renderList = <PlayerList game={this.state.game} player={this.state.selected_player}/>;
@@ -449,48 +459,48 @@ export default class GameView extends Component {
 		}
 	
 		var renderPlayerButtons = (
-			<View style={{height:100,flexDirection:'row'}} >
+			<View style={styles.game_actionsView_playerButtons} >
     			{renderExtraButtons}
-    			<IconButton action={
+    			<IconButton name="ios-home-outline" text="Main Menu" action={
 					()=> {
 						AsyncStorage.removeItem('@pokerBuddy:currentGame');
 						utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user})
 					}
-				} name="ios-home-outline" text="Main Menu" />
+				} />
 			</View>
 		);
 
 		
 		
 		return (
-	      <View style={[{justifyContent:'center',flex:1},styles.container]}>
+	      <View style={styles.container}>
+	      	{/*Headers*/}
 	      	<StatusBar hidden={true} />
-	      	{/*Modal*/}
 			<Modal isVisible={this.state.isModalVisible === true}>
 				{this._renderModalContent()}
 	        </Modal>
 
-	        <View style={{height:90,justifyContent:'center',alignItems:'flex-start',flexDirection:'row'}}>
-	        	{/*Top View*/}
-	        	<View style={{justifyContent:'flex-start',alignItems:'center',flex:1}}>
-			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>{this.state.game.identifier}</Text>
+	        {/*Top View*/}
+	        <View style={styles.game_topView}>
+	        	<View style={styles.game_topView_section}>
+			    	<Text style={styles.game_topView_value}>{this.state.game.identifier}</Text>
 			    	<Text>Game Address</Text>
-		    		<Ionicons name="md-link" color="red" size={75} style={{position:'absolute',bottom:12,opacity: 0.2}} />
+		    		<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
 		    	</View>
-		    	<View style={{justifyContent:'flex-start',alignItems:'center',flex:1}}>
-			    	<Text style={{fontWeight:'bold',fontSize:30,margin:8}}>{PotValue}</Text>
+		    	<View style={styles.game_topView_section}>
+			    	<Text style={styles.game_topView_value}>{PotValue}</Text>
 			    	<Text>{PotLabel}</Text>
-		    		<SafeImage uri="https://s3.amazonaws.com/pokerbuddy/images/icon-pot.png" style={{position:'absolute',top:0,width:75,height:75,opacity: 0.2}} />
+		    		<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
 		    	</View>
 	    	</View>
 
-	        <ScrollView contentContainerStyle={{flex:1,marginTop:10,padding:15}} >
-	        	{/*Player List*/}
+	    	{/*Player List*/}
+	        <ScrollView contentContainerStyle={styles.game_playerList} >
 		        {renderList}
         	</ScrollView>
 
-        	<View style={{justifyContent:'flex-end',alignItems:'center'}}>
-		    	{/*Actions*/}
+        	{/*Actions*/}
+        	<View style={styles.game_actionsView}>
 				{renderHostMenu}
 				{renderPlayerButtons}
 			</View>
