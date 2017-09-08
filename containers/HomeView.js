@@ -315,10 +315,10 @@ export default class HomeView extends Component {
 
 		
 		return (
-	      <View style={[styles.container,{justifyContent:'center',flex:1}]}>
+	      <View style={styles.container}>
 	      	{/*Headers*/}
 	      	<StatusBar hidden={true} />
-	      	<Modal isVisible={this.state.isModalVisible === true}>
+	      	<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
 				{this._renderModalContent()}
 	        </Modal>
 	    	

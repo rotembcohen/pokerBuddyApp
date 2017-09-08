@@ -206,7 +206,7 @@ export default class HomeView extends Component {
             <View style={styles.welcome_container}>
                 {/*Headers*/}
                 <StatusBar hidden={true} />
-                <Modal isVisible={this.state.isModalVisible === true}>
+                <Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
 					{this._renderModalContent()}
 		        </Modal>
 

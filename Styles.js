@@ -82,6 +82,9 @@ const styles = StyleSheet.create({
 	},
 	
 	//modals
+	modal: {
+		alignItems:'center',
+	},
 	modalButton: {
 		backgroundColor: 'white',
 		borderColor: app_red,
@@ -93,6 +96,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 	},
 	modalContent: {
+		width:300,
 	    backgroundColor: 'white',
 	    padding: 22,
 	    justifyContent: 'center',

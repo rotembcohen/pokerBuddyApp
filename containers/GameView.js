@@ -35,6 +35,11 @@ export default class GameView extends Component {
 		const {user,game,token} = navigation.state.params;
 		const is_host = (game.host === user.id);
 
+		var channel = pusher.subscribe(game.identifier);
+		channel.bind('game-update', function(data) {
+		  this.setState({game:data.game});
+		}.bind(this));
+
 		this.state = {
 			navigation: navigation,
 			token: token,
@@ -61,17 +66,8 @@ export default class GameView extends Component {
 		    result_calc_4: 0,
 		    result_calc_5: 0,
 		    isCalcVisible: false,
+		    channel: channel,
 		};
-
-		var channel = pusher.subscribe(game.identifier);
-		channel.bind('game-update', function(data) {
-		  this.setState({game:data.game});
-		}.bind(this));
-
-		//TODO: any other way to solve this?
-		console.ignoredYellowBox = [
-			'Setting a timer'
-		];
 
 	}
 
@@ -242,7 +238,13 @@ export default class GameView extends Component {
 	}
 
 	componentDidMount() {
+		//update game when app returns to foreground
 		AppState.addEventListener('change', this._handleAppStateChange);
+	}
+
+	componentWillUnmount() {
+		this.state.channel.unbind();
+		AppState.removeEventListener('change', this._handleAppStateChange);
 	}
 
 	_handleAppStateChange = (nextAppState) => {
@@ -468,14 +470,12 @@ export default class GameView extends Component {
 				} />
 			</View>
 		);
-
-		
 		
 		return (
 	      <View style={styles.container}>
 	      	{/*Headers*/}
 	      	<StatusBar hidden={true} />
-			<Modal isVisible={this.state.isModalVisible === true}>
+			<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
 				{this._renderModalContent()}
 	        </Modal>
 
