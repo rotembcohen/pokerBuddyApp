@@ -84,6 +84,15 @@ const styles = StyleSheet.create({
 	//modals
 	modal: {
 		alignItems:'center',
+		...Platform.select({
+			'ios': {
+				justifyContent:'flex-start',
+				marginTop:75,
+			},
+			'android': {
+				justifyContent:'center',
+			}
+		}),
 	},
 	modalButton: {
 		backgroundColor: 'white',
