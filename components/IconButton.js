@@ -12,12 +12,12 @@ export default class IconButton extends Component {
 		var size = (this.props.size) ? this.props.size : 50;
 		var iconColor = (this.props.color) ? this.props.color : app_red;
 		var fontColor = (this.props.color) ? this.props.color : 'black';
-
+		var renderText = (this.props.text) ? <Text style={{color:fontColor,textAlign:'center'}}>{this.props.text}</Text> : null;
 		return (
 			<View>
 				<TouchableOpacity style={[styles.iconButton,this.props.style]} onPress={this.props.action} >
 					<Ionicons name={this.props.name} color={iconColor} size={size} />
-					<Text style={{color:fontColor,textAlign:'center'}}>{this.props.text}</Text>
+					{renderText}
 				</TouchableOpacity>
 			</View>
 		);
