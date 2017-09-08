@@ -483,7 +483,7 @@ export default class GameView extends Component {
 	        <View style={styles.game_topView}>
 	        	<View style={styles.game_topView_section}>
 			    	<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
-			    	<Text>Game Address</Text>
+			    	<Text style={styles.game_labelText}>Game Address</Text>
 		    		<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
 		    	</View>
 		    	<View style={styles.game_topView_section}>

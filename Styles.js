@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-	StyleSheet
+	StyleSheet,Platform
 } from 'react-native';
 
 const app_red = "#bc0000";
@@ -197,11 +197,25 @@ const styles = StyleSheet.create({
 		fontWeight:'bold',
 		fontSize:30,
 		margin:8,
+		zIndex: 2,
+		backgroundColor:'rgba(0,0,0,0)',
+	},
+	game_labelText:{
+		zIndex: 2,
 	},
 	game_topView_identifierIcon: {
 		position:'absolute',
-		bottom:12,
-		opacity: 0.2,
+		zIndex: 1,
+		...Platform.select({
+			'ios': {
+				opacity: 0.5,
+				bottom:0,
+			},
+			'android': {
+				opacity: 0.2,
+				bottom:11,
+			}
+		}),
 	},
 	game_actionsView_playerButtons: {
 		height:100,
