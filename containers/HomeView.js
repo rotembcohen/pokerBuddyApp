@@ -128,7 +128,10 @@ export default class HomeView extends Component {
 		      		</View>
 			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			        	<IconButton action={()=> this.updateVenmo()} name="ios-checkmark-circle-outline" text="Confirm" />
+			        	<IconButton action={()=> {
+			        		utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
+			        		this.setState({isModalVisible:false});
+			        	}} name="ios-checkmark-circle-outline" text="Confirm" />
 					</View>
 			      </View>
 			    );
@@ -269,18 +272,6 @@ export default class HomeView extends Component {
 			let response_json = JSON.parse(response._bodyText);
 			this.setState({past_games:response_json});
 		}
-	}
-
-	async updateVenmo(){
-		const response = await utils.fetchFromServer(
-			'users/' + this.state.user.id + '/update_venmo/',
-			'POST',
-			{
-				venmo_username:this.state.new_venmo_username
-			},
-			this.state.token
-		);
-		this.setState({isModalVisible:false});
 	}
 
 	async logout(){

@@ -287,3 +287,17 @@ export function useVenmo(method,recipient=null,amount=null,note=null) {
 	});
 
 }
+
+export async function updateVenmo(venmo_username,user,token){
+	const response = await this.fetchFromServer(
+		'users/' + user.id + '/update_venmo/',
+		'POST',
+		{
+			venmo_username:venmo_username
+		},
+		token
+	);
+	//TODO: handle errors!
+	user.venmo_username = venmo_username;
+	await AsyncStorage.setItem('@pokerBuddy:user', JSON.stringify(user));
+}

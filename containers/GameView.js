@@ -67,6 +67,7 @@ export default class GameView extends Component {
 		    result_calc_5: 0,
 		    isCalcVisible: false,
 		    channel: channel,
+		    new_venmo_username: user.venmo_username,
 		};
 
 	}
@@ -228,6 +229,32 @@ export default class GameView extends Component {
 						<View style={styles.modalButtonsContainer} >
 			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 				        </View>
+					</View>
+				);
+			case 'UpdateVenmo':
+				return (
+					<View style={styles.modalContent}>
+						<Text style={styles.textSubheader}>Update Vemno</Text>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={styles.textinputwide}
+								onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+								value={this.state.new_venmo_username}
+								selectTextOnFocus={true}
+								autoFocus={true}
+								placeholder='Account username (without the @)'
+								onSubmitEditing={()=>{this.updateVenmo()}}
+								underlineColorAndroid="transparent"
+							/>
+						</View>
+						<View style={styles.modalButtonsContainer}>
+							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
+							<IconButton action={()=> {
+								//if you ever want to add this to "act as" feature, remember to also change the venmo username when replacing selected player
+								utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
+								this.setState({isModalVisible:false});
+							}} name="ios-checkmark-circle-outline" text="Confirm" />
+						</View>
 					</View>
 				);
 			default:
@@ -450,6 +477,13 @@ export default class GameView extends Component {
 			var PotValue = "$" + potMoney.toString();
 		}else{
 			if (!this.state.game.is_approved){
+				renderExtraButtons = (
+					<View style={styles.row} >
+		    			<IconButton name="ios-create-outline" text="Update Venmo" action={
+							()=>this.setState({modalType:"UpdateVenmo",isModalVisible:true})
+						} />
+					</View>
+				);
 				var PotLabel = "Unpaid Money";
 				var PotValue = "$" + (earningsTotal-paidMoney).toString();	
 			}else{
