@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-
 import { Ionicons } from '@expo/vector-icons';
-import AppLink from 'react-native-app-link';
 
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
@@ -30,18 +28,7 @@ export default class PlayerList extends Component {
 	}
 
 	chargeUser(amount,recipient=null){
-		let recipients_field = '';
-		if (recipient) {
-			recipients_field = "&recipients=" + recipient;
-		}
-		var url = "venmo://paycharge?txn=charge" + recipients_field + "&amount=" + amount + "&note=Poker";
-		
-		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
-		  // console.log("app link success");
-		})
-		.catch((err) => {
-		  console.log("app link error: ", error);
-		});
+		utils.useVenmo('charge',recipient,amount,'Poker');
 	}
 
 	renderPlayerThumb(image_uri){

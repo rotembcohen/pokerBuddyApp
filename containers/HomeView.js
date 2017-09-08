@@ -3,7 +3,7 @@ import {
   Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image, Linking
 } from 'react-native';
 
-import AppLink from 'react-native-app-link';
+import { APP_VERSION } from 'react-native-dotenv';
 
 import Modal from 'react-native-modal';
 import styles, {app_red} from '../Styles';
@@ -38,8 +38,6 @@ export default class HomeView extends Component {
 		this.getPushToken(navigation.state.params.user);
 		
 	}
-
-	APP_VERSION = '1.2';
 
 	//TODO: remove this after implemented in registration
 	//need to test on iOS and make sure it works perferctly
@@ -83,14 +81,7 @@ export default class HomeView extends Component {
 	}
 
 	donate(){
-		var url = "venmo://paycharge?txn=pay&recipients=Rotem-Cohen&note=Pocat donation";
-		
-		AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
-		  // console.log("app link success");
-		})
-		.catch((err) => {
-		  console.log("app link error: ", error);
-		});
+		utils.useVenmo('pay','Rotem-Cohen',null,'Pocat Donation');
 	}
 
 	_renderModalContent = () => {

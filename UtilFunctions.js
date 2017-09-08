@@ -3,8 +3,8 @@ import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import { Permissions, Notifications, Constants } from 'expo';
-
 import { SERVER_ADDRESS } from 'react-native-dotenv';
+import AppLink from 'react-native-app-link';
 
 var qs = require('qs');
 
@@ -261,4 +261,29 @@ export async function RedirectToGame(navigation){
 
 export function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function getUrlField(variable,prefix) {
+	let field = '';
+	if (variable) {
+		field = prefix + variable;
+	}
+	return field;
+}
+
+export function useVenmo(method,recipient=null,amount=null,note=null) {
+
+	let recipient_field = this.getUrlField(recipient,"&recipients=");
+	let amount_field = this.getUrlField(amount,"&amount=");
+	let note_field = this.getUrlField(note,"&note=");
+	
+	var url = "venmo://paycharge?txn="+ method + recipient_field + amount_field + note_field;
+		
+	AppLink.maybeOpenURL(url, { appName: 'Venmo', appStoreId: 'id351727428', playStoreId: 'com.venmo'}).then(() => {
+	  // console.log("app link success");
+	})
+	.catch((err) => {
+	  console.log("app link error: ", error);
+	});
+
 }
