@@ -98,6 +98,40 @@ const styles = StyleSheet.create({
 	    borderColor: 'rgba(0, 0, 0, 0.1)',
 	},
 	
+	//Welcome View
+	welcome_container: {
+		backgroundColor:app_red,
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		padding: 20,
+	},
+	welcome_logoImage: {
+		width:200,
+		height:200,
+	},
+	welcome_tipText: {
+		color:'white',
+		fontStyle:'italic',
+		margin:40,
+		fontSize: 18,
+		textAlign: 'center',
+	},
+	welcome_button: {
+		flexDirection:'row',
+		padding:5,
+		borderWidth:0,
+		borderRadius:12,
+		backgroundColor:'white',
+		justifyContent:'center',
+		alignItems:'center',
+	},
+	welcome_buttonText: {
+		margin:10,
+		fontWeight:'bold',
+		fontSize: 18,
+		textAlign: 'center',
+	},
 
 	//Game View
 	game_topView: {

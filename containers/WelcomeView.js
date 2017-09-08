@@ -4,6 +4,7 @@ import { AsyncStorage,Text,View,StatusBar,Image,Linking, TouchableOpacity } from
 import * as utils from '../UtilFunctions';
 import styles from '../Styles';
 import TipsDatabase from '../components/TipsDatabase';
+import { ASSET_APP_LOGO } from 'react-native-dotenv';
 
 export default class WelcomeView extends Component{
     
@@ -31,12 +32,12 @@ export default class WelcomeView extends Component{
     render(){
         navigation = this.state.navigation;
         return (
-            <View style={[styles.container,{backgroundColor:"#BC0000"}]}>
+            <View style={styles.welcome_container}>
                 {/*Headers*/}
                 <StatusBar hidden={true} />
                 
                 {/*Logo with onload=redirect in 5 seconds*/}
-                <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo.png'}} style={{width:200,height:200}} onLoad={async ()=>{
+                <Image source={{uri:ASSET_APP_LOGO}} style={styles.welcome_logoImage} onLoad={async ()=>{
                     await utils.timeout(5000);
                     if (this.state.haventSkipped){
                         utils.RedirectToGame(navigation);
@@ -44,15 +45,15 @@ export default class WelcomeView extends Component{
                 }}/> 
 
                 {/*Tip Text with skip button*/}
-                <Text style={[styles.textSubheader,{color:'white',fontStyle:'italic',margin:40}]}>{TipsDatabase[this.state.randInt]}</Text>
+                <Text style={styles.welcome_tipText}>{TipsDatabase[this.state.randInt]}</Text>
                 <TouchableOpacity
-                    style={{flexDirection:'row',padding:5,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}}
+                    style={styles.welcome_button}
                     onPress={()=> {
                         this.setState({haventSkipped:false});
                         utils.RedirectToGame(navigation);
                     }}
                 >
-                    <Text style={[styles.textSubheader,{margin:10,fontWeight:'bold'}]}>SKIP</Text>
+                    <Text style={styles.welcome_buttonText}>SKIP</Text>
                 </TouchableOpacity>
             </View>
         );
