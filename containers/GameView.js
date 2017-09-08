@@ -250,9 +250,7 @@ export default class GameView extends Component {
 						<View style={styles.modalButtonsContainer}>
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 							<IconButton action={()=> {
-								//if you ever want to add this to "act as" feature, remember to also change the venmo username when replacing selected player
-								utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
-								this.setState({isModalVisible:false});
+								this.updateVenmo();
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>
@@ -262,6 +260,12 @@ export default class GameView extends Component {
 
 		}
 		
+	}
+
+	updateVenmo(){
+		//if you ever want to add this to "act as" feature, remember to also change the venmo username when replacing selected player
+		utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
+		this.setState({isModalVisible:false});
 	}
 
 	componentDidMount() {
