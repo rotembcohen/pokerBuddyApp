@@ -101,8 +101,8 @@ export default class PlayerList extends Component {
 	            		var itemPayments = <View>{paymentRows}</View>;
 	            		
 		            	return (
-		            		<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-			            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginBottom:2,marginTop:8,flex:1}} >
+		            		<View style={{flex:1,justifyContent:'center',alignItems:'center',marginBottom:3}}>
+			            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginBottom:2,flex:1}} >
 				            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:'100%'}}>
 				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:'100%'}} >
 					            			{this.renderPlayerThumb(item.player.picture_url)}

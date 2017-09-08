@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center',
-		padding: 20,
+		padding: 15,
 	},
 	iconButton: {
-		margin: 10,
+		margin: 5,
 		justifyContent:'center',
 		alignItems:'center',
 	},
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
 	},
 	game_playerList: {
 		flex:1,
-		marginTop:10,
 		padding:15
 	},
 	game_actionsView: {
