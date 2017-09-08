@@ -3,14 +3,17 @@ import { AsyncStorage,Text,View,StatusBar,Image,Linking, TouchableOpacity } from
 
 import * as utils from '../UtilFunctions';
 import styles from '../Styles';
+import TipsDatabase from '../components/TipsDatabase';
 
 export default class WelcomeView extends Component{
     
     constructor(props){
         super(props);
+        const randInt = Math.floor(Math.random() * TipsDatabase.length)
         this.state = {
             navigation: props.navigation,
-            haventSkipped: true
+            haventSkipped: true,
+            randInt: randInt
         }
     }
 
@@ -23,18 +26,6 @@ export default class WelcomeView extends Component{
     _handleOpenUrl(event){
         utils.parseUrl(event.url);
         utils.RedirectToGame(navigation);
-    }
-
-    renderOddsTip(){
-        tipsArray = [
-            "The chance of one of your cards making a pair on the flop is about a third",
-            "By the river, your chances of making a pair go up to roughly a half",
-            "Don't play any two cards just because they're suited. It only improves your hand by 2.5%",
-            "If you've got one card short of a full flush after the flop, you'll make your hand a third of the time",
-            "The probability of flopping two-pair (from non-paired hole cards) is about 2%"
-        ];
-        randInt = Math.floor(Math.random() * tipsArray.length);
-        return tipsArray[randInt];
     }
 
     render(){
@@ -53,7 +44,7 @@ export default class WelcomeView extends Component{
                 }}/> 
 
                 {/*Tip Text with skip button*/}
-                <Text style={[styles.textSubheader,{color:'white',fontStyle:'italic',margin:40}]}>{this.renderOddsTip()}</Text>
+                <Text style={[styles.textSubheader,{color:'white',fontStyle:'italic',margin:40}]}>{TipsDatabase[this.state.randInt]}</Text>
                 <TouchableOpacity
                     style={{flexDirection:'row',padding:5,borderWidth:0,borderRadius:12,backgroundColor:'white', justifyContent:'center',alignItems:'center'}}
                     onPress={()=> {
