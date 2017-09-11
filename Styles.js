@@ -5,6 +5,7 @@ import {
 
 const app_red = "#bc0000";
 const app_pink = "#ffccbb";
+const app_grey = "#ccc";
 const styles = StyleSheet.create({
 	
 	//common
@@ -174,6 +175,36 @@ const styles = StyleSheet.create({
 		alignItems:'center',
 	},
 
+	//Home View
+	home_userMenu: {
+		borderColor:app_pink,
+		borderWidth:1,
+		borderRadius:12,
+		padding:10,
+		marginTop:20
+	},
+	home_userPicture: {
+		width:30,
+		height:30,
+		borderWidth:0,
+		borderRadius:12,
+		borderColor:'white',
+		margin:10
+	},
+	home_appLogoImage: {
+		width:300,
+		height:130,
+		marginBottom:10
+	},
+	home_gameList: {
+		width:200,
+		maxHeight:375
+	},
+	home_boldLink: {
+		fontWeight: 'bold',
+		color: app_red,
+	},
+
 	//Game View
 	game_topView: {
 		height:90,
@@ -271,4 +302,4 @@ const styles = StyleSheet.create({
 });
 
 
-export {styles as default,app_red,app_pink};
+export {styles as default,app_red,app_pink,app_grey};

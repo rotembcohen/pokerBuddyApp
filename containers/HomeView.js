@@ -3,10 +3,10 @@ import {
   Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image, Linking
 } from 'react-native';
 
-import { APP_VERSION } from 'react-native-dotenv';
+import { APP_VERSION, ASSET_APP_LOGO_TEXT } from 'react-native-dotenv';
 
 import Modal from 'react-native-modal';
-import styles, {app_red} from '../Styles';
+import styles, { app_red, app_grey } from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
@@ -184,7 +184,7 @@ export default class HomeView extends Component {
 		    	return (
 		    		<View style={styles.modalContent}>
 		    			<ListPicker
-							containerStyle={{width:200,maxHeight:375}} 
+							containerStyle={styles.home_gameList} 
 							optionArray={this.state.active_games}
 							keyExtractor={(l,i)=>l.game}
 							onPressElement={(l,i)=> async ()=>{
@@ -204,7 +204,7 @@ export default class HomeView extends Component {
 		    	return (
 		    		<View style={styles.modalContent}>
 		    			<ListPicker
-							containerStyle={{width:200,maxHeight:375}} 
+							containerStyle={styles.home_gameList} 
 							optionArray={this.state.past_games}
 							keyExtractor={(l,i)=>l.game}
 							onPressElement={(l,i)=> async ()=>{
@@ -225,7 +225,7 @@ export default class HomeView extends Component {
     				<View style={styles.modalContent}>
     					<Text>Version: <Text style={styles.boldText}>{APP_VERSION}</Text></Text>
     					<Text>Developer: <Text style={styles.boldText}>Rotem Cohen</Text></Text>
-    					<Text style={{fontWeight:'bold',color:app_red}} onPress={
+    					<Text style={styles.home_boldLink} onPress={
     						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)
     					}>hecodesthings@gmail.com</Text>
     					<View style={styles.game_modals_aboutButtonsContainer}>
@@ -299,7 +299,7 @@ export default class HomeView extends Component {
 			pastGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPast'})};
 		} else {
 			pastGameAction = ()=>{};
-			pastGameColor = "#ccc";
+			pastGameColor = app_grey;
 		}
 		let pastGameButton = (<IconButton name="ios-timer-outline" text='Past Games' action={pastGameAction} color={pastGameColor} />);
 
@@ -313,7 +313,7 @@ export default class HomeView extends Component {
 	        </Modal>
 	    	
 	    	{/*Top - logo*/}
-	        <Image source={{uri:'https://s3.amazonaws.com/pokerbuddy/images/pocat_logo_text.png'}} style={{width:300,height:130,marginBottom:10}} /> 
+	        <Image source={{uri:ASSET_APP_LOGO_TEXT}} style={styles.home_appLogoImage} /> 
 
 	    	{/*Middle - main menu*/}
 	        <View>
@@ -328,12 +328,12 @@ export default class HomeView extends Component {
 	      	</View>
 	      	
 	      	{/*Buttom - user menu*/}
-	      	<View style={{borderColor:'#ffccbb' ,borderWidth:1 ,borderRadius:12,padding:10,marginTop:20}}>
-	        	<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-	        		<SafeImage uri={this.state.user.picture_url} style={{width:30,height:30,borderWidth:0,borderRadius:12,borderColor:'white',margin:10}} />
+	      	<View style={styles.home_userMenu}>
+	        	<View style={styles.modalButtonsContainer} >
+	        		<SafeImage uri={this.state.user.picture_url} style={styles.home_userPicture} />
 	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
 	        	</View>
-	        	<View style={{flexDirection:'row'}}>
+	        	<View style={styles.modalButtonsContainer}>
 			      	<IconButton name="ios-settings-outline" text="Settings" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}} />
 			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
 		      	</View>
