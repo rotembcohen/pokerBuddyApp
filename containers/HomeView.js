@@ -110,7 +110,7 @@ export default class HomeView extends Component {
 					</View>
 			      </View>
 			    );
-		    case 'UpdateVenmo':
+		    case 'Settings':
 		    	return (
 			      <View style={styles.modalContent}>
 			      	<Text style={styles.textSubheader}>Update Vemno</Text>
@@ -334,7 +334,7 @@ export default class HomeView extends Component {
 	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
 	        	</View>
 	        	<View style={{flexDirection:'row'}}>
-			      	<IconButton name="ios-create-outline" text="Update Venmo" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'UpdateVenmo'})}} />
+			      	<IconButton name="ios-settings-outline" text="Settings" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}} />
 			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
 		      	</View>
 	        </View>
