@@ -28,7 +28,7 @@ export default class PlayerList extends Component {
 	}
 
 	chargeUser(amount,recipient=null){
-		utils.useVenmo('charge',recipient,amount,'Poker');
+		utils.useVenmo('charge',recipient,amount,'Game winnings');
 	}
 
 	renderPlayerThumb(image_uri){
