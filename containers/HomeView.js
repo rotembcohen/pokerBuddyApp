@@ -26,8 +26,11 @@ export default class HomeView extends Component {
 			active_games: [],
 			past_games: [],
 			isModalVisible: false,
-			min_bet: 20,
+			min_bet: navigation.state.params.user.default_min_bet,
 			new_venmo_username: navigation.state.params.user.venmo_username,
+			new_min_bet: navigation.state.params.user.default_min_bet,
+			new_buy_in_intervals: navigation.state.params.user.buy_in_intervals,
+			new_chip_unit: navigation.state.params.user.chip_basic_unit,
 			modalType: '',
 			errorLabel: '',
 		};
@@ -116,38 +119,41 @@ export default class HomeView extends Component {
 			      	<View style={styles.home_settingsSection}>
 			      		<Text style={styles.boldText}>Vemno Username</Text>
 				      	<TextInput
+				      		ref="Settings1"
 				      		style={styles.textinputwide}
 				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
 				      		value={this.state.new_venmo_username}
 				      		selectTextOnFocus={true}
 				      		placeholder='Account username (without the @)'
-				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		onSubmitEditing={()=>{this.refs.Settings2.focus()}}
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
 		      		<View style={styles.home_settingsSection}>
-			      		<Text style={styles.boldText}>Default Minimum Bet</Text>
+			      		<Text style={styles.boldText}>Default Starting Bet</Text>
 			      		<Text style={styles.italicText}>When creating a new game</Text>
 				      	<TextInput
+				      		ref="Settings2"
 				      		style={styles.textinput}
-				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
-				      		value={this.state.new_venmo_username}
+				      		onChangeText={(text)=>{this.setState({new_min_bet:text})}}
+				      		value={this.state.new_min_bet.toString()}
 				      		selectTextOnFocus={true}
 				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		onSubmitEditing={()=>{this.refs.Settings3.focus()}}
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
 		      		<View style={styles.home_settingsSection}>
-			      		<Text style={styles.boldText}>Amount Intervals</Text>
-			      		<Text style={styles.italicText}>When selecting a Buy In amount</Text>
+			      		<Text style={styles.boldText}>Buy In Intervals</Text>
+			      		<Text style={styles.italicText}>When selecting an amount to Buy In</Text>
 				      	<TextInput
+				      		ref="Settings3"
 				      		style={styles.textinput}
-				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
-				      		value={this.state.new_venmo_username}
+				      		onChangeText={(text)=>{this.setState({new_buy_in_intervals:text})}}
+				      		value={this.state.new_buy_in_intervals.toString()}
 				      		selectTextOnFocus={true}
 				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		onSubmitEditing={()=>{this.refs.Settings4.focus()}}
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
@@ -155,23 +161,21 @@ export default class HomeView extends Component {
 			      		<Text style={styles.boldText}>Chips Basic Unit</Text>
 			      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
 				      	<TextInput
+				      		ref="Settings4"
 				      		style={styles.textinput}
-				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
-				      		value={this.state.new_venmo_username}
+				      		onChangeText={(text)=>{this.setState({new_chip_unit:text})}}
+				      		value={this.state.new_chip_unit}
 				      		selectTextOnFocus={true}
 				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		onSubmitEditing={()=>{this.updateSettings()}}
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
+		      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        	<IconButton action={()=> {
-			        		if (this.state.user.venmo_username !== this.state.new_venmo_username){
-			        			utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
-			        			//TODO: handle errors
-			        		}
-			        		this.setState({isModalVisible:false});
+			        		this.updateSettings();
 			        	}} name="ios-checkmark-circle-outline" text="Confirm" />
 					</View>
 			      </View>
@@ -265,6 +269,7 @@ export default class HomeView extends Component {
     			return (
     				<View style={styles.modalContent}>
     					<Text>Version: <Text style={styles.boldText}>{APP_VERSION}</Text></Text>
+    					<Text>App version: <Text style={styles.boldText}>{this.state.user.app_version}</Text></Text>
     					<Text>Developer: <Text style={styles.boldText}>Rotem Cohen</Text></Text>
     					<Text style={styles.home_boldLink} onPress={
     						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)
@@ -278,6 +283,44 @@ export default class HomeView extends Component {
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
+	}
+
+	async updateSettings(){
+
+		if (this.state.new_min_bet <= 0 || !Number.isInteger(Number(this.state.new_min_bet))){
+			this.setState({errorLabel:"Default starting bet needs to be a positive whole number"});
+			return;
+		}
+		if (this.state.new_buy_in_intervals <=0 || !Number.isInteger(Number(this.state.new_buy_in_intervals))){
+			this.setState({errorLabel:"Default buy in interval needs to be a positive whole number"});	
+			return;
+		}
+		if (this.state.new_chip_unit <=0){
+			this.setState({errorLabel:"Chip unit needs to be a positive number"});	
+			return;
+		}
+
+		let form = {
+			venmo_username: this.state.new_venmo_username,
+			default_min_bet: this.state.new_min_bet,
+			buy_in_intervals: this.state.new_buy_in_intervals,
+			chip_basic_unit: this.state.new_chip_unit,
+		}
+
+		let response = await utils.fetchFromServer(
+			'users/' + this.state.user.id + "/update_settings/",
+			'POST',
+			form,
+			this.state.token
+			);
+
+		let user = await response.json();
+		console.log("THIS IS MY USER",JSON.stringify(user));
+		await AsyncStorage.setItem('@pokerBuddy:user',JSON.stringify(user));
+
+		//TODO: handle errors
+
+		this.setState({isModalVisible:false,user:user,min_bet:this.state.new_min_bet,errorLabel:''});
 	}
 
 	gameDateExtractor(l,i) {

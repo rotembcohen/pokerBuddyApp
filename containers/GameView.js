@@ -45,7 +45,7 @@ export default class GameView extends Component {
 			token: token,
 			user: user,
 			game: game,
-			buy_in_amount: 5,
+			buy_in_amount: user.buy_in_intervals,
 			result_amount: 0,
 			is_host: is_host,
 		    isModalVisible: false,
@@ -163,16 +163,16 @@ export default class GameView extends Component {
 									let bets = this.state.game.bets;
 									let selected_bet = bets.find((elem)=>{return elem.player.id == this.state.selected_player.id});
 									if (this.state.buy_in_amount > (-1 * selected_bet.amount)){
-										this.setState({buy_in_amount:this.state.buy_in_amount-5});
+										this.setState({buy_in_amount:this.state.buy_in_amount-this.state.user.buy_in_intervals});
 									}
-								} else if (this.state.buy_in_amount > 5){
-									this.setState({buy_in_amount:this.state.buy_in_amount-5});
+								} else if (this.state.buy_in_amount > this.state.user.buy_in_intervals){
+									this.setState({buy_in_amount:this.state.buy_in_amount-this.state.user.buy_in_intervals});
 								} else {
 									return;
 								}
 							}} name="ios-remove-circle-outline" />
 							<Text style={styles.game_valueText}>${this.state.buy_in_amount}</Text>
-							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+5})}} name="ios-add-circle-outline" />
+							<IconButton action={()=>{this.setState({buy_in_amount:this.state.buy_in_amount+this.state.user.buy_in_intervals})}} name="ios-add-circle-outline" />
 						</View>
 						<View style={styles.modalButtonsContainer} >
 							<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
@@ -180,7 +180,7 @@ export default class GameView extends Component {
 								let updated_game = await utils.buy_in(
 									this.state.buy_in_amount,this.state.game.identifier,this.state.token,this.state.selected_player.id
 								);
-								this.setState({game:updated_game,buy_in_amount:5,isModalVisible:false});
+								this.setState({game:updated_game,buy_in_amount:this.state.user.buy_in_intervals,isModalVisible:false});
 							}} name="ios-checkmark-circle-outline" text="Confirm" />
 						</View>
 					</View>);
@@ -308,13 +308,16 @@ export default class GameView extends Component {
 	}
 
 	calcResult(){
-		return (
-			this.state.result_calc_1 * 0.25 +
-			this.state.result_calc_2 * 0.5 +
-			this.state.result_calc_3 * 1 +
-			this.state.result_calc_4 * 2 +
-			this.state.result_calc_5 * 4
-		);
+		//uses math.round to make sure number will have only 2 decimal points
+		return Math.round(
+			100 * this.state.user.chip_basic_unit * (
+				this.state.result_calc_1 * 0.25 +
+				this.state.result_calc_2 * 0.5 +
+				this.state.result_calc_3 * 1 +
+				this.state.result_calc_4 * 2 +
+				this.state.result_calc_5 * 4
+			)
+		)/100;
 	}
 
 	async submitGuest(){

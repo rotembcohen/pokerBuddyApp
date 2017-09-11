@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import { Permissions, Notifications, Constants } from 'expo';
-import { SERVER_ADDRESS } from 'react-native-dotenv';
+import { APP_VERSION, SERVER_ADDRESS } from 'react-native-dotenv';
 import AppLink from 'react-native-app-link';
 
 var qs = require('qs');
@@ -236,22 +236,58 @@ export async function parseUrl(url){
 export async function RedirectToGame(navigation){
         
     const data = await AsyncStorage.multiGet(['@pokerBuddy:token','@pokerBuddy:user','@pokerBuddy:currentGame']);
+    
+    if (data){
+    	var token = (data[0][1]!==null) ? data[0][1] : null;
+    	var user = (data[1][1]!==null) ? JSON.parse(data[1][1]) : null;
+    	var game_identifier = (data[2][1]!==null) ? data[2][1] : null;
+    }
 
-    if (data && data[0][1]!== null && data[1][1] != null && data[2][1] != null){
+    //backwards compatibility
+    //TODO: remove from code versions that are no longer in use
+    if (token && user){
+	    
+	    if (typeof user.app_version === 'undefined'){
+
+	    	//in here if version==="1.2", pre-backwards compatibility
+	    	user.app_version = "1.2";
+
+	    }else if (user.app_version === "1.3 alpha"){
+	    	
+	    	//latest, do nothing
+
+	    }else{
+	    	console.log("Unknown app version");
+	    }
+
+	    //update app_version if needed
+    	if (user.app_version !== APP_VERSION){
+	    	response = await this.fetchFromServer(
+				'users/' + user.id + '/update_app_version/',
+				'POST',
+				{
+					app_version:APP_VERSION
+				},
+				token
+			);
+			user = await response.json();
+			await AsyncStorage.setItem('@pokerBuddy:user', JSON.stringify(user));
+	    }
+	}
+
+
+    if (token && user && game_identifier){
     	//player in middle of a game
-        token = data[0][1];
-        user = JSON.parse(data[1][1]);
-        game_identifier = data[2][1];
         game = await this.joinGame(game_identifier,token,user);
         if (!game.error || game.error === "None"){
             this.resetToScreen(navigation,"GameView",{game: game,user: user,token:token});
             return;
         }
     }
-    if (data && data[0][1]!== null && data[1][1] != null){
+    if (token && user){
     	//player logged in
         AsyncStorage.removeItem('@pokerbuddy:currentGame');
-        this.resetToScreen(navigation,"HomeView",{token:data[0][1],user:JSON.parse(data[1][1])});
+        this.resetToScreen(navigation,"HomeView",{token:token,user:user});
     }else{
     	//player not authenticated
         this.resetToScreen(navigation,"LoginView");
