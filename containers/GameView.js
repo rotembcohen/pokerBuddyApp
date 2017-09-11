@@ -323,8 +323,21 @@ export default class GameView extends Component {
 			this.setState({errorLabel:'All fields are required'});
 			return;
 		}
+
+		/*
+		To make each guest a unique user with his own unique username,
+		we'll use the guest's name and the game's identifier.
+		Player count after this user would also be added, 
+		in case there are two users with same name in the same game
+		*/
+		let player_count = this.state.game.bets.length + 1;
+		
 		let form = {
-			username: this.state.guest_first_name+"-"+this.state.guest_last_name+"-"+this.state.game.identifier,
+			username:
+				this.state.guest_first_name
+				+"-"+this.state.guest_last_name
+				+"-"+this.state.game.identifier
+				+"-"+player_count.toString(),
 			first_name: this.state.guest_first_name,
 			last_name: this.state.guest_last_name,
 			password: this.state.guest_password,
