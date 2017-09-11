@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 	//common
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: 'white',
 		alignItems: 'center',
 		justifyContent: 'center',
 		padding: 15,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 	narrowMargin: {
 		margin: 3,
 	},
-
+	
 	//labels
 	textHeader:{
 		fontSize:24,
@@ -64,6 +64,9 @@ const styles = StyleSheet.create({
 	},
 	boldText: {
 		fontWeight: 'bold',
+	},
+	italicText: {
+		fontStyle:'italic',
 	},
 
 	//textInput
@@ -203,6 +206,10 @@ const styles = StyleSheet.create({
 	home_boldLink: {
 		fontWeight: 'bold',
 		color: app_red,
+	},
+	home_settingsSection: {
+		alignItems: 'center',
+		marginBottom: 10,
 	},
 
 	//Game View

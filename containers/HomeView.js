@@ -113,15 +113,53 @@ export default class HomeView extends Component {
 		    case 'Settings':
 		    	return (
 			      <View style={styles.modalContent}>
-			      	<Text style={styles.textSubheader}>Update Vemno</Text>
-			      	<View style={styles.inputContainer}>
+			      	<View style={styles.home_settingsSection}>
+			      		<Text style={styles.boldText}>Vemno Username</Text>
 				      	<TextInput
 				      		style={styles.textinputwide}
 				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
 				      		value={this.state.new_venmo_username}
 				      		selectTextOnFocus={true}
-				      		autoFocus={true}
 				      		placeholder='Account username (without the @)'
+				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
+		      		<View style={styles.home_settingsSection}>
+			      		<Text style={styles.boldText}>Default Minimum Bet</Text>
+			      		<Text style={styles.italicText}>When creating a new game</Text>
+				      	<TextInput
+				      		style={styles.textinput}
+				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+				      		value={this.state.new_venmo_username}
+				      		selectTextOnFocus={true}
+				      		keyboardType='numeric'
+				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
+		      		<View style={styles.home_settingsSection}>
+			      		<Text style={styles.boldText}>Amount Intervals</Text>
+			      		<Text style={styles.italicText}>When selecting a Buy In amount</Text>
+				      	<TextInput
+				      		style={styles.textinput}
+				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+				      		value={this.state.new_venmo_username}
+				      		selectTextOnFocus={true}
+				      		keyboardType='numeric'
+				      		onSubmitEditing={()=>{this.updateVenmo()}}
+				      		underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
+		      		<View style={styles.home_settingsSection}>
+			      		<Text style={styles.boldText}>Chips Basic Unit</Text>
+			      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
+				      	<TextInput
+				      		style={styles.textinput}
+				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+				      		value={this.state.new_venmo_username}
+				      		selectTextOnFocus={true}
+				      		keyboardType='numeric'
 				      		onSubmitEditing={()=>{this.updateVenmo()}}
 				      		underlineColorAndroid="transparent"
 			      		/>
@@ -129,7 +167,10 @@ export default class HomeView extends Component {
 			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
 			        	<IconButton action={()=> {
-			        		utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
+			        		if (this.state.user.venmo_username !== this.state.new_venmo_username){
+			        			utils.updateVenmo(this.state.new_venmo_username,this.state.user,this.state.token);
+			        			//TODO: handle errors
+			        		}
 			        		this.setState({isModalVisible:false});
 			        	}} name="ios-checkmark-circle-outline" text="Confirm" />
 					</View>
