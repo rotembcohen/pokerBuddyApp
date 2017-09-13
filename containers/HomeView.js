@@ -13,6 +13,7 @@ import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
 import AboutModal from '../components/AboutModal';
+import { Ionicons } from '@expo/vector-icons';
 
 export default class HomeView extends Component {
 
@@ -181,51 +182,6 @@ export default class HomeView extends Component {
 					</View>
 			      </View>
 			    );
-		    case 'JoinGame':
-		    	return (
-		    		<View style={styles.modalContent}>
-		    			<View style={styles.inputContainer}>
-				    		<TextInput
-					      		style={styles.transparentTextinput}
-					      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
-					      		value={this.state.game_identifier}
-					      		autoCapitalize={'characters'}
-					      		selectTextOnFocus={true}
-					      		maxLength={5}
-					      		placeholder='Game Address'
-					      		underlineColorAndroid="transparent"
-					      		autoFocus={true}
-				      		/>
-			      		</View>
-			      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-		        		<View style={styles.modalButtonsContainer}>
-			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			        		<IconButton action={async ()=>{
-					        	//TODO: better generic error handling
-					        	
-					        	//join game
-					        	game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
-					        	if (game.error){
-					        		this.setState({errorLabel:game.error});
-					        		return;
-					        	}
-
-					        	//TODO: no need for updating active list?
-					        	//check if game is already in active games list
-					        	let active_games = this.state.active_games;
-					        	let game_already_active = active_games.find((elem)=>{return elem.game == this.state.game_identifier});
-					        	
-					        	if(game_already_active == null){
-					        		//if not there, add to it
-				        			this.updateActiveGames(game.identifier);
-					        	}
-
-					        	this.setState({isModalVisible:false});
-					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
-					        }} name="ios-checkmark-circle-outline" text="Join" />
-				        </View>
-			        </View>
-	    		);
 		    case 'BackToPrev':
 		    	return (
 		    		<View style={styles.modalContent}>
@@ -366,7 +322,7 @@ export default class HomeView extends Component {
 			prevGameAction = ()=>{};
 			prevGameColor = '#ccc';
 		}
-		let prevGameButton = (<IconButton name="ios-log-in" text='Rejoin Game' action={prevGameAction} color={prevGameColor} />);
+		let prevGameButton = (<IconButton name="ios-log-in" text="Continue" action={prevGameAction} color={prevGameColor} />);
 
 		let past_games = this.state.past_games;
 		let pastGameColor = null;
@@ -377,7 +333,7 @@ export default class HomeView extends Component {
 			pastGameAction = ()=>{};
 			pastGameColor = app_grey;
 		}
-		let pastGameButton = (<IconButton name="ios-timer-outline" text='Past Games' action={pastGameAction} color={pastGameColor} />);
+		let pastGameButton = (<IconButton name="ios-timer-outline" text='History' action={pastGameAction} color={pastGameColor} />);
 
 		
 		return (
@@ -393,14 +349,39 @@ export default class HomeView extends Component {
 
 	    	{/*Middle - main menu*/}
 	        <View>
-		        <View style={{flexDirection:'row'}}>
-			        <IconButton name="ios-add-circle-outline" text="Create Game" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
-		        </View>
-		        <View style={{flexDirection:'row'}}>
+		        <View style={styles.row}>
+		        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 			      	{prevGameButton}
 			      	{pastGameButton}
 		      	</View>
+
+		      	<View style={[styles.row,{alignItems:'center',justifyContent:'center',marginTop:15}]}>
+			        <View style={styles.inputContainer}>
+			    		<TextInput
+				      		style={styles.transparentTextinput}
+				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
+				      		value={this.state.game_identifier}
+				      		autoCapitalize={'characters'}
+				      		selectTextOnFocus={true}
+				      		maxLength={5}
+				      		placeholder='Game Address'
+				      		underlineColorAndroid="transparent"
+			      		/>
+		      		</View>
+		      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={async ()=>{
+		      			game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
+			        	if (game.error){
+			        		this.setState({errorLabel:game.error});
+			        		return;
+			        	}
+			        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
+			        }}
+		      		 />
+		      		{/*
+			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
+			    	*/}
+		        </View>
+		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 	      	</View>
 	      	
 	      	{/*Buttom - user menu*/}
