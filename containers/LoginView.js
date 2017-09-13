@@ -11,6 +11,7 @@ import styles, {app_red,app_pink} from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
+import AboutModal from '../components/AboutModal';
 
 export default class HomeView extends Component {
 
@@ -178,6 +179,11 @@ export default class HomeView extends Component {
 						</View>
 					</View>
 				);
+			case 'About':
+				return <AboutModal 
+					onClose={()=> this.setState({isModalVisible:false})} 
+					donateButton={false}
+				/>;
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -230,7 +236,14 @@ export default class HomeView extends Component {
                 </TouchableOpacity>
 
             	{/*Error text*/}
-                <Text style={styles.welcome_errorText}>{this.state.errorLabel}</Text>
+                <Text style={styles.login_labelText}>{this.state.errorLabel}</Text>
+
+            	{/*About*/}
+                <TouchableOpacity style={{borderColor:'white',borderWidth:1,borderRadius:12,padding:5}} onPress={()=>{
+                	this.setState({modalType:"About",isModalVisible:true})	
+                }}>
+                	<Text style={styles.login_labelText}>about pocat</Text>
+                </TouchableOpacity>
             </View>
         );
     }

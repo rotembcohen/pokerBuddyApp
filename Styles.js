@@ -176,6 +176,13 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 		justifyContent:'center',
 		alignItems:'center',
+		width: 300,
+	},
+	login_labelText: {
+		color:'white',
+		fontStyle:'italic',
+		fontSize: 14,
+		textAlign: 'center',
 	},
 
 	//Home View
@@ -303,7 +310,7 @@ const styles = StyleSheet.create({
 	},
 	game_modals_aboutButtonsContainer: {
 		flexDirection:'row',
-		justifyContent:'space-between',
+		justifyContent:'center',
 		width:'75%',
 	},
 });

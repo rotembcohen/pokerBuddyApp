@@ -12,6 +12,7 @@ import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
+import AboutModal from '../components/AboutModal';
 
 export default class HomeView extends Component {
 
@@ -266,19 +267,11 @@ export default class HomeView extends Component {
 			        </View>
 	    		);
     		case 'About':
-    			return (
-    				<View style={styles.modalContent}>
-    					<Text>Version: <Text style={styles.boldText}>{APP_VERSION}</Text></Text>
-    					<Text>Developer: <Text style={styles.boldText}>Rotem Cohen</Text></Text>
-    					<Text style={styles.home_boldLink} onPress={
-    						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)
-    					}>hecodesthings@gmail.com</Text>
-    					<View style={styles.game_modals_aboutButtonsContainer}>
-			      			<IconButton action={()=> this.donate()} name="ios-cash-outline" text="Donate" />
-			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Close" />
-				        </View>
-    				</View>
-				);
+    			return <AboutModal
+    				onClose={()=> this.setState({isModalVisible:false})} 
+    				onDonate={()=> this.donate()}
+    				donateButton={true}
+				/> ;
 		    default:
 				return (<View><Text>Error</Text></View>);
 		}
