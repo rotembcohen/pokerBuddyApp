@@ -269,7 +269,6 @@ export default class HomeView extends Component {
     			return (
     				<View style={styles.modalContent}>
     					<Text>Version: <Text style={styles.boldText}>{APP_VERSION}</Text></Text>
-    					<Text>App version: <Text style={styles.boldText}>{this.state.user.app_version}</Text></Text>
     					<Text>Developer: <Text style={styles.boldText}>Rotem Cohen</Text></Text>
     					<Text style={styles.home_boldLink} onPress={
     						()=>Linking.openURL('mailto:hecodesthings@gmail.com?subject=Pocat v'+APP_VERSION)

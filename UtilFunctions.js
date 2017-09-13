@@ -3,10 +3,11 @@ import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import { Permissions, Notifications, Constants } from 'expo';
-import { APP_VERSION, SERVER_ADDRESS } from 'react-native-dotenv';
+import { APP_VERSION, SERVER_ADDRESS, PASSWORD_HASH_SECRET } from 'react-native-dotenv';
 import AppLink from 'react-native-app-link';
 
 var qs = require('qs');
+var CryptoJS = require("crypto-js");
 
 //TODO: better network error check across the board
 
@@ -169,7 +170,7 @@ export async function user_registration(form,login=true) {
 	if (initResponse.status === 201){
 		//get token
 		//TODO: fix server so this wont need 2 requests
-		//TODO: this should behave like fetchfromserver (at lease as far as retrun value)
+		//TODO: this should behave like fetchFromServer (at lease as far as retrun value)
 		const response = await loginWithCreds(form.username,form.password);
 		if (response.error === 'None'){
 			return {user:response.user,token:response.token,error:'None'};
@@ -249,10 +250,10 @@ export async function RedirectToGame(navigation){
 	    
 	    if (typeof user.app_version === 'undefined'){
 
-	    	//in here if version==="1.2", pre-backwards compatibility
+	    	//temp app version, cause users with older versions won't have it in their saved user object
 	    	user.app_version = "1.2";
 
-	    }else if (user.app_version === "1.3 alpha"){
+	    }else if (user.app_version === "1.3"){
 	    	
 	    	//latest, do nothing
 
@@ -336,4 +337,8 @@ export async function updateVenmo(venmo_username,user,token){
 	//TODO: handle errors!
 	user.venmo_username = venmo_username;
 	await AsyncStorage.setItem('@pokerBuddy:user', JSON.stringify(user));
+}
+
+export function hashPassword(string){
+	return (CryptoJS.HmacSHA1(string, PASSWORD_HASH_SECRET)).toString();
 }

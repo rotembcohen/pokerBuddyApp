@@ -44,9 +44,11 @@ export default class HomeView extends Component {
 				`https://graph.facebook.com/me?fields=id,picture,first_name,last_name&access_token=${token}`);
 			const responseJson = await response.json();
 
+			let password = await utils.hashPassword(responseJson.id);
+			
 			var form = {
 				username: responseJson.id,
-				password: responseJson.id,
+				password: password,
 				first_name: responseJson.first_name,
 				last_name: responseJson.last_name,
 				picture_url: responseJson.picture.data.url,

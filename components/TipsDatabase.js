@@ -5,7 +5,6 @@ const TipsDatabase = [
     "If you've got one card short of a full flush after the flop, you'll make your hand a 1/3 of the time",
     "The probability of flopping two-pair (from non-paired hole cards) is about 2%",
     "Every out you have on the flop equals 4% for a winning hand on the turn or river",
-    "After the turn, multiply the number of outs by 2 to give chance of winning on the river",
     "If you have a pocket pair, you will flop a set roughly one time in 9",
     "If you have two suited cards, you will flop a flush roughly one time in 118",
     "On average, you'll be dealt pocket As once every 220 hands",
