@@ -381,6 +381,7 @@ export default class HomeView extends Component {
 			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
 			    	*/}
 		        </View>
+		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
 		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 	      	</View>
 	      	
