@@ -6,7 +6,6 @@ import { Permissions, Notifications, Constants } from 'expo';
 import { APP_VERSION, SERVER_ADDRESS, PASSWORD_HASH_SECRET } from 'react-native-dotenv';
 import AppLink from 'react-native-app-link';
 
-var qs = require('qs');
 var CryptoJS = require("crypto-js");
 
 //TODO: better network error check across the board
@@ -213,25 +212,6 @@ export async function registerForPushNotificationsAsync(user_id) {
 	}
 
 	return {error:'Server Error'};
-}
-
-
-export async function parseUrl(url){
-    if (url) {
-        let queryString = url.replace(Constants.linkingUri, '');
-        if (queryString) {
-            let data = qs.parse(queryString);
-            console.log(`Linked to app with data: ${JSON.stringify(data)}`);
-            let game_identifier = data.join;
-            
-            //TODO: check regex
-            if (game_identifier && game_identifier.length === 5){
-                game_identifier = game_identifier.toUpperCase();
-                await AsyncStorage.setItem('@pokerBuddy:currentGame', game_identifier);
-            }
-        }
-        //console.log('Initial url is: ' + url,'\nqueryString is ' + queryString, "\nconst is " + Constants.linkingUri);
-    }
 }
 
 export async function RedirectToGame(navigation){

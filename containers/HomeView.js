@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image, Linking
+  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image
 } from 'react-native';
 
 import { APP_VERSION, ASSET_APP_LOGO_TEXT } from 'react-native-dotenv';
@@ -73,7 +73,7 @@ export default class HomeView extends Component {
 		//TODO:else
 		
 	}
-	
+
 	donate(){
 		utils.useVenmo('pay','Rotem-Cohen',null,'Pocat Donation');
 	}

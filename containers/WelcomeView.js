@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage,Text,View,StatusBar,Image,Linking, TouchableOpacity } from 'react-native';
+import { AsyncStorage,Text,View,StatusBar,Image,TouchableOpacity } from 'react-native';
 
 import { ASSET_APP_LOGO } from 'react-native-dotenv';
 
@@ -17,17 +17,6 @@ export default class WelcomeView extends Component{
             haventSkipped: true,
             randInt: randInt
         }
-    }
-
-    //TODO: is there any way to put this only on one view???
-    componentDidMount() {
-        Linking.addEventListener('url', this._handleOpenUrl.bind(this));
-        Linking.getInitialURL().then(this.parseUrl).catch(err => console.error('An error occurred', err));
-    }
-
-    _handleOpenUrl(event){
-        utils.parseUrl(event.url);
-        utils.RedirectToGame(navigation);
     }
 
     render(){
