@@ -84,7 +84,9 @@ export default class HomeView extends Component {
 			this.setState({errorLabel:game.error});
 			return;
 		}
-		utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
+		let tutorialResponse = await AsyncStorage.getItem('@pokerBuddy:showTutorial');
+		let showTutorial = (tutorialResponse === null) ? true : (tutorialResponse==='true');
+		utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token,showTutorial:showTutorial});
 	}
 
 	_renderModalContent = () => {

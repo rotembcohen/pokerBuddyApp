@@ -127,6 +127,19 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 	},
 	
+	//Tutorial
+	tutorial: {
+		alignItems:'center',
+		justifyContent:'center',
+	},
+	progressCircle: {
+		width:10,
+		height:10,
+		borderWidth:0,
+		borderRadius:5,
+		margin:5,
+	},
+
 	//Welcome View
 	welcome_container: {
 		backgroundColor:app_red,

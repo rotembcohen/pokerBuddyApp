@@ -7,7 +7,7 @@ import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
 import { PUSHER_API_KEY,PUSHER_CLUSTER,ASSET_POT_ICON } from 'react-native-dotenv';
 
-import styles from '../Styles';
+import styles, {app_red,app_pink} from '../Styles';
 import * as utils from '../UtilFunctions';
 import PlayerList from '../components/PlayerList';
 import ResultList from '../components/ResultList';
@@ -16,6 +16,7 @@ import IconButton from '../components/IconButton';
 import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
 import CalculatorInput from '../components/CalculatorInput';
+import TutorialModal from '../components/TutorialModal';
 
 import Pusher from 'pusher-js/react-native';
 
@@ -32,7 +33,7 @@ export default class GameView extends Component {
 	constructor(props){
 		super(props);
 		const {navigation} = props;
-		const {user,game,token} = navigation.state.params;
+		const {user,game,token,showTutorial} = navigation.state.params;
 		const is_host = (game.host === user.id);
 
 		var channel = pusher.subscribe(game.identifier);
@@ -49,8 +50,10 @@ export default class GameView extends Component {
 			result_amount: 0,
 			is_host: is_host,
 		    isModalVisible: false,
-		    selected_player: user,
 		    modalType: '',
+		    isTutorialVisible: false,
+		    showTutorial: showTutorial,
+		    selected_player: user,
 		    guest_first_name: '',
 		    guest_last_name: '',
 		    guest_password: '',
@@ -255,6 +258,32 @@ export default class GameView extends Component {
 						</View>
 					</View>
 				);
+			case 'Tutorial':
+				let hostTutorial = [
+					"Welcome to your new game!\n\nAccess this tutorial using the \"Help\" button at any time.",
+					"Note the \"Show Host Menu\" on the buttom of the screen. \nUse this menu to invite guests who don't have the pocat app.\nYou can also act as other users using the \"Act as\" button.",
+					"Acting as others is easy, just use the menu buttons as if you were them.\nRemember to use the \"Act as\" button again when you want to resume playing as yourself.",
+					"When all players cashed out, the game is complete and you should press the \"Finish Game\" button. Pocat would then tell each winning player who they should charge.\nYou will be able to send charge requests to all players yourself if needed.",
+					"Once all winning players confirmed (using the thumb up icon) they received all payments, you can then press the \"Approve Game\" button and end the game.\n\nHave a great game!",
+				];
+				let game_host = this.state.game.bets.find((elem)=>{return elem.player.id==this.state.game.host}); 
+				let playerTutorial = [
+					`Welcome to ${game_host.player.first_name}'s game!\n\nAccess this tutorial using the \"Help\" button at any time.`,
+					`Use the \"Buy In\" button whenever you run out of chips and want to resume playing, ${game_host.player.first_name} and the rest of the players will be able to see that in real time\n`,
+					"Use the \"Cash Out\" button when you leave the game. When all players left the game, Pocat will be able to tell each winner who they should charge to get their winnings",
+					"The charge button has 2 parts - the left white side opens a charge request on Venmo, and you should use the right side to confirm a payment is received\n\nGood Luck!",
+				];
+				let content = (this.state.is_host) ? hostTutorial : playerTutorial;
+				return <TutorialModal 
+					onClose={()=> this.setState({isTutorialVisible:false})}
+					content={content}
+					checkmarkValue={this.state.showTutorial}
+					onCheckmark={async ()=>{
+						let showTutorial = !this.state.showTutorial;
+						this.setState({showTutorial:showTutorial});
+						await AsyncStorage.setItem('@pokerBuddy:showTutorial',showTutorial.toString());
+					}}
+				/>
 			default:
 				return (<View><Text>Error</Text></View>);
 
@@ -471,7 +500,7 @@ export default class GameView extends Component {
 			}else{
 				renderHostMenu = (
 					<View style={styles.game_actionsView_hostShowButton}>
-						<Button title="Show Host Actions" onPress={()=>this.setState({isHostMenuVisible:true})} />
+						<Button title="Show Host Menu" onPress={()=>this.setState({isHostMenuVisible:true})} />
 					</View>
 				);
 			}
@@ -516,7 +545,12 @@ export default class GameView extends Component {
 		var renderPlayerButtons = (
 			<View style={styles.game_actionsView_playerButtons} >
     			{renderExtraButtons}
-    			<IconButton name="ios-home-outline" text="Main Menu" action={
+    			<IconButton name="ios-help-circle-outline" text="Help" action={
+					()=> {
+						this.setState({isTutorialVisible:true,modalType:"Tutorial"});
+					}
+				} />
+    			<IconButton name="ios-home-outline" text="Home" action={
 					()=> {
 						AsyncStorage.removeItem('@pokerBuddy:currentGame');
 						utils.resetToScreen(navigation,"HomeView",{token:this.state.token,user:this.state.user})
@@ -526,39 +560,51 @@ export default class GameView extends Component {
 		);
 		
 		return (
-	      <View style={styles.container}>
-	      	{/*Headers*/}
-	      	<StatusBar hidden={true} />
-			<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
-				{this._renderModalContent()}
-	        </Modal>
+			<View style={styles.container} onLayout={()=>{
+				if (this.state.showTutorial){
+					this.setState({isTutorialVisible:true,modalType:"Tutorial"});
+				}
+			}}>
+				{/*Headers*/}
+				<StatusBar hidden={true} />
+				<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
+					{this._renderModalContent()}
+				</Modal>
+				<Modal 
+					isVisible={this.state.isTutorialVisible === true} 
+					style={styles.tutorial}
+					animationIn={'slideInLeft'}
+          			animationOut={'slideOutRight'}
+				>
+					{this._renderModalContent()}
+				</Modal>
 
-	        {/*Top View*/}
-	        <View style={styles.game_topView}>
-	        	<View style={styles.game_topView_section}>
-			    	<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
-			    	<Text style={styles.game_labelText}>Game Address</Text>
-		    		<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
-		    	</View>
-		    	<View style={styles.game_topView_section}>
-			    	<Text style={styles.game_valueText}>{PotValue}</Text>
-			    	<Text>{PotLabel}</Text>
-		    		<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
-		    	</View>
-	    	</View>
+				{/*Top View*/}
+				<View style={styles.game_topView}>
+					<View style={styles.game_topView_section}>
+						<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
+						<Text style={styles.game_labelText}>Game Address</Text>
+						<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
+					</View>
+					<View style={styles.game_topView_section}>
+						<Text style={styles.game_valueText}>{PotValue}</Text>
+						<Text>{PotLabel}</Text>
+						<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
+					</View>
+				</View>
 
-	    	{/*Player List*/}
-	        <ScrollView contentContainerStyle={styles.game_playerList} >
-		        {renderList}
-        	</ScrollView>
+				{/*Player List*/}
+				<ScrollView contentContainerStyle={styles.game_playerList} >
+					{renderList}
+				</ScrollView>
 
-        	{/*Actions*/}
-        	<View style={styles.game_actionsView}>
-				{renderHostMenu}
-				{renderPlayerButtons}
+				{/*Actions*/}
+				<View style={styles.game_actionsView}>
+					{renderHostMenu}
+					{renderPlayerButtons}
+				</View>
 			</View>
-	      </View>
-	    );
+		);
 	}
 
 }
