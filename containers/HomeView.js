@@ -64,29 +64,27 @@ export default class HomeView extends Component {
 
 		//game created succesfully
 		if (response.status===201){
-			//get new game identifier
 			let game_json = JSON.parse(response._bodyText);
 			let game_identifier = game_json.identifier;
 			
-			//TODO: add option for host not to immediately join game
-			//join game
-			game = await utils.joinGame(game_identifier,this.state.token,this.state.user);
 			this.setState({isModalVisible:false});
-			this.updateActiveGames(game.identifier);
-			utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
+			this.joinGame(game_identifier);
 		}
 		//TODO:else
 		
 	}
-
-	updateActiveGames(identifier) {
-		let active_games = this.state.active_games;
-		active_games.push({game:identifier});
-		this.setState({active_games:active_games});
-	}
-
+	
 	donate(){
 		utils.useVenmo('pay','Rotem-Cohen',null,'Pocat Donation');
+	}
+
+	async joinGame(game_identifier){
+		game = await utils.joinGame(game_identifier,this.state.token,this.state.user);
+		if (game.error){
+			this.setState({errorLabel:game.error});
+			return;
+		}
+		utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
 	}
 
 	_renderModalContent = () => {
@@ -191,9 +189,8 @@ export default class HomeView extends Component {
 							keyExtractor={(l,i)=>l.game}
 							onPressElement={(l,i)=> async ()=>{
 					        	//TODO: check all this occuronces for errors!
-					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
-					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
+					        	this.joinGame(l.game);
 					        }}
 					        textExtractor={this.gameDateExtractor}
 						/>
@@ -211,9 +208,8 @@ export default class HomeView extends Component {
 							keyExtractor={(l,i)=>l.game}
 							onPressElement={(l,i)=> async ()=>{
 					        	//TODO: check all this occuronces for errors!
-					        	game = await utils.joinGame(l.game,this.state.token,this.state.user);
 					        	this.setState({isModalVisible:false});
-					        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
+					        	this.joinGame(l.game);
 					        }}
 					        textExtractor={this.gameDateExtractor}
 						/>
@@ -366,23 +362,17 @@ export default class HomeView extends Component {
 				      		maxLength={5}
 				      		placeholder='Game Address'
 				      		underlineColorAndroid="transparent"
+				      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
 			      		/>
 		      		</View>
-		      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={async ()=>{
-		      			game = await utils.joinGame(this.state.game_identifier,this.state.token,this.state.user);
-			        	if (game.error){
-			        		this.setState({errorLabel:game.error});
-			        		return;
-			        	}
-			        	utils.resetToScreen(navigation,"GameView",{game: game,user: this.state.user,token:this.state.token});
-			        }}
+		      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={()=>this.joinGame(this.state.game_identifier)}
 		      		 />
 		      		{/*
 			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
 			    	*/}
 		        </View>
-		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
 		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
 	      	</View>
 	      	
 	      	{/*Buttom - user menu*/}

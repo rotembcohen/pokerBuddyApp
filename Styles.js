@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
 	errorLabel: {
 		fontSize: 14,
 		color: app_red,
+		textAlign:'center',
 	},
 	boldText: {
 		fontWeight: 'bold',
