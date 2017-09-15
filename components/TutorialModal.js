@@ -30,7 +30,7 @@ class TutorialModal extends Component {
 		let progBar = [];
 		for (let i = 0; i < this.state.numScreens ; i++){
 			let color = (i === this.state.index) ? app_red : app_pink;
-			let progPoint = <ProgressCircle color={color}/>;
+			let progPoint = <ProgressCircle color={color} key={i} />;
 			progBar.push(progPoint);
 		}
 		return (
