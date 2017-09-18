@@ -347,13 +347,14 @@ export default class HomeView extends Component {
 
 	    	{/*Middle - main menu*/}
 	        <View>
-		        <View style={styles.row}>
+		        <View style={[styles.row,{marginBottom:15}]}>
 		        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 			      	{prevGameButton}
 			      	{pastGameButton}
 		      	</View>
 
-		      	<View style={[styles.row,{alignItems:'center',justifyContent:'center',marginTop:15}]}>
+		      	<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+		      	<View style={[styles.row,{alignItems:'center',justifyContent:'center'}]}>
 			        <View style={styles.inputContainer}>
 			    		<TextInput
 				      		style={styles.transparentTextinput}
@@ -373,7 +374,6 @@ export default class HomeView extends Component {
 			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
 			    	*/}
 		        </View>
-		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
 	      	</View>
 	      	
