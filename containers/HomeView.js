@@ -224,7 +224,7 @@ export default class HomeView extends Component {
     			return <AboutModal
     				onClose={()=> this.setState({isModalVisible:false})} 
     				onDonate={()=> this.donate()}
-    				donateButton={true}
+    				donateButton={false}
 				/> ;
 		    default:
 				return (<View><Text>Error</Text></View>);
