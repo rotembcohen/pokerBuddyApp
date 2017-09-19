@@ -264,14 +264,14 @@ export default class GameView extends Component {
 					"Note the \"Show Host Menu\" on the buttom of the screen. \nUse this menu to invite guests who don't have the pocat app.\nYou can also act as other users using the \"Act as\" button.",
 					"Acting as others is easy, just use the menu buttons as if you were them.\nRemember to use the \"Act as\" button again when you want to resume playing as yourself.",
 					"When all players cashed out, the game is complete and you should press the \"Finish Game\" button. Pocat would then tell each winning player who they should charge.\nYou will be able to send charge requests to all players yourself if needed.",
-					"Once all winning players confirmed (using the thumb up icon) they received all payments, you can then press the \"Approve Game\" button and end the game.\n\nHave a great game!",
+					"Once all winning players confirmed (using the thumb up icon) they received all payments, you can then press the \"Approve Game\" button and end the game.",
 				];
 				let game_host = this.state.game.bets.find((elem)=>{return elem.player.id==this.state.game.host}); 
 				let playerTutorial = [
 					`Welcome to ${game_host.player.first_name}'s game!\n\nAccess this tutorial using the \"Help\" button at any time.`,
 					`Use the \"Buy In\" button whenever you run out of chips and want to resume playing, ${game_host.player.first_name} and the rest of the players will be able to see that in real time\n`,
 					"Use the \"Cash Out\" button when you leave the game. When all players left the game, Pocat will be able to tell each winner who they should charge to get their winnings",
-					"The charge button has 2 parts - the left white side opens a charge request on Venmo, and you should use the right side to confirm a payment is received\n\nGood Luck!",
+					"In case you won, \"Charge\" and \"Confirm\" buttons would appear under your name for any player Pocat assigned to pay you. Use them to get paid using Venmo and to tell your host you received the money.",
 				];
 				let content = (this.state.is_host) ? hostTutorial : playerTutorial;
 				return <TutorialModal 
