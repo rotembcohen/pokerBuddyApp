@@ -233,7 +233,7 @@ export async function RedirectToGame(navigation){
 	    	//temp app version, cause users with older versions won't have it in their saved user object
 	    	user.app_version = "1.2";
 
-	    }else if (user.app_version === "1.3"){
+	    }else if (user.app_version === "1.3" || user.app_version === "1.4"){
 	    	
 	    	//latest, do nothing
 

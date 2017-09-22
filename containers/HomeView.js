@@ -118,7 +118,7 @@ export default class HomeView extends Component {
 		    case 'Settings':
 		    	return (
 			      <View style={styles.modalContent}>
-			      	<View style={styles.home_settingsSection}>
+			      	<View style={[styles.home_settingsSection,{flexDirection:'column'}]}>
 			      		<Text style={styles.boldText}>Vemno Username</Text>
 				      	<TextInput
 				      		ref="Settings1"
@@ -132,11 +132,13 @@ export default class HomeView extends Component {
 			      		/>
 		      		</View>
 		      		<View style={styles.home_settingsSection}>
-			      		<Text style={styles.boldText}>Default Starting Bet</Text>
-			      		<Text style={styles.italicText}>When creating a new game</Text>
+		      			<View style={{marginRight:10}}>
+				      		<Text style={styles.boldText}>Default Starting Bet</Text>
+				      		<Text style={styles.italicText}>When creating a new game</Text>
+			      		</View>
 				      	<TextInput
 				      		ref="Settings2"
-				      		style={styles.textinput}
+				      		style={styles.textinputthin}
 				      		onChangeText={(text)=>{this.setState({new_min_bet:text})}}
 				      		value={this.state.new_min_bet.toString()}
 				      		selectTextOnFocus={true}
@@ -145,12 +147,14 @@ export default class HomeView extends Component {
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
-		      		<View style={styles.home_settingsSection}>
-			      		<Text style={styles.boldText}>Buy In Intervals</Text>
-			      		<Text style={styles.italicText}>When selecting an amount to Buy In</Text>
+		      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
+			      		<View style={{marginRight:40}}>
+				      		<Text style={styles.boldText}>Buy In Intervals</Text>
+				      		<Text style={styles.italicText}>When selecting Buy In</Text>
+			      		</View>
 				      	<TextInput
 				      		ref="Settings3"
-				      		style={styles.textinput}
+				      		style={styles.textinputthin}
 				      		onChangeText={(text)=>{this.setState({new_buy_in_intervals:text})}}
 				      		value={this.state.new_buy_in_intervals.toString()}
 				      		selectTextOnFocus={true}
@@ -159,12 +163,15 @@ export default class HomeView extends Component {
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
-		      		<View style={styles.home_settingsSection}>
-			      		<Text style={styles.boldText}>Chips Basic Unit</Text>
-			      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
+		      		{/*
+		      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
+		      			<View style={{marginRight:10}}>
+				      		<Text style={styles.boldText}>Chips Basic Unit</Text>
+				      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
+			      		</View>
 				      	<TextInput
 				      		ref="Settings4"
-				      		style={styles.textinput}
+				      		style={styles.textinputthin}
 				      		onChangeText={(text)=>{this.setState({new_chip_unit:text})}}
 				      		value={this.state.new_chip_unit}
 				      		selectTextOnFocus={true}
@@ -173,6 +180,7 @@ export default class HomeView extends Component {
 				      		underlineColorAndroid="transparent"
 			      		/>
 		      		</View>
+		      		*/}
 		      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 			        <View style={styles.modalButtonsContainer}>
 			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
@@ -347,14 +355,14 @@ export default class HomeView extends Component {
 
 	    	{/*Middle - main menu*/}
 	        <View>
-		        <View style={[styles.row,{marginBottom:15}]}>
+		        <View style={[styles.row,{marginBottom:0}]}>
 		        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
 			      	{prevGameButton}
 			      	{pastGameButton}
 		      	</View>
 
-		      	<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-		      	<View style={[styles.row,{alignItems:'center',justifyContent:'center'}]}>
+		      	
+		      	<View style={[styles.row,{alignItems:'center',justifyContent:'flex-start'}]}>
 			        <View style={styles.inputContainer}>
 			    		<TextInput
 				      		style={styles.transparentTextinput}
@@ -370,11 +378,9 @@ export default class HomeView extends Component {
 		      		</View>
 		      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={()=>this.joinGame(this.state.game_identifier)}
 		      		 />
-		      		{/*
-			        <IconButton name="ios-people-outline" text='Join Game' action={()=>{this.setState({errorLabel:'',isModalVisible:true,modalType:'JoinGame'})}} />
-			    	*/}
 		        </View>
 		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
+		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 	      	</View>
 	      	
 	      	{/*Buttom - user menu*/}
@@ -390,7 +396,7 @@ export default class HomeView extends Component {
 	        </View>
 
 	    	{/*Footer - about pocat*/}
-	        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:20}}>
+	        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:2}}>
 				<Button title="About Pocat" onPress={()=>this.setState({isModalVisible:true,modalType:'About'})} />
 			</View>
 

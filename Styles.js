@@ -48,6 +48,14 @@ const styles = StyleSheet.create({
 		borderColor:'#ffccbb',
 		borderRadius:12,
 	},
+	textinputthin:{
+		height: 40,
+		width: 50,
+		textAlign: 'center',
+		borderWidth:1,
+		borderColor:'#ffccbb',
+		borderRadius:12,
+	},
 	transparentTextinput: {
 		height: 40,
 		width: 150,
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
 		...Platform.select({
 			'ios': {
 				justifyContent:'flex-start',
-				marginTop:75,
+				marginTop:15,
 			},
 			'android': {
 				justifyContent:'center',
@@ -208,7 +216,14 @@ const styles = StyleSheet.create({
 		borderWidth:1,
 		borderRadius:12,
 		padding:10,
-		marginTop:20
+		...Platform.select({
+			'ios': {
+				marginTop:0
+			},
+			'android': {
+				marginTop:20
+			}
+		}),
 	},
 	home_userPicture: {
 		width:30,
@@ -219,9 +234,18 @@ const styles = StyleSheet.create({
 		margin:10
 	},
 	home_appLogoImage: {
-		width:300,
-		height:130,
-		marginBottom:10
+		...Platform.select({
+			'ios': {
+				width:200,
+				height:86,
+				marginBottom:2
+			},
+			'android': {
+				width:300,
+				height:130,
+				marginBottom:10
+			}
+		}),
 	},
 	home_gameList: {
 		width:200,
@@ -232,8 +256,10 @@ const styles = StyleSheet.create({
 		color: app_red,
 	},
 	home_settingsSection: {
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		marginBottom: 10,
+		flexDirection: 'row',
+		justifyContent:'flex-start'
 	},
 
 	//Game View
