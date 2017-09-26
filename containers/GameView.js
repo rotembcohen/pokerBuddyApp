@@ -237,7 +237,7 @@ export default class GameView extends Component {
 			case 'UpdateVenmo':
 				return (
 					<View style={styles.modalContent}>
-						<Text style={styles.textSubheader}>Update Vemno</Text>
+						<Text style={styles.textSubheader}>Update Venmo</Text>
 						<View style={styles.inputContainer}>
 							<TextInput
 								style={styles.textinputwide}

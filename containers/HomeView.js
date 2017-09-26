@@ -119,7 +119,7 @@ export default class HomeView extends Component {
 		    	return (
 			      <View style={styles.modalContent}>
 			      	<View style={[styles.home_settingsSection,{flexDirection:'column'}]}>
-			      		<Text style={styles.boldText}>Vemno Username</Text>
+			      		<Text style={styles.boldText}>Venmo Username</Text>
 				      	<TextInput
 				      		ref="Settings1"
 				      		style={styles.textinputwide}
