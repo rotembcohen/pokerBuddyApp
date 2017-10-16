@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, NavigationActions } from 'react-navigation';
 
 import WelcomeView from './containers/WelcomeView';
 import LoginView from './containers/LoginView';
@@ -18,5 +18,16 @@ const App = StackNavigator({
     initialRouteName: 'WelcomeView',
     headerMode: 'none'
 });
+
+const navigateOnce = (getStateForAction) => (action, state) => {
+  const {type, routeName} = action;
+  return (
+    state &&
+    type === NavigationActions.NAVIGATE &&
+    routeName === state.routes[state.routes.length - 1].routeName
+  ) ? null : getStateForAction(action, state);
+};
+
+App.router.getStateForAction = navigateOnce(App.router.getStateForAction);
 
 export default App;
