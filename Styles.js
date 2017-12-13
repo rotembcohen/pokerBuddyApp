@@ -3,12 +3,18 @@ import {
 	StyleSheet,Platform
 } from 'react-native';
 
+import { Constants } from 'expo';
+
 const app_red = "#bc0000";
 const app_pink = "#ffccbb";
 const app_grey = "#ccc";
 const styles = StyleSheet.create({
 	
 	//common
+	safeArea:{
+		flex: 1,
+    	backgroundColor: app_red,
+	},
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
 		...Platform.select({
 			'ios': {
 				justifyContent:'flex-start',
-				marginTop:15,
+				marginTop:(Constants.platform.ios.model === 'iPhone X') ? 45 : 25,
 			},
 			'android': {
 				justifyContent:'center',

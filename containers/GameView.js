@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, ScrollView, TextInput, Picker, AppState, StatusBar, TouchableOpacity, AsyncStorage
+  Text, View, ScrollView, TextInput, Picker, AppState, TouchableOpacity, AsyncStorage, SafeAreaView,
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -17,6 +17,7 @@ import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
 import CalculatorInput from '../components/CalculatorInput';
 import TutorialModal from '../components/TutorialModal';
+import StatusBar from '../components/StatusBar';
 
 import Pusher from 'pusher-js/react-native';
 
@@ -560,50 +561,52 @@ export default class GameView extends Component {
 		);
 		
 		return (
-			<View style={styles.container} onLayout={()=>{
-				if (this.state.showTutorial){
-					this.setState({isTutorialVisible:true,modalType:"Tutorial"});
-				}
-			}}>
-				{/*Headers*/}
-				<StatusBar hidden={true} />
-				<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
-					{this._renderModalContent()}
-				</Modal>
-				<Modal 
-					isVisible={this.state.isTutorialVisible === true} 
-					style={styles.tutorial}
-					animationIn={'slideInLeft'}
-          			animationOut={'slideOutRight'}
-				>
-					{this._renderModalContent()}
-				</Modal>
+			<SafeAreaView style={styles.safeArea}>
+				<View style={styles.container} onLayout={()=>{
+					if (this.state.showTutorial){
+						this.setState({isTutorialVisible:true,modalType:"Tutorial"});
+					}
+				}}>
+					{/*Headers*/}
+					<StatusBar/>
+					<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
+						{this._renderModalContent()}
+					</Modal>
+					<Modal 
+						isVisible={this.state.isTutorialVisible === true} 
+						style={styles.tutorial}
+						animationIn={'slideInLeft'}
+	          			animationOut={'slideOutRight'}
+					>
+						{this._renderModalContent()}
+					</Modal>
 
-				{/*Top View*/}
-				<View style={styles.game_topView}>
-					<View style={styles.game_topView_section}>
-						<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
-						<Text style={styles.game_labelText}>Game Address</Text>
-						<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
+					{/*Top View*/}
+					<View style={styles.game_topView}>
+						<View style={styles.game_topView_section}>
+							<Text style={styles.game_valueText}>{this.state.game.identifier}</Text>
+							<Text style={styles.game_labelText}>Game Address</Text>
+							<Ionicons name="md-link" color="red" size={75} style={styles.game_topView_identifierIcon} />
+						</View>
+						<View style={styles.game_topView_section}>
+							<Text style={styles.game_valueText}>{PotValue}</Text>
+							<Text>{PotLabel}</Text>
+							<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
+						</View>
 					</View>
-					<View style={styles.game_topView_section}>
-						<Text style={styles.game_valueText}>{PotValue}</Text>
-						<Text>{PotLabel}</Text>
-						<SafeImage uri={ASSET_POT_ICON} style={styles.game_potIcon} />
+
+					{/*Player List*/}
+					<ScrollView contentContainerStyle={styles.game_playerList} >
+						{renderList}
+					</ScrollView>
+
+					{/*Actions*/}
+					<View style={styles.game_actionsView}>
+						{renderHostMenu}
+						{renderPlayerButtons}
 					</View>
 				</View>
-
-				{/*Player List*/}
-				<ScrollView contentContainerStyle={styles.game_playerList} >
-					{renderList}
-				</ScrollView>
-
-				{/*Actions*/}
-				<View style={styles.game_actionsView}>
-					{renderHostMenu}
-					{renderPlayerButtons}
-				</View>
-			</View>
+			</SafeAreaView>
 		);
 	}
 

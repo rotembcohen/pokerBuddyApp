@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, TouchableOpacity, StatusBar, Image, AsyncStorage
+  Text, View, TextInput, TouchableOpacity, Image, AsyncStorage,
 } from 'react-native';
+
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 
 import Modal from 'react-native-modal';
@@ -12,6 +13,7 @@ import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
 import AboutModal from '../components/AboutModal';
+import StatusBar from '../components/StatusBar';
 
 export default class HomeView extends Component {
 
@@ -213,7 +215,7 @@ export default class HomeView extends Component {
         return (
             <View style={styles.welcome_container}>
                 {/*Headers*/}
-                <StatusBar hidden={true} />
+                <StatusBar/>
                 <Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
 					{this._renderModalContent()}
 		        </Modal>

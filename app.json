@@ -16,6 +16,10 @@
 			"versionCode": 2
 		},
 		"scheme": "pocat",
-		"facebookScheme": "fb309462139518578"
+		"facebookScheme": "fb309462139518578",
+		"androidStatusBar": {
+			"barStyle": "light-content",
+			"backgroundColor": "#bc0000"
+		}
 	}
 }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { AsyncStorage,Text,View,StatusBar,Image,TouchableOpacity } from 'react-native';
+import { AsyncStorage,Text,View,Image,TouchableOpacity } from 'react-native';
 
 import { ASSET_APP_LOGO } from 'react-native-dotenv';
 
 import * as utils from '../UtilFunctions';
 import styles from '../Styles';
 import TipsDatabase from '../components/TipsDatabase';
+import StatusBar from '../components/StatusBar';
 
 export default class WelcomeView extends Component{
     
@@ -24,7 +25,7 @@ export default class WelcomeView extends Component{
         return (
             <View style={styles.welcome_container}>
                 {/*Headers*/}
-                <StatusBar hidden={true} />
+                <StatusBar/>
                 
                 {/*Logo with onload=redirect in 5 seconds*/}
                 <Image source={{uri:ASSET_APP_LOGO}} style={styles.welcome_logoImage} onLoad={async ()=>{

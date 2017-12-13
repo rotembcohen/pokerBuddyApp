@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, StatusBar, ScrollView, Image
+  Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, ScrollView, Image, SafeAreaView,
 } from 'react-native';
 
 import { APP_VERSION, ASSET_APP_LOGO_TEXT } from 'react-native-dotenv';
@@ -14,6 +14,7 @@ import SafeImage from '../components/SafeImage';
 import ListPicker from '../components/ListPicker';
 import AboutModal from '../components/AboutModal';
 import { Ionicons } from '@expo/vector-icons';
+import StatusBar from '../components/StatusBar';
 
 export default class HomeView extends Component {
 
@@ -343,64 +344,66 @@ export default class HomeView extends Component {
 
 		
 		return (
-	      <View style={styles.container}>
-	      	{/*Headers*/}
-	      	<StatusBar hidden={true} />
-	      	<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
-				{this._renderModalContent()}
-	        </Modal>
-	    	
-	    	{/*Top - logo*/}
-	        <Image source={{uri:ASSET_APP_LOGO_TEXT}} style={styles.home_appLogoImage} /> 
+			<SafeAreaView style={styles.safeArea}>
+		      <View style={styles.container}>
+		      	{/*Headers*/}
+		      	<StatusBar/>
+		      	<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
+					{this._renderModalContent()}
+		        </Modal>
+		    	
+		    	{/*Top - logo*/}
+		        <Image source={{uri:ASSET_APP_LOGO_TEXT}} style={styles.home_appLogoImage} /> 
 
-	    	{/*Middle - main menu*/}
-	        <View>
-		        <View style={[styles.row,{marginBottom:0}]}>
-		        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-			      	{prevGameButton}
-			      	{pastGameButton}
+		    	{/*Middle - main menu*/}
+		        <View>
+			        <View style={[styles.row,{marginBottom:0}]}>
+			        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
+				      	{prevGameButton}
+				      	{pastGameButton}
+			      	</View>
+
+			      	
+			      	<View style={[styles.row,{alignItems:'center',justifyContent:'flex-start'}]}>
+				        <View style={styles.inputContainer}>
+				    		<TextInput
+					      		style={styles.transparentTextinput}
+					      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
+					      		value={this.state.game_identifier}
+					      		autoCapitalize={'characters'}
+					      		selectTextOnFocus={true}
+					      		maxLength={5}
+					      		placeholder='Game Address'
+					      		underlineColorAndroid="transparent"
+					      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
+				      		/>
+			      		</View>
+			      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={()=>this.joinGame(this.state.game_identifier)}
+			      		 />
+			        </View>
+			        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
+			        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
 		      	</View>
-
 		      	
-		      	<View style={[styles.row,{alignItems:'center',justifyContent:'flex-start'}]}>
-			        <View style={styles.inputContainer}>
-			    		<TextInput
-				      		style={styles.transparentTextinput}
-				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
-				      		value={this.state.game_identifier}
-				      		autoCapitalize={'characters'}
-				      		selectTextOnFocus={true}
-				      		maxLength={5}
-				      		placeholder='Game Address'
-				      		underlineColorAndroid="transparent"
-				      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
-			      		/>
-		      		</View>
-		      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={()=>this.joinGame(this.state.game_identifier)}
-		      		 />
+		      	{/*Buttom - user menu*/}
+		      	<View style={styles.home_userMenu}>
+		        	<View style={styles.modalButtonsContainer} >
+		        		<SafeImage uri={this.state.user.picture_url} style={styles.home_userPicture} />
+		        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
+		        	</View>
+		        	<View style={styles.modalButtonsContainer}>
+				      	<IconButton name="ios-settings-outline" text="Settings" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}} />
+				      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
+			      	</View>
 		        </View>
-		        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
-		        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-	      	</View>
-	      	
-	      	{/*Buttom - user menu*/}
-	      	<View style={styles.home_userMenu}>
-	        	<View style={styles.modalButtonsContainer} >
-	        		<SafeImage uri={this.state.user.picture_url} style={styles.home_userPicture} />
-	        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
-	        	</View>
-	        	<View style={styles.modalButtonsContainer}>
-			      	<IconButton name="ios-settings-outline" text="Settings" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}} />
-			      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
-		      	</View>
-	        </View>
 
-	    	{/*Footer - about pocat*/}
-	        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:2}}>
-				<Button title="About Pocat" onPress={()=>this.setState({isModalVisible:true,modalType:'About'})} />
-			</View>
+		    	{/*Footer - about pocat*/}
+		        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:2}}>
+					<Button title="About Pocat" onPress={()=>this.setState({isModalVisible:true,modalType:'About'})} />
+				</View>
 
-	      </View>
+		      </View>
+	      	</SafeAreaView>
 	    );
 	}
 

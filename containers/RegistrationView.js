@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StatusBar } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 
 import Modal from 'react-native-modal';
 import styles from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
+import StatusBar from '../components/StatusBar';
 
 export default class RegistrationView extends Component {
 
@@ -99,7 +100,7 @@ export default class RegistrationView extends Component {
 		return (
 			
 			<View style={styles.container}>
-				<StatusBar hidden={true} />
+				<StatusBar/>
 				{this.renderInputField(onChange5,this.state.first_name,'First Name','5',onSubmit5,false,true,'words')}
 				{this.renderInputField(onChange6,this.state.last_name,'Last Name','6',onSubmit6,false,false,'words')}
 				{this.renderInputField(onChange1,this.state.username,'Username','1',onSubmit1)}
