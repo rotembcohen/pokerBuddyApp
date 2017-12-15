@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-	StyleSheet,Platform
+	StyleSheet, Platform, Dimensions,
 } from 'react-native';
 
 import { Constants } from 'expo';
@@ -8,6 +8,10 @@ import { Constants } from 'expo';
 const app_red = "#bc0000";
 const app_pink = "#ffccbb";
 const app_grey = "#ccc";
+const {width, height} = Dimensions.get('window');
+
+const isSmallDevice = (height <= 568);
+
 const styles = StyleSheet.create({
 	
 	//common
@@ -109,7 +113,7 @@ const styles = StyleSheet.create({
 		...Platform.select({
 			'ios': {
 				justifyContent:'flex-start',
-				marginTop:(Constants.platform.ios.model === 'iPhone X') ? 45 : 25,
+				marginTop: (isSmallDevice) ? 25 : 50,
 			},
 			'android': {
 				justifyContent:'center',
