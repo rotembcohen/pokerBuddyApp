@@ -20,6 +20,10 @@
 		"androidStatusBar": {
 			"barStyle": "light-content",
 			"backgroundColor": "#bc0000"
+		},
+		"splash": {
+			"image": "./assets/pocat_splash.png",
+			"backgroundColor": "#bc0000"
 		}
 	}
 }
