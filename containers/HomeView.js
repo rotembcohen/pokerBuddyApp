@@ -365,18 +365,20 @@ export default class HomeView extends Component {
 		        </Modal>
 		    	
 		    	{/*Top - logo*/}
-		        <View style={[styles.row,{justifyContent:'center',alignItems:'center'}]}>
+		        <View style={[styles.row,{flex:1.5,justifyContent:'center',alignItems:'center'}]}>
 			        <Text style={styles.home_appLogoText}>P</Text>
-			        <Image source={{uri:ASSET_APP_LOGO}} style={styles.home_appLogoImage} />
+			        <TouchableOpacity onPress={()=>this.setState({isModalVisible:true,modalType:'About'})}>
+			        	<Image source={{uri:ASSET_APP_LOGO}} style={styles.home_appLogoImage} />
+			        </TouchableOpacity>
 			        <Text style={styles.home_appLogoText}>CAT</Text>
 		        </View>
 
 		    	{/*Middle - main menu*/}
-		        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+		        <View style={{flex:5,justifyContent:'center',alignItems:'center'}}>
 
-		        	<View style={[styles.home_inputContainer,{alignItems:'center',justifyContent:'flex-end',backgroundColor:app_green}]}>
+		        	<View style={[styles.home_inputContainer,{flex:2,alignItems:'center',justifyContent:'flex-start',backgroundColor:app_green}]}>
 			    		<TextInput
-				      		style={[styles.transparentTextinput,{fontSize:18,color:'white',fontWeight:'bold',width:'90%'}]}
+				      		style={[styles.transparentTextinput,{fontSize:16,color:'white',fontWeight:'bold',width:'90%',height:'48%'}]}
 				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
 				      		value={this.state.game_identifier}
 				      		autoCapitalize={'characters'}
@@ -387,14 +389,14 @@ export default class HomeView extends Component {
 				      		underlineColorAndroid="transparent"
 				      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
 			      		/>
-			      		<TouchableOpacity style={[styles.login_button,{overflow:'hidden',borderTopRightRadius: 0,borderTopLeftRadius: 0,marginBottom:0}]} onPress={()=>this.joinGame(this.state.game_identifier)}>
+			      		<TouchableOpacity style={[styles.login_button,{overflow:'hidden',borderTopRightRadius: 0,borderTopLeftRadius: 0,marginBottom:0,height:'50%'}]} onPress={()=>this.joinGame(this.state.game_identifier)}>
 		                	<Ionicons name="ios-arrow-dropright" color={joinButtonColor} size={30} />
 		                	<Text style={[styles.welcome_buttonText,{color:joinButtonColor}]}>JOIN GAME</Text>
 		                </TouchableOpacity>
 		      		</View>
 	      			<Text style={[styles.errorLabel,{color:'white',height:20}]}>{this.state.errorLabel}</Text>
 		      		
-		        	<View style={{marginBottom:0}}>
+		        	<View style={{flex:5,marginBottom:0,justifyContent:'center',alignItems:'center'}}>
 			        
 			        	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}}>
 		                	<Ionicons name="ios-add-circle-outline" color={app_red} size={30} />
@@ -402,21 +404,18 @@ export default class HomeView extends Component {
 		                </TouchableOpacity>
 		                {prevGameButton}
 		                {pastGameButton}
-				      	
+				    	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}}>
+		                	<Ionicons name="ios-settings-outline" color={app_red} size={30} />
+		                	<Text style={styles.welcome_buttonText}>SETTINGS</Text>
+		                </TouchableOpacity>  	
 			      	</View>
-
-			      	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}}>
-	                	<Ionicons name="ios-settings-outline" color={app_red} size={30} />
-	                	<Text style={styles.welcome_buttonText}>SETTINGS</Text>
-	                </TouchableOpacity>
-
 		      	</View>
 		      	
 		      	{/*Buttom - user menu*/}
-		      	<View style={[styles.home_userMenu,styles.row,{justifyContent:'center',alignItems:'center',borderWidth:1}]}>
+		      	<View style={[styles.home_userMenu,styles.row,{height:42,justifyContent:'center',alignItems:'center',borderWidth:1}]}>
 		        	
 		        	<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,marginRight:10,overflow:"hidden",width:40,height:40}}>
-	        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={styles.home_userPicture} />
+	        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={[styles.home_userPicture,{borderTopLeftRadius:12,borderBottomLeftRadius:12}]} />
 	        		</View>
 	        		<Text style={[styles.textSubheader,{color:'white'}]}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
 		        	<TouchableOpacity style={[styles.login_button,{alignItems:'center',justifyContent:'center',width:40,height:40,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
@@ -424,11 +423,6 @@ export default class HomeView extends Component {
 		        	</TouchableOpacity>
 			      	
 		        </View>
-
-		    	{/*Footer - about pocat*/}
-		        <View style={{height:30,alignItems:'center',justifyContent:'center', marginTop:2}}>
-					<Button title="About Pocat" onPress={()=>this.setState({isModalVisible:true,modalType:'About'})} />
-				</View>
 
 		      </View>
 	      	</SafeAreaView>

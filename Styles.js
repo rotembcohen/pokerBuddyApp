@@ -214,7 +214,8 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 		alignItems:'center',
 		width: (isSmallDevice)?250:300,
-		height: (isSmallDevice)?40:60,
+		//height: (isSmallDevice)?40:60,
+		height: '20%',
 	},
 	login_labelText: {
 		color:'white',
@@ -251,9 +252,9 @@ const styles = StyleSheet.create({
 				marginBottom:2
 			},
 			'android': {
-				width:300,
-				height:130,
-				marginBottom:10
+				width:80,
+				height:80,
+				marginBottom:2
 			}
 		}),
 	},
