@@ -8,6 +8,7 @@ import { Constants } from 'expo';
 const app_red = "#bc0000";
 const app_pink = "#ffccbb";
 const app_grey = "#ccc";
+const app_green = "#226622";
 const {width, height} = Dimensions.get('window');
 
 const isSmallDevice = (height <= 568);
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
 		fontWeight:'bold',
 		fontSize: 18,
 		textAlign: 'center',
+		color: app_red,
 	},
 	welcome_errorText: {
 		color:'white',
@@ -211,7 +213,8 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 		justifyContent:'center',
 		alignItems:'center',
-		width: 300,
+		width: (isSmallDevice)?250:300,
+		height: (isSmallDevice)?40:60,
 	},
 	login_labelText: {
 		color:'white',
@@ -225,7 +228,6 @@ const styles = StyleSheet.create({
 		borderColor:app_pink,
 		borderWidth:1,
 		borderRadius:12,
-		padding:10,
 		...Platform.select({
 			'ios': {
 				marginTop:0
@@ -236,18 +238,16 @@ const styles = StyleSheet.create({
 		}),
 	},
 	home_userPicture: {
-		width:30,
-		height:30,
+		width:40,
+		height:40,
 		borderWidth:0,
-		borderRadius:12,
 		borderColor:'white',
-		margin:10
 	},
 	home_appLogoImage: {
 		...Platform.select({
 			'ios': {
-				width:200,
-				height:86,
+				width:80,
+				height:80,
 				marginBottom:2
 			},
 			'android': {
@@ -256,6 +256,11 @@ const styles = StyleSheet.create({
 				marginBottom:10
 			}
 		}),
+	},
+	home_appLogoText: {
+		color: '#fff',
+		fontWeight: 'bold',
+		fontSize: 75,
 	},
 	home_gameList: {
 		width:200,
@@ -270,6 +275,14 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		flexDirection: 'row',
 		justifyContent:'flex-start'
+	},
+	home_inputContainer: {
+		borderColor:'#fff',
+		borderWidth:1,
+		borderRadius:12,
+		margin: 5,
+		width: (isSmallDevice)?250:300,
+		height: (isSmallDevice)?90:116,
 	},
 
 	//Game View
@@ -369,4 +382,4 @@ const styles = StyleSheet.create({
 });
 
 
-export {styles as default,app_red,app_pink,app_grey};
+export {styles as default,app_red,app_pink,app_grey,app_green};

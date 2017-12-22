@@ -3,10 +3,10 @@ import {
   Text, View, TextInput, AsyncStorage, Picker, TouchableOpacity, ScrollView, Image, SafeAreaView,
 } from 'react-native';
 
-import { APP_VERSION, ASSET_APP_LOGO_TEXT } from 'react-native-dotenv';
+import { APP_VERSION, ASSET_APP_LOGO } from 'react-native-dotenv';
 
 import Modal from 'react-native-modal';
-import styles, { app_red, app_grey } from '../Styles';
+import styles, { app_red, app_grey, app_green } from '../Styles';
 import * as utils from '../UtilFunctions';
 import Button from '../components/Button';
 import IconButton from '../components/IconButton';
@@ -329,23 +329,35 @@ export default class HomeView extends Component {
 			prevGameAction = ()=>{};
 			prevGameColor = '#ccc';
 		}
-		let prevGameButton = (<IconButton name="ios-log-in" text="Continue" action={prevGameAction} color={prevGameColor} />);
+		let prevGameButton = (
+			<TouchableOpacity style={styles.login_button} onPress={prevGameAction}>
+            	<Ionicons name="ios-log-in" color={prevGameColor} size={30} />
+            	<Text style={[styles.welcome_buttonText,{color:prevGameColor}]}>CONTINUE GAME</Text>
+            </TouchableOpacity>
+        );
 
 		let past_games = this.state.past_games;
 		let pastGameColor = null;
 		let pastGameAction = null;
 		if (past_games.length > 0){
 			pastGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPast'})};
+			pastGameColor = app_red;
 		} else {
 			pastGameAction = ()=>{};
 			pastGameColor = app_grey;
 		}
-		let pastGameButton = (<IconButton name="ios-timer-outline" text='History' action={pastGameAction} color={pastGameColor} />);
-
+		let pastGameButton = (
+			<TouchableOpacity style={styles.login_button} onPress={pastGameAction}>
+            	<Ionicons name="ios-timer-outline" color={pastGameColor} size={30} />
+            	<Text style={[styles.welcome_buttonText,{color:pastGameColor}]}>HISTORY</Text>
+            </TouchableOpacity>
+        );
 		
+		let joinButtonColor = (this.state.game_identifier.length === 5) ? app_red : app_grey;
+
 		return (
 			<SafeAreaView style={styles.safeArea}>
-		      <View style={styles.container}>
+		      <View style={styles.welcome_container}>
 		      	{/*Headers*/}
 		      	<StatusBar/>
 		      	<Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
@@ -353,48 +365,64 @@ export default class HomeView extends Component {
 		        </Modal>
 		    	
 		    	{/*Top - logo*/}
-		        <Image source={{uri:ASSET_APP_LOGO_TEXT}} style={styles.home_appLogoImage} /> 
+		        <View style={[styles.row,{justifyContent:'center',alignItems:'center'}]}>
+			        <Text style={styles.home_appLogoText}>P</Text>
+			        <Image source={{uri:ASSET_APP_LOGO}} style={styles.home_appLogoImage} />
+			        <Text style={styles.home_appLogoText}>CAT</Text>
+		        </View>
 
 		    	{/*Middle - main menu*/}
-		        <View>
-			        <View style={[styles.row,{marginBottom:0}]}>
-			        	<IconButton name="ios-add-circle-outline" text="Create" action={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}} />
-				      	{prevGameButton}
-				      	{pastGameButton}
+		        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+
+		        	<View style={[styles.home_inputContainer,{alignItems:'center',justifyContent:'flex-end',backgroundColor:app_green}]}>
+			    		<TextInput
+				      		style={[styles.transparentTextinput,{fontSize:18,color:'white',fontWeight:'bold',width:'90%'}]}
+				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
+				      		value={this.state.game_identifier}
+				      		autoCapitalize={'characters'}
+				      		selectTextOnFocus={true}
+				      		maxLength={5}
+				      		placeholder='TYPE ADDRESS...'
+				      		placeholderTextColor='#bbb'
+				      		underlineColorAndroid="transparent"
+				      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
+			      		/>
+			      		<TouchableOpacity style={[styles.login_button,{overflow:'hidden',borderTopRightRadius: 0,borderTopLeftRadius: 0,marginBottom:0}]} onPress={()=>this.joinGame(this.state.game_identifier)}>
+		                	<Ionicons name="ios-arrow-dropright" color={joinButtonColor} size={30} />
+		                	<Text style={[styles.welcome_buttonText,{color:joinButtonColor}]}>JOIN GAME</Text>
+		                </TouchableOpacity>
+		      		</View>
+	      			<Text style={[styles.errorLabel,{color:'white',height:20}]}>{this.state.errorLabel}</Text>
+		      		
+		        	<View style={{marginBottom:0}}>
+			        
+			        	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}}>
+		                	<Ionicons name="ios-add-circle-outline" color={app_red} size={30} />
+		                	<Text style={styles.welcome_buttonText}>CREATE GAME</Text>
+		                </TouchableOpacity>
+		                {prevGameButton}
+		                {pastGameButton}
+				      	
 			      	</View>
 
-			      	
-			      	<View style={[styles.row,{alignItems:'center',justifyContent:'flex-start'}]}>
-				        <View style={styles.inputContainer}>
-				    		<TextInput
-					      		style={styles.transparentTextinput}
-					      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
-					      		value={this.state.game_identifier}
-					      		autoCapitalize={'characters'}
-					      		selectTextOnFocus={true}
-					      		maxLength={5}
-					      		placeholder='Game Address'
-					      		underlineColorAndroid="transparent"
-					      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
-				      		/>
-			      		</View>
-			      		<Ionicons name="ios-arrow-dropright" color={app_red} size={40} onPress={()=>this.joinGame(this.state.game_identifier)}
-			      		 />
-			        </View>
-			        <Text style={{color:'black',textAlign:'center'}}>Join</Text>
-			        <Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+			      	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}}>
+	                	<Ionicons name="ios-settings-outline" color={app_red} size={30} />
+	                	<Text style={styles.welcome_buttonText}>SETTINGS</Text>
+	                </TouchableOpacity>
+
 		      	</View>
 		      	
 		      	{/*Buttom - user menu*/}
-		      	<View style={styles.home_userMenu}>
-		        	<View style={styles.modalButtonsContainer} >
-		        		<SafeImage uri={this.state.user.picture_url} style={styles.home_userPicture} />
-		        		<Text style={styles.textSubheader}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
-		        	</View>
-		        	<View style={styles.modalButtonsContainer}>
-				      	<IconButton name="ios-settings-outline" text="Settings" size={25} action={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}} />
-				      	<IconButton name="ios-exit-outline" text='Logout' size={25} action={()=>this.logout()} />
-			      	</View>
+		      	<View style={[styles.home_userMenu,styles.row,{justifyContent:'center',alignItems:'center',borderWidth:1}]}>
+		        	
+		        	<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,marginRight:10,overflow:"hidden",width:40,height:40}}>
+	        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={styles.home_userPicture} />
+	        		</View>
+	        		<Text style={[styles.textSubheader,{color:'white'}]}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
+		        	<TouchableOpacity style={[styles.login_button,{alignItems:'center',justifyContent:'center',width:40,height:40,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
+		        		<Ionicons name="ios-exit-outline" color={app_red} size={30} />
+		        	</TouchableOpacity>
+			      	
 		        </View>
 
 		    	{/*Footer - about pocat*/}
