@@ -11,6 +11,7 @@ export default class SafeImage extends Component {
 	render() {
 		let uri = this.props.uri;
 		if (uri){
+			Image.prefetch(uri);
 			return <Image source={{uri:uri}} style={this.props.style} />
 		}else{
 			return <View style={[this.props.style,{backgroundColor:'grey'}]} />

@@ -106,7 +106,7 @@ export default class PlayerList extends Component {
 			            		<View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginBottom:2,flex:1}} >
 				            		<View style={{alignItems:'flex-start',justifyContent:'center',borderWidth:1 ,borderRadius:13,borderColor:'#ccc',overflow:'hidden',width:'100%'}}>
 				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start',borderColor:'#ccc',borderBottomWidth:1,width:'100%'}} >
-					            			{this.renderPlayerThumb(item.player.picture_url)}
+					            			{this.renderPlayerThumb(utils.getUserProfilePicture(item.player))}
 					            			<Text style={[itemColorStyle,{marginLeft:10}]}>{item.player.first_name} {item.player.last_name}</Text>
 				            			</View>
 				            			<View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>

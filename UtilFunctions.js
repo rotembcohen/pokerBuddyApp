@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Image } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
 import { Permissions, Notifications, Constants } from 'expo';
@@ -321,4 +321,15 @@ export async function updateVenmo(venmo_username,user,token){
 
 export function hashPassword(string){
 	return (CryptoJS.HmacSHA1(string, PASSWORD_HASH_SECRET)).toString();
+}
+
+export function getUserProfilePicture(user){
+	let possible_url = "https://graph.facebook.com/" + user.username + "/picture?type=normal";
+	try{
+		Image.prefetch(possible_url);
+		return possible_url;
+	}
+	catch(error){
+		return null;
+	}
 }
