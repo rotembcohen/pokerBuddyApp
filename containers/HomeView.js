@@ -376,7 +376,7 @@ export default class HomeView extends Component {
 		    	{/*Middle - main menu*/}
 		        <View style={{flex:5,justifyContent:'center',alignItems:'center'}}>
 
-		        	<View style={[styles.home_inputContainer,{flex:2,alignItems:'center',justifyContent:'flex-start',backgroundColor:app_green}]}>
+		        	<View style={[styles.home_inputContainer,{flex:2,alignItems:'center',justifyContent:'center',backgroundColor:app_green}]}>
 			    		<TextInput
 				      		style={[styles.transparentTextinput,{fontSize:16,color:'white',fontWeight:'bold',width:'90%',height:'48%'}]}
 				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
@@ -412,16 +412,18 @@ export default class HomeView extends Component {
 		      	</View>
 		      	
 		      	{/*Buttom - user menu*/}
-		      	<View style={[styles.home_userMenu,styles.row,{height:42,justifyContent:'center',alignItems:'center',borderWidth:1}]}>
-		        	
-		        	<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,marginRight:10,overflow:"hidden",width:40,height:40}}>
-	        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={[styles.home_userPicture,{borderTopLeftRadius:12,borderBottomLeftRadius:12}]} />
-	        		</View>
-	        		<Text style={[styles.textSubheader,{color:'white'}]}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
-		        	<TouchableOpacity style={[styles.login_button,{alignItems:'center',justifyContent:'center',width:40,height:40,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
-		        		<Ionicons name="ios-exit-outline" color={app_red} size={30} />
-		        	</TouchableOpacity>
-			      	
+		      	<View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+			      	<View style={[styles.home_userMenu,styles.row,{height:52,justifyContent:'center',alignItems:'center',borderWidth:1}]}>
+			        	
+			        	<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,marginRight:10,overflow:"hidden",width:50,height:50}}>
+		        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={[styles.home_userPicture,{borderTopLeftRadius:12,borderBottomLeftRadius:12}]} />
+		        		</View>
+		        		<Text style={[styles.textSubheader,{color:'white'}]}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
+			        	<TouchableOpacity style={[styles.login_button,{alignItems:'center',justifyContent:'center',width:50,height:50,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
+			        		<Ionicons name="ios-exit-outline" color={app_red} size={30} />
+			        	</TouchableOpacity>
+				      	
+			        </View>
 		        </View>
 
 		      </View>

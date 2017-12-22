@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
 		}),
 	},
 	home_userPicture: {
-		width:40,
-		height:40,
+		width:50,
+		height:50,
 		borderWidth:0,
 		borderColor:'white',
 	},
