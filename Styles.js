@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 		justifyContent:'center',
 		alignItems:'center',
+		margin:5,
 	},
 	welcome_buttonText: {
 		margin:10,
@@ -203,19 +204,6 @@ const styles = StyleSheet.create({
 	login_signupButton:{
 		color:app_red,
 		textDecorationLine:'underline',
-	},
-	login_button: {
-		flexDirection:'row',
-		padding:5,
-		margin:5,
-		borderWidth:0,
-		borderRadius:12,
-		backgroundColor:'white',
-		justifyContent:'center',
-		alignItems:'center',
-		width: (isSmallDevice)?250:300,
-		//height: (isSmallDevice)?40:60,
-		height: '20%',
 	},
 	login_labelText: {
 		color:'white',

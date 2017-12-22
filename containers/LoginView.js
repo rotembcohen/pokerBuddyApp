@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, View, TextInput, TouchableOpacity, Image, AsyncStorage,
+  Text, View, TextInput, TouchableOpacity, Image, AsyncStorage, SafeAreaView,
 } from 'react-native';
 
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
@@ -213,40 +213,42 @@ export default class HomeView extends Component {
 	render(){
         const { navigation } = this.props;
         return (
-            <View style={styles.welcome_container}>
-                {/*Headers*/}
-                <StatusBar/>
-                <Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
-					{this._renderModalContent()}
-		        </Modal>
+        	<SafeAreaView style={styles.safeArea}>
+	            <View style={styles.welcome_container}>
+	                {/*Headers*/}
+	                <StatusBar/>
+	                <Modal isVisible={this.state.isModalVisible === true} style={styles.modal}>
+						{this._renderModalContent()}
+			        </Modal>
 
-		    	{/*Logo*/}
-                <Image source={{uri:ASSET_APP_LOGO}} style={styles.welcome_logoImage} /> 
+			    	{/*Logo*/}
+	                <Image source={{uri:ASSET_APP_LOGO}} style={styles.welcome_logoImage} /> 
 
-            	{/*Login/signUp Buttons*/}
-                <TouchableOpacity style={styles.login_button} onPress={()=>{
-					this.FBRegister(navigation);
-				}}>
-                	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
-                	<Text style={styles.welcome_buttonText}>LOGIN WITH FACEBOOK</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.login_button} onPress={()=>{
-                	this.setState({modalType:"Log In",isModalVisible:true,errorLabel:""})	
-                }}>
-                	<Ionicons name="ios-log-in-outline" color={app_red} size={30} />
-                	<Text style={styles.welcome_buttonText}>LOGIN WITH POCAT USER</Text>
-                </TouchableOpacity>
+	            	{/*Login/signUp Buttons*/}
+	                <TouchableOpacity style={styles.welcome_button} onPress={()=>{
+						this.FBRegister(navigation);
+					}}>
+	                	<SimpleLineIcons name="social-facebook" color={app_red} size={30} />
+	                	<Text style={styles.welcome_buttonText}>LOGIN WITH FACEBOOK</Text>
+	                </TouchableOpacity>
+	                <TouchableOpacity style={styles.welcome_button} onPress={()=>{
+	                	this.setState({modalType:"Log In",isModalVisible:true,errorLabel:""})	
+	                }}>
+	                	<Ionicons name="ios-log-in-outline" color={app_red} size={30} />
+	                	<Text style={styles.welcome_buttonText}>LOGIN AS POCAT USER</Text>
+	                </TouchableOpacity>
 
-            	{/*Error text*/}
-                <Text style={styles.login_labelText}>{this.state.errorLabel}</Text>
+	            	{/*Error text*/}
+	                <Text style={styles.login_labelText}>{this.state.errorLabel}</Text>
 
-            	{/*About*/}
-                <TouchableOpacity style={{borderColor:'white',borderWidth:1,borderRadius:12,padding:5}} onPress={()=>{
-                	this.setState({modalType:"About",isModalVisible:true})	
-                }}>
-                	<Text style={styles.login_labelText}>about pocat</Text>
-                </TouchableOpacity>
-            </View>
+	            	{/*About*/}
+	                <TouchableOpacity style={{borderColor:'white',borderWidth:1,borderRadius:12,padding:5}} onPress={()=>{
+	                	this.setState({modalType:"About",isModalVisible:true})	
+	                }}>
+	                	<Text style={styles.login_labelText}>about pocat</Text>
+	                </TouchableOpacity>
+	            </View>
+            </SafeAreaView>
         );
     }
 
