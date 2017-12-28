@@ -189,7 +189,15 @@ export default class HomeView extends Component {
 			      	<ModalWindow
 			      		title="Settings"
 			      		onApprove={()=> this.updateSettings()}
-			      		onDismiss={()=> this.hideModal()}
+			      		onDismiss={()=> {
+			      			this.hideModal();
+			      			this.setState({
+			      				new_venmo_username: this.state.user.venmo_username,
+			      				new_min_bet: this.state.user.default_min_bet,
+			      				nem_buy_in_intervals: this.state.user.buy_in_intervals,
+			      				//new_chip_unit: this.state.user.chip_basic_unit,
+			      			});
+			      		}}
 			      		content={settingsInput}
 		      		/>
 			    );
