@@ -9,9 +9,12 @@ const app_red = "#bc0000";
 const app_pink = "#ffccbb";
 const app_grey = "#ccc";
 const app_green = "#226622";
+const app_darkgreen = "#bbffbb"
+const textColor = "white";
+const errorTextColor = "white";
 const {width, height} = Dimensions.get('window');
-
 const isSmallDevice = (height <= 568);
+const imageDimsNormal = 50;
 
 const styles = StyleSheet.create({
 	
@@ -41,22 +44,41 @@ const styles = StyleSheet.create({
 	narrowMargin: {
 		margin: 3,
 	},
+	menuButton: {
+		flexDirection:'row',
+		padding:5,
+		margin:5,
+		borderWidth:0,
+		borderRadius:12,
+		backgroundColor:'white',
+		justifyContent:'center',
+		alignItems:'center',
+		width: (isSmallDevice)?250:300,
+		//height: (isSmallDevice)?40:60,
+		height: '20%',
+	},
+	center: {
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 	
 	//labels
 	textHeader:{
 		fontSize:24,
 		textAlign: 'center',
+		color: textColor,
 	},
 	textSubheader:{
 		fontSize: 18,
 		textAlign: 'center',
+		color: textColor,
 	},
 	textinput: {
 		height: 40,
 		width: 150,
 		textAlign: 'center',
 		borderWidth:1,
-		borderColor:'#ffccbb',
+		borderColor:'white',
 		borderRadius:12,
 	},
 	textinputthin:{
@@ -64,17 +86,20 @@ const styles = StyleSheet.create({
 		width: 50,
 		textAlign: 'center',
 		borderWidth:1,
-		borderColor:'#ffccbb',
+		borderColor:'white',
 		borderRadius:12,
+		color:textColor,
 	},
 	transparentTextinput: {
 		height: 40,
 		width: 150,
 		textAlign: 'center',
+		color: textColor,
 	},
 	regularText: {
 		fontSize: 16,
 		textAlign: 'center',
+		color: textColor,
 	},
 	strikethroughText: {
 		fontSize: 16,
@@ -82,19 +107,21 @@ const styles = StyleSheet.create({
 	},
 	errorLabel: {
 		fontSize: 14,
-		color: app_red,
+		color: errorTextColor,
 		textAlign:'center',
 	},
 	boldText: {
 		fontWeight: 'bold',
+		color: textColor,
 	},
 	italicText: {
 		fontStyle:'italic',
+		color: textColor,
 	},
 
 	//textInput
 	inputContainer: {
-		borderColor:'#ffccbb',
+		borderColor:'white',
 		borderWidth:1,
 		borderRadius:12,
 		margin: 5,
@@ -104,8 +131,9 @@ const styles = StyleSheet.create({
 		width: 250,
 		textAlign: 'center',
 		borderWidth:1,
-		borderColor:'#ffccbb',
+		borderColor:'white',
 		borderRadius:12,
+		color: textColor,
 	},
 	
 	//modals
@@ -122,28 +150,35 @@ const styles = StyleSheet.create({
 		}),
 	},
 	modalButton: {
-		backgroundColor: 'white',
-		borderColor: app_red,
-		borderWidth: 1.5,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 5,
-		margin: 8,
-		borderRadius: 4,
+		flexDirection:'row',
+		padding:5,
+		margin:5,
+		borderWidth:0,
+		borderRadius:12,
+		backgroundColor:'white',
+		justifyContent:'center',
+		alignItems:'center',
+		width: 50,
+		height: 50,
 	},
 	modalContent: {
 		width:300,
-	    backgroundColor: 'white',
 	    padding: 22,
 	    justifyContent: 'center',
 	    alignItems: 'center',
-	    borderRadius: 4,
-	    borderColor: 'rgba(0, 0, 0, 0.1)',
+	    borderRadius: 12,
+	    borderColor: 'white',
+	    borderWidth: 1,
+	    backgroundColor: app_green,
 	},
 	modalButtonsContainer: {
 		flexDirection:'row',
 		alignItems:'center',
 		justifyContent:'center',
+	},
+	modalText: {
+		color: textColor,
+		textAlign: 'center',
 	},
 	
 	//Tutorial
@@ -172,7 +207,7 @@ const styles = StyleSheet.create({
 		height:200,
 	},
 	welcome_tipText: {
-		color:'white',
+		color:textColor,
 		fontStyle:'italic',
 		margin:40,
 		fontSize: 18,
@@ -196,7 +231,7 @@ const styles = StyleSheet.create({
 		color: app_red,
 	},
 	welcome_errorText: {
-		color:'white',
+		color:errorTextColor,
 		textAlign:'center',
 	},
 
@@ -206,32 +241,32 @@ const styles = StyleSheet.create({
 		textDecorationLine:'underline',
 	},
 	login_labelText: {
-		color:'white',
+		color:textColor,
 		fontStyle:'italic',
 		fontSize: 14,
 		textAlign: 'center',
 	},
 
 	//Home View
-	home_userMenu: {
-		borderColor:app_pink,
-		borderWidth:1,
-		borderRadius:12,
-		...Platform.select({
-			'ios': {
-				marginTop:0
-			},
-			'android': {
-				marginTop:20
-			}
-		}),
+	
+	//home containers:
+	home_appLogoContainer:{
+		flex: 1.5,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
-	home_userPicture: {
-		width:50,
-		height:50,
-		borderWidth:0,
-		borderColor:'white',
+	home_mainContainer: {
+		flex:5,
+		justifyContent:'center',
+		alignItems:'center',
 	},
+	home_userMenuContainer: {
+		flex:1.5,
+		justifyContent:'center',
+		alignItems:'center',
+	},
+
 	home_appLogoImage: {
 		...Platform.select({
 			'ios': {
@@ -247,17 +282,39 @@ const styles = StyleSheet.create({
 		}),
 	},
 	home_appLogoText: {
-		color: '#fff',
+		color: textColor,
 		fontWeight: 'bold',
 		fontSize: 75,
 	},
+
+	home_mainInputContainer: {
+		flex:2,
+		borderColor:'#fff',
+		borderWidth:1,
+		borderRadius:12,
+		margin: 5,
+		width: (isSmallDevice)?250:300,
+		height: (isSmallDevice)?90:116,
+		alignItems:'center',
+		justifyContent:'center',
+		backgroundColor:app_red,
+	},
+	home_mainTextInput:{
+		fontSize:16,
+		color:textColor,
+		fontWeight:'bold',
+		width:'90%',
+		height:'48%',
+		textAlign: 'center',
+	},
+
 	home_gameList: {
 		width:200,
-		maxHeight:375
+		maxHeight:375,
 	},
 	home_boldLink: {
 		fontWeight: 'bold',
-		color: app_red,
+		color: app_darkgreen,
 	},
 	home_settingsSection: {
 		alignItems: 'flex-start',
@@ -265,13 +322,25 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent:'flex-start'
 	},
-	home_inputContainer: {
-		borderColor:'#fff',
+	
+	home_userMenu: {
+		borderColor:app_pink,
 		borderWidth:1,
 		borderRadius:12,
-		margin: 5,
-		width: (isSmallDevice)?250:300,
-		height: (isSmallDevice)?90:116,
+		...Platform.select({
+			'ios': {
+				marginTop:0
+			},
+			'android': {
+				marginTop:20
+			}
+		}),
+	},
+	home_userPicture: {
+		width:imageDimsNormal,
+		height:imageDimsNormal,
+		borderWidth:0,
+		borderColor:'white',
 	},
 
 	//Game View

@@ -19,9 +19,9 @@ export default class ListPicker extends Component {
 			<ScrollView style={[styles.inputContainer,this.props.containerStyle]}> 
 				{this.props.optionArray.map((l, i) => {
 					if (i!==0){
-						var elementStyle = {borderTopWidth:1,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+						var elementStyle = {borderTopWidth:1,borderColor:'white',width:200,paddingTop:10,paddingBottom:10};
 					}else{
-						var elementStyle = {borderTopWidth:0,borderColor:'#ffccbb',width:200,paddingTop:10,paddingBottom:10};
+						var elementStyle = {borderTopWidth:0,borderColor:'white',width:200,paddingTop:10,paddingBottom:10};
 					}
 					return (
 						<TouchableOpacity key={this.props.keyExtractor(l,i)} style={elementStyle} onPress={this.props.onPressElement(l,i)} >

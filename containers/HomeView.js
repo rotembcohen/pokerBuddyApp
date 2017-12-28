@@ -15,6 +15,7 @@ import ListPicker from '../components/ListPicker';
 import AboutModal from '../components/AboutModal';
 import { Ionicons } from '@expo/vector-icons';
 import StatusBar from '../components/StatusBar';
+import ModalWindow from '../components/ModalWindow';
 
 export default class HomeView extends Component {
 
@@ -68,7 +69,7 @@ export default class HomeView extends Component {
 			let game_json = JSON.parse(response._bodyText);
 			let game_identifier = game_json.identifier;
 			
-			this.setState({isModalVisible:false});
+			this.hideModal();
 			this.joinGame(game_identifier);
 		}
 		//TODO:else
@@ -94,144 +95,150 @@ export default class HomeView extends Component {
 		switch(this.state.modalType){
 			case 'CreateGame':
 				navigation = this.state.navigation;
+				let betInput = (<View style={styles.inputContainer}>
+			      	<TextInput
+			      		style={styles.transparentTextinput}
+			      		onChangeText={(text)=>{this.setState({min_bet:text})}}
+			      		value={this.state.min_bet.toString()}
+			      		selectTextOnFocus={true}
+			      		autoFocus={true}
+			      		keyboardType={'numeric'}
+			      		onSubmitEditing={()=>{this.createGame(navigation)}}
+						underlineColorAndroid="transparent"
+		      		/>
+	      		</View>)
+				
 			    return (
-			      <View style={styles.modalContent}>
-			      	<Text style={styles.textSubheader}>Starting bet</Text>
-			      	<View style={styles.inputContainer}>
-				      	<TextInput
-				      		style={styles.transparentTextinput}
-				      		border={true}
-				      		onChangeText={(text)=>{this.setState({min_bet:text})}}
-				      		value={this.state.min_bet.toString()}
-				      		selectTextOnFocus={true}
-				      		autoFocus={true}
-				      		keyboardType={'numeric'}
-				      		onSubmitEditing={()=>{this.createGame(navigation)}}
-							underlineColorAndroid="transparent"
-			      		/>
-		      		</View>
-			        <View style={styles.modalButtonsContainer}>
-			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			        	<IconButton action={()=> this.createGame(navigation)} name="ios-checkmark-circle-outline" text="Create" />
-					</View>
-			      </View>
+			      	<ModalWindow
+			      		title="Starting bet:"
+			      		onApprove={()=> this.createGame(navigation)}
+			      		onDismiss={()=> this.hideModal()}
+			      		content={betInput}
+		      		/>
 			    );
 		    case 'Settings':
+		    	let settingsInput = (
+		    		<View>
+			    		<View style={[styles.home_settingsSection,{flexDirection:'column'}]}>
+				      		<Text style={styles.boldText}>Venmo Username</Text>
+					      	<TextInput
+					      		ref="Settings1"
+					      		style={styles.textinputwide}
+					      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
+					      		value={this.state.new_venmo_username}
+					      		selectTextOnFocus={true}
+					      		placeholder='Account username (without the @)'
+					      		onSubmitEditing={()=>{this.refs.Settings2.focus()}}
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
+			      		<View style={styles.home_settingsSection}>
+			      			<View style={{marginRight:10}}>
+					      		<Text style={styles.boldText}>Default Starting Bet</Text>
+					      		<Text style={styles.italicText}>When creating a new game</Text>
+				      		</View>
+					      	<TextInput
+					      		ref="Settings2"
+					      		style={styles.textinputthin}
+					      		onChangeText={(text)=>{this.setState({new_min_bet:text})}}
+					      		value={this.state.new_min_bet.toString()}
+					      		selectTextOnFocus={true}
+					      		keyboardType='numeric'
+					      		onSubmitEditing={()=>{this.refs.Settings3.focus()}}
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
+			      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
+				      		<View style={{marginRight:40}}>
+					      		<Text style={styles.boldText}>Buy In Intervals</Text>
+					      		<Text style={styles.italicText}>When selecting Buy In</Text>
+				      		</View>
+					      	<TextInput
+					      		ref="Settings3"
+					      		style={styles.textinputthin}
+					      		onChangeText={(text)=>{this.setState({new_buy_in_intervals:text})}}
+					      		value={this.state.new_buy_in_intervals.toString()}
+					      		selectTextOnFocus={true}
+					      		keyboardType='numeric'
+					      		onSubmitEditing={()=>{this.refs.Settings4.focus()}}
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
+			      		{/*
+			      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
+			      			<View style={{marginRight:10}}>
+					      		<Text style={styles.boldText}>Chips Basic Unit</Text>
+					      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
+				      		</View>
+					      	<TextInput
+					      		ref="Settings4"
+					      		style={styles.textinputthin}
+					      		onChangeText={(text)=>{this.setState({new_chip_unit:text})}}
+					      		value={this.state.new_chip_unit}
+					      		selectTextOnFocus={true}
+					      		keyboardType='numeric'
+					      		onSubmitEditing={()=>{this.updateSettings()}}
+					      		underlineColorAndroid="transparent"
+				      		/>
+			      		</View>
+			      		*/}
+		      			<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
+		    		</View>
+		    	);
 		    	return (
-			      <View style={styles.modalContent}>
-			      	<View style={[styles.home_settingsSection,{flexDirection:'column'}]}>
-			      		<Text style={styles.boldText}>Venmo Username</Text>
-				      	<TextInput
-				      		ref="Settings1"
-				      		style={styles.textinputwide}
-				      		onChangeText={(text)=>{this.setState({new_venmo_username:text})}}
-				      		value={this.state.new_venmo_username}
-				      		selectTextOnFocus={true}
-				      		placeholder='Account username (without the @)'
-				      		onSubmitEditing={()=>{this.refs.Settings2.focus()}}
-				      		underlineColorAndroid="transparent"
-			      		/>
-		      		</View>
-		      		<View style={styles.home_settingsSection}>
-		      			<View style={{marginRight:10}}>
-				      		<Text style={styles.boldText}>Default Starting Bet</Text>
-				      		<Text style={styles.italicText}>When creating a new game</Text>
-			      		</View>
-				      	<TextInput
-				      		ref="Settings2"
-				      		style={styles.textinputthin}
-				      		onChangeText={(text)=>{this.setState({new_min_bet:text})}}
-				      		value={this.state.new_min_bet.toString()}
-				      		selectTextOnFocus={true}
-				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.refs.Settings3.focus()}}
-				      		underlineColorAndroid="transparent"
-			      		/>
-		      		</View>
-		      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
-			      		<View style={{marginRight:40}}>
-				      		<Text style={styles.boldText}>Buy In Intervals</Text>
-				      		<Text style={styles.italicText}>When selecting Buy In</Text>
-			      		</View>
-				      	<TextInput
-				      		ref="Settings3"
-				      		style={styles.textinputthin}
-				      		onChangeText={(text)=>{this.setState({new_buy_in_intervals:text})}}
-				      		value={this.state.new_buy_in_intervals.toString()}
-				      		selectTextOnFocus={true}
-				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.refs.Settings4.focus()}}
-				      		underlineColorAndroid="transparent"
-			      		/>
-		      		</View>
-		      		{/*
-		      		<View style={[styles.home_settingsSection,{marginBottom:0}]}>
-		      			<View style={{marginRight:10}}>
-				      		<Text style={styles.boldText}>Chips Basic Unit</Text>
-				      		<Text style={styles.italicText}>For the Cash Out calculator</Text>
-			      		</View>
-				      	<TextInput
-				      		ref="Settings4"
-				      		style={styles.textinputthin}
-				      		onChangeText={(text)=>{this.setState({new_chip_unit:text})}}
-				      		value={this.state.new_chip_unit}
-				      		selectTextOnFocus={true}
-				      		keyboardType='numeric'
-				      		onSubmitEditing={()=>{this.updateSettings()}}
-				      		underlineColorAndroid="transparent"
-			      		/>
-		      		</View>
-		      		*/}
-		      		<Text style={styles.errorLabel}>{this.state.errorLabel}</Text>
-			        <View style={styles.modalButtonsContainer}>
-			        	<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-			        	<IconButton action={()=> {
-			        		this.updateSettings();
-			        	}} name="ios-checkmark-circle-outline" text="Confirm" />
-					</View>
-			      </View>
+			      	<ModalWindow
+			      		title="Settings"
+			      		onApprove={()=> this.updateSettings()}
+			      		onDismiss={()=> this.hideModal()}
+			      		content={settingsInput}
+		      		/>
 			    );
+		    	
 		    case 'BackToPrev':
+		    	let prevInput = (
+		    		<ListPicker
+						containerStyle={styles.home_gameList} 
+						optionArray={this.state.active_games}
+						keyExtractor={(l,i)=>l.game}
+						onPressElement={(l,i)=> async ()=>{
+				        	//TODO: check all this occuronces for errors!
+				        	this.hideModal();
+				        	this.joinGame(l.game);
+				        }}
+				        textExtractor={this.gameDateExtractor}
+					/>
+				);
 		    	return (
-		    		<View style={styles.modalContent}>
-		    			<ListPicker
-							containerStyle={styles.home_gameList} 
-							optionArray={this.state.active_games}
-							keyExtractor={(l,i)=>l.game}
-							onPressElement={(l,i)=> async ()=>{
-					        	//TODO: check all this occuronces for errors!
-					        	this.setState({isModalVisible:false});
-					        	this.joinGame(l.game);
-					        }}
-					        textExtractor={this.gameDateExtractor}
-						/>
-		    			<View style={styles.modalButtonsContainer}>
-			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-				        </View>
-			        </View>
+		    		<ModalWindow
+			      		title="Select game:"
+			      		onDismiss={()=> this.hideModal()}
+			      		content={prevInput}
+		      		/>
 	    		);
     		case 'BackToPast':
+    			let pastInput = (
+    				<ListPicker
+						containerStyle={styles.home_gameList} 
+						optionArray={this.state.past_games}
+						keyExtractor={(l,i)=>l.game}
+						onPressElement={(l,i)=> async ()=>{
+				        	//TODO: check all this occuronces for errors!
+				        	this.hideModal();
+				        	this.joinGame(l.game);
+				        }}
+				        textExtractor={this.gameDateExtractor}
+					/>
+    			);
 		    	return (
-		    		<View style={styles.modalContent}>
-		    			<ListPicker
-							containerStyle={styles.home_gameList} 
-							optionArray={this.state.past_games}
-							keyExtractor={(l,i)=>l.game}
-							onPressElement={(l,i)=> async ()=>{
-					        	//TODO: check all this occuronces for errors!
-					        	this.setState({isModalVisible:false});
-					        	this.joinGame(l.game);
-					        }}
-					        textExtractor={this.gameDateExtractor}
-						/>
-		    			<View style={styles.modalButtonsContainer}>
-			      			<IconButton action={()=> this.setState({isModalVisible:false})} name="ios-close-circle-outline" text="Cancel" />
-				        </View>
-			        </View>
+		    		<ModalWindow
+			      		title="Select game:"
+			      		onDismiss={()=> this.hideModal()}
+			      		content={pastInput}
+		      		/>
 	    		);
     		case 'About':
     			return <AboutModal
-    				onClose={()=> this.setState({isModalVisible:false})} 
+    				onClose={()=> this.hideModal()}
     				onDonate={()=> this.donate()}
     				donateButton={false}
 				/> ;
@@ -283,7 +290,7 @@ export default class HomeView extends Component {
     	let hour = date.getHours();
     	hour = (hour < 12) ? hour + "am" : ((hour==12)? hour + "pm" : (hour-12) + "pm");
     	let dateStr = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + hour;
-    	return <Text style={styles.textSubheader} >{dateStr}</Text>
+    	return <Text style={styles.modalText} >{dateStr}</Text>
 	}
 
 	async getActiveGames(){
@@ -317,6 +324,14 @@ export default class HomeView extends Component {
 		utils.resetToScreen(this.state.navigation,'LoginView');
 	}
 
+	showModal(name){
+		this.setState({isModalVisible:true,modalType:name});
+	}
+
+	hideModal(){
+		this.setState({isModalVisible:false,modalType:''});
+	}
+
 	render() {
 		navigation = this.state.navigation;
 		
@@ -324,33 +339,33 @@ export default class HomeView extends Component {
 		let prevGameColor = null;
 		let prevGameAction = null;
 		if (active_games.length > 0){
-			prevGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPrev'})};
+			prevGameAction = ()=>{this.showModal('BackToPrev')};
 		} else {
 			prevGameAction = ()=>{};
-			prevGameColor = '#ccc';
+			prevGameColor = app_grey;
 		}
 		let prevGameButton = (
-			<TouchableOpacity style={styles.login_button} onPress={prevGameAction}>
-            	<Ionicons name="ios-log-in" color={prevGameColor} size={30} />
-            	<Text style={[styles.welcome_buttonText,{color:prevGameColor}]}>CONTINUE GAME</Text>
-            </TouchableOpacity>
+			<Button
+            	onPress={prevGameAction} icon="ios-log-in" title="CONTINUE GAME"
+            	color={prevGameColor}
+        	/>
         );
 
 		let past_games = this.state.past_games;
 		let pastGameColor = null;
 		let pastGameAction = null;
 		if (past_games.length > 0){
-			pastGameAction = ()=>{this.setState({isModalVisible:true,modalType:'BackToPast'})};
+			pastGameAction = ()=>{this.showModal('BackToPast')};
 			pastGameColor = app_red;
 		} else {
 			pastGameAction = ()=>{};
 			pastGameColor = app_grey;
 		}
 		let pastGameButton = (
-			<TouchableOpacity style={styles.login_button} onPress={pastGameAction}>
-            	<Ionicons name="ios-timer-outline" color={pastGameColor} size={30} />
-            	<Text style={[styles.welcome_buttonText,{color:pastGameColor}]}>HISTORY</Text>
-            </TouchableOpacity>
+			<Button
+            	onPress={pastGameAction} icon="ios-timer-outline" title="HISTORY"
+            	color={pastGameColor}
+        	/>
         );
 		
 		let joinButtonColor = (this.state.game_identifier.length === 5) ? app_red : app_grey;
@@ -365,61 +380,56 @@ export default class HomeView extends Component {
 		        </Modal>
 		    	
 		    	{/*Top - logo*/}
-		        <View style={[styles.row,{flex:1.5,justifyContent:'center',alignItems:'center'}]}>
+		        <View style={styles.home_appLogoContainer}>
 			        <Text style={styles.home_appLogoText}>P</Text>
-			        <TouchableOpacity onPress={()=>this.setState({isModalVisible:true,modalType:'About'})}>
+			        <TouchableOpacity onPress={()=>this.showModal('About')}>
 			        	<Image source={{uri:ASSET_APP_LOGO}} style={styles.home_appLogoImage} />
 			        </TouchableOpacity>
 			        <Text style={styles.home_appLogoText}>CAT</Text>
 		        </View>
 
 		    	{/*Middle - main menu*/}
-		        <View style={{flex:5,justifyContent:'center',alignItems:'center'}}>
+		        <View style={styles.home_mainContainer}>
 
-		        	<View style={[styles.home_inputContainer,{flex:2,alignItems:'center',justifyContent:'center',backgroundColor:app_green}]}>
+		        	<View style={styles.home_mainInputContainer}>
 			    		<TextInput
-				      		style={[styles.transparentTextinput,{fontSize:16,color:'white',fontWeight:'bold',width:'90%',height:'48%'}]}
+				      		style={styles.home_mainTextInput}
 				      		onChangeText={(text)=>{this.setState({game_identifier:text})}}
 				      		value={this.state.game_identifier}
 				      		autoCapitalize={'characters'}
 				      		selectTextOnFocus={true}
 				      		maxLength={5}
 				      		placeholder='TYPE ADDRESS...'
-				      		placeholderTextColor='#bbb'
+				      		placeholderTextColor={app_grey}
 				      		underlineColorAndroid="transparent"
 				      		onSubmitEditing={()=>this.joinGame(this.state.game_identifier)}
 			      		/>
-			      		<TouchableOpacity style={[styles.login_button,{overflow:'hidden',borderTopRightRadius: 0,borderTopLeftRadius: 0,marginBottom:0,height:'50%'}]} onPress={()=>this.joinGame(this.state.game_identifier)}>
-		                	<Ionicons name="ios-arrow-dropright" color={joinButtonColor} size={30} />
-		                	<Text style={[styles.welcome_buttonText,{color:joinButtonColor}]}>JOIN GAME</Text>
-		                </TouchableOpacity>
+			      		<Button
+		                	onPress={()=>this.joinGame(this.state.game_identifier)} icon="ios-arrow-dropright" title="JOIN GAME"
+		                	style={{overflow:'hidden',borderTopRightRadius: 0,borderTopLeftRadius: 0,marginBottom:0,height:'50%'}}
+		                	color={joinButtonColor}
+	                	/>
 		      		</View>
 	      			<Text style={[styles.errorLabel,{color:'white',height:20}]}>{this.state.errorLabel}</Text>
 		      		
 		        	<View style={{flex:5,marginBottom:0,justifyContent:'center',alignItems:'center'}}>
 			        
-			        	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'CreateGame'})}}>
-		                	<Ionicons name="ios-add-circle-outline" color={app_red} size={30} />
-		                	<Text style={styles.welcome_buttonText}>CREATE GAME</Text>
-		                </TouchableOpacity>
-		                {prevGameButton}
+			        	<Button onPress={()=>this.showModal('CreateGame')} icon="ios-add-circle-outline" title="CREATE GAME"/>
+			        	{prevGameButton}
 		                {pastGameButton}
-				    	<TouchableOpacity style={styles.login_button} onPress={()=>{this.setState({isModalVisible:true,modalType:'Settings'})}}>
-		                	<Ionicons name="ios-settings-outline" color={app_red} size={30} />
-		                	<Text style={styles.welcome_buttonText}>SETTINGS</Text>
-		                </TouchableOpacity>  	
+				    	<Button onPress={()=>this.showModal('Settings')} icon="ios-settings-outline" title="SETTINGS"/>
 			      	</View>
 		      	</View>
 		      	
 		      	{/*Buttom - user menu*/}
-		      	<View style={{flex:1.5,justifyContent:'center',alignItems:'center'}}>
+		      	<View style={styles.home_userMenuContainer}>
 			      	<View style={[styles.home_userMenu,styles.row,{height:52,justifyContent:'center',alignItems:'center',borderWidth:1}]}>
 			        	
 			        	<View style={{borderTopLeftRadius:12,borderBottomLeftRadius:12,marginRight:10,overflow:"hidden",width:50,height:50}}>
 		        			<SafeImage uri={utils.getUserProfilePicture(this.state.user)} style={[styles.home_userPicture,{borderTopLeftRadius:12,borderBottomLeftRadius:12}]} />
 		        		</View>
 		        		<Text style={[styles.textSubheader,{color:'white'}]}>{this.state.user.first_name + " " + this.state.user.last_name}</Text>
-			        	<TouchableOpacity style={[styles.login_button,{alignItems:'center',justifyContent:'center',width:50,height:50,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
+			        	<TouchableOpacity style={[styles.menuButton,{alignItems:'center',justifyContent:'center',width:50,height:50,borderTopLeftRadius:0,borderBottomLeftRadius:0,margin:0,marginLeft:10}]} onPress={()=>this.logout()}>
 			        		<Ionicons name="ios-exit-outline" color={app_red} size={30} />
 			        	</TouchableOpacity>
 				      	
